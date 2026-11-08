@@ -1,4 +1,4 @@
-// 🟦 «Поле слів» (власниця, 09.11.2026): для «Наголосів» і «Лексичної помилки: словосполучення».
+// 🟦 «Поле слів» (власниця, 09.11.2026; лише в шкільній копії на GitHub Pages): для «Наголосів» і «Лексичної помилки: словосполучення».
 // Учитель (чи учень) обирає групи тренування, що натискати (ПРАВИЛЬНІ чи НЕПРАВИЛЬНІ) і як перевіряти:
 //   • «Наприкінці» — весь екран усіяний кнопками-словами, клас біля дошки позначає, тоді «✔ Перевірити»:
 //     ✅ знайдено, ✗ натиснуто зайве, ◌ пропущено + «🔁 Робота над помилками» (поле лише з помилок);
@@ -33,7 +33,7 @@ const fieldSave = () => { try { localStorage.setItem("field_cfg", JSON.stringify
   const orig = showModes;
   showModes = function (game) {
     const r = orig.apply(this, arguments);
-    panel.hidden = !FIELD_GAMES[modesGame] || (typeof DEMO !== "undefined" && DEMO && modesGame !== "naholosy" && modesGame !== "slovospoluch");
+    panel.hidden = !FIELD_GAMES[modesGame] || !window.GYM_ONLY; // лише в шкільній копії (mirror-config.js), власниця 09.11.2026
     return r;
   };
 })();
