@@ -111,7 +111,7 @@ function fieldPool() {
   const gs = fieldGroups(FIELD.game).filter(g => FIELD.keys.includes(g.key));
   const seen = new Set(), out = [];
   gs.forEach(g => g.items.forEach(it => {
-    const id = FIELD.game === "naholosy" ? it.correct : it.wrong;
+    const id = FIELD.game === "naholosy" ? String(it.correct) : it.wrong;
     if (!id || seen.has(id)) return;
     seen.add(id); out.push(it);
   }));
@@ -120,9 +120,12 @@ function fieldPool() {
 
 function fieldCard(it, ok) {
   if (FIELD.game === "naholosy") {
-    const wrongs = it.words.filter(w => w !== it.correct);
-    const show = ok || !wrongs.length ? it.correct : wrongs[Math.floor(Math.random() * wrongs.length)];
-    return { src: it, ok: show === it.correct, show, right: it.correct };
+    // буває кілька правильних наголосів (алфАвіт / алфавІт) — correct тоді масив
+    const rights = Array.isArray(it.correct) ? it.correct : [it.correct];
+    const wrongs = it.words.filter(w => !rights.includes(w));
+    const pick = a => a[Math.floor(Math.random() * a.length)];
+    const show = ok || !wrongs.length ? pick(rights) : pick(wrongs);
+    return { src: it, ok: rights.includes(show), show, right: rights };
   }
   return { src: it, ok, show: ok ? it.right : it.wrong, right: it.right, rule: it.rule };
 }
@@ -213,7 +216,8 @@ function fieldExplain(c) {
   head.className = "fld-rule-h";
   head.textContent = okTxt + (c.ok ? ": " : " → правильно: ");
   const r = document.createElement("b");
-  if (FIELD.game === "naholosy") renderStressWord(r, c.right); else r.textContent = c.right;
+  if (FIELD.game === "naholosy") [].concat(c.right).forEach((w, k) => { if (k) r.appendChild(document.createTextNode(" або ")); renderStressWord(r, w); });
+  else r.textContent = c.right;
   head.appendChild(r);
   box.appendChild(head);
   if (c.rule) { const p = document.createElement("div"); p.textContent = c.rule; box.appendChild(p); }
