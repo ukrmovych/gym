@@ -65,7 +65,7 @@
   // 🎁 Демо для новачків (власниця, 07.11.2026): хто вперше відкрив гру з 05.11.2026 і не має PRO — у кожному
   // PRO-тренажері відкрита перша група (файли demo/…, генерує tools/make-demo.js). Новачок — як у upsell.js (player_since).
   const DEMO_FROM = "2026-11-05";
-  const DEMO_V = "20261108f";
+  const DEMO_V = "20261109a";
   const DEMO_FILES = new Set(["klychnyi-data.js", "chyslivnyky-data.js", "frazeo-data.js", "frazeo-nmt-data.js", "frazeo-options.js", "frazeo-s30.js",
     "inshomovni-data.js", "inshomovni-notes.js", "nmt-test-data.js"]);
   const isDemoFile = n => DEMO_FILES.has(n) || n === "inshe/istoriia.js"; // «Інше» новачкам не відкриваємо (власниця, 07.11.2026), лише «Історію»
