@@ -2034,6 +2034,9 @@ let modesGame = "naholosy";
 // Вибір слів для марафону й онлайн-ігор: «Усі слова» або спецтема (якщо є доступ)
 function renderTopicPicker() {
   const box = $("topic-picker");
+  // «НМТ: частина 1/2» стосуються марафону (й дуелей/онлайну), не тренування — стоять над «Почати марафон» (власниця, 09.11.2026)
+  const home = modesGame === "frazeolohizmy" ? $("btn-marathon") : $("groups-panel");
+  if (home && box.nextElementSibling !== home) home.before(box);
   if (modesGame === "frazeolohizmy") {
     renderFrazeoPartPicker(box);
     return;
@@ -2076,7 +2079,7 @@ function renderFrazeoPartPicker(box) {
   box.innerHTML = "";
   const hint = document.createElement("p");
   hint.className = "topic-hint";
-  hint.textContent = "Які фразеологізми тренувати (для всіх режимів):";
+  hint.textContent = "Які фразеологізми в марафоні (і в дуелі, онлайні):";
   box.appendChild(hint);
   FRAZEO_PARTS.forEach(([id, text]) => {
     const b = document.createElement("button");

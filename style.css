@@ -4632,3 +4632,44 @@ body:not(.off-menu) #menu { padding-bottom: 6px; } /* без зайвого ві
 
 /* 🏫 шкільна копія (mirror-config.js, GYM_ONLY): кілька плиток — рівними, по дві в ряд */
 .gym-only #game-list > button { grid-column: span 3 !important; }
+
+/* 🟦 Поле слів (field.js, 09.11.2026) */
+.field-screen { max-width: 1400px; }
+.fld-setup { display: flex; flex-direction: column; gap: 14px; }
+.fld-step { display: flex; flex-direction: column; gap: 8px; background: var(--surface); border: 2px solid var(--line); border-radius: var(--radius); padding: 12px 14px; }
+.fld-step > b { font-size: 17px; }
+.fld-hint { color: var(--muted); font-size: 14px; margin-top: -6px; }
+.fld-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.fld-chips .topic-chip { font-size: 15px; color: var(--text); }
+.fld-step .link-btn { align-self: flex-start; background: none; border: 0; color: var(--orange); font: inherit; font-size: 15px; padding: 2px 0; cursor: pointer; }
+.fld-sum { margin: 0; text-align: center; color: var(--muted); }
+.fld-go { font-size: 20px; }
+.fld-top { flex-wrap: wrap; margin-bottom: 10px; }
+.fld-task { flex: 1; text-align: center; font-size: clamp(18px, 2.6vw, 30px); font-weight: 700; color: var(--orange); }
+.fld-grid { flex: 1; display: flex; flex-wrap: wrap; align-content: flex-start; justify-content: center; gap: 10px; padding-bottom: 12px; }
+.fld-it { flex: 1 1 auto; min-width: 120px; padding: 14px 16px; border-radius: 14px; border: 2px solid var(--line); background: var(--surface-2); color: var(--text); font: inherit; font-size: clamp(18px, 2.4vw, 30px); cursor: pointer; transition: transform .1s, background .15s; }
+.fld-n2 .fld-it { font-size: clamp(16px, 1.9vw, 24px); padding: 11px 12px; }
+.fld-n3 .fld-it { font-size: clamp(15px, 1.5vw, 20px); padding: 9px 10px; min-width: 100px; }
+.fld-it:active { transform: scale(.96); }
+.fld-it .stress { color: var(--orange); font-weight: 700; }
+.fld-it .note { display: block; font-size: .65em; color: var(--muted); }
+.fld-it.fld-sel { border-color: var(--orange); background: rgba(255, 121, 0, .28); }
+.fld-it.fld-ok { border-color: var(--green); background: rgba(76, 175, 80, .35); }
+.fld-it.fld-ok::after { content: " ✓"; }
+.fld-it.fld-bad { border-color: #b26ee0; background: transparent; }
+.fld-it.fld-bad::after { content: " ✕"; color: #d29bf0; }
+.fld-it.fld-miss { border: 2px dashed var(--green); background: rgba(76, 175, 80, .12); }
+.fld-it.fld-dim { opacity: .45; }
+.fld-bar { position: sticky; bottom: 0; display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 10px 16px; padding: 12px; background: var(--bg); border-top: 2px solid var(--line); }
+.fld-bar .btn-primary, .fld-bar .btn-secondary { width: auto; margin: 0; padding: 12px 22px; }
+.fld-count { font-size: 18px; color: var(--muted); }
+.fld-res { display: flex; flex-wrap: wrap; gap: 8px 18px; justify-content: center; font-size: 19px; width: 100%; }
+.fld-r.ok b { color: var(--green); } .fld-r.bad b { color: #d29bf0; } .fld-r.miss b { color: var(--muted); }
+.fld-acts { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
+.fld-tip { margin: 0; width: 100%; text-align: center; color: var(--muted); font-size: 14px; }
+.fld-rule { position: sticky; bottom: 0; background: var(--surface); border: 2px solid var(--orange); border-radius: var(--radius); padding: 10px 14px; margin-top: 8px; font-size: 16px; }
+.fld-rule-h { font-size: 18px; margin-bottom: 4px; }
+.fld-rule .stress { color: var(--orange); }
+.fld-bar.fld-done { position: static; border-top: 0; border-bottom: 2px solid var(--line); margin-bottom: 10px; background: none; }
+.fld-rule { position: fixed; left: 50%; transform: translateX(-50%); bottom: max(12px, env(safe-area-inset-bottom)); width: min(680px, calc(100% - 24px)); z-index: 30; padding-right: 40px; box-shadow: 0 8px 30px rgba(0,0,0,.5); cursor: pointer; }
+.fld-x { position: absolute; top: 8px; right: 12px; color: var(--muted); font-size: 18px; }
