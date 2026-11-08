@@ -76,8 +76,9 @@
     const sp = new URLSearchParams(location.search).get("tgWebAppStartParam") || (raw ? new URLSearchParams(raw).get("start_param") : "") || "";
     if (sp === "old" || /[?&]old(&|=|$)/.test(location.search)) localStorage.setItem("player_since", "old");
   } catch (e) { /* */ }
+  const LOCAL = Array.isArray(window.GYM_LOCAL_PRO) ? window.GYM_LOCAL_PRO : [];
   const DEMO = (() => {
-    if (want) return false;
+    if (want || LOCAL.length) return false;
     if (NEWBIE) return true;
     let since = ls("player_since");
     if (!since) {
@@ -222,12 +223,15 @@
       const src = t.getAttribute("src");
       if (t.hasAttribute("data-code")) { inject({ src }); continue; }
       const n = nameOf(src);
+      // 🏫 шкільна копія (GitHub, mirror-config.js): ці дані лежать у самій копії — відкриті, без сервера
+      if (LOCAL.includes(n)) { if (n === LATE) late = src; else inject({ src }); continue; }
       if (n === LATE && state.ok) { late = src; continue; } // без заглушки: leks.js поки працює з відкритими групами
       if (files[n] != null) inject({ text: files[n] });
       else if (state.fallback) inject({ src }); // перехідний період: файли ще на сайті
       else if (DEMO && isDemoFile(n)) inject({ src: `demo/${n}?v=${DEMO_V}`, stub: STUB[n] || "" }); // 🎁 новачкам — перша група
       else inject({ text: STUB[n] || "" });
     }
+    if (late && LOCAL.includes(LATE)) { await inject({ src: late }); inject({ text: "if (typeof leksUpgrade === 'function') leksUpgrade();" }); late = false; }
     if (late) {
       const c = await IDB.get(LATE);
       if (c && c.v === late && c.t != null) await inject({ text: c.t });

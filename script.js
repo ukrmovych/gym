@@ -297,7 +297,7 @@ const OWNER_DEVICE = (() => { try { return Boolean(localStorage.getItem("stats_p
 const BETA = !NEWBIE && BETA_LINK && (OWNER_DEVICE || COURSE || PRO_ACCESS);
 // 🏫 планшети школи за шкільним ключем (loader.js, ?school=…): відкриті тренажери з переліку ключа (дані дає pro-data)
 const SCHOOL = (() => { try { return !NEWBIE && Boolean(localStorage.getItem("school_key")); } catch (e) { return false; } })();
-const BETA_OPEN = !NEWBIE && (BETA || COURSE || PRO_ACCESS || SCHOOL);
+const BETA_OPEN = !NEWBIE && (BETA || COURSE || PRO_ACCESS || SCHOOL || Array.isArray(window.GYM_LOCAL_PRO)); // GYM_LOCAL_PRO — шкільна копія з відкритими тренажерами
 if (window.GYM_ONLY) document.body.classList.add("gym-only"); // шкільна копія: лише кілька тренажерів — плитки порівну // бета-ігри відкриті (PRO — усе, що є в беті)
 // 🎁 Демо для новачків (loader.js → window.GYM_DEMO): у PRO-тренажерах відкрита лише перша група, без марафону й спринту
 const DEMO = !BETA_OPEN && Boolean(window.GYM_DEMO);
