@@ -1,0 +1,4634 @@
+/* Шрифт з кирилицею (Comic Neue її не має, тому на телефонах був стандартний шрифт) */
+@font-face {
+  font-family: 'Balsamiq Sans';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(fonts/balsamiq-sans-cyrillic-400-normal.woff2) format('woff2');
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+@font-face {
+  font-family: 'Balsamiq Sans';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url(fonts/balsamiq-sans-cyrillic-700-normal.woff2) format('woff2');
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+@font-face {
+  font-family: 'Balsamiq Sans';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(fonts/balsamiq-sans-latin-400-normal.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Balsamiq Sans';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url(fonts/balsamiq-sans-latin-700-normal.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+:root {
+  --bg: #211a14;
+  --surface: #2b2219;
+  --surface-2: #362a20;
+  --line: #45372b;
+  --brown: #574435;
+  --orange: #FF7900;
+  --orange-dark: #d96700;
+  --green: #4CAF50;
+  --red: #e0533d;
+  --text: #ffffff;
+  --muted: #b9a797;
+  --radius: 16px;
+  --font: 'Balsamiq Sans', 'Comic Sans MS', 'Comic Neue', system-ui, sans-serif;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding:
+    max(16px, env(safe-area-inset-top))
+    max(16px, env(safe-area-inset-right))
+    max(16px, env(safe-area-inset-bottom))
+    max(16px, env(safe-area-inset-left));
+  background:
+    radial-gradient(ellipse 80% 50% at 50% -10%, rgba(255, 121, 0, 0.12), transparent 70%),
+    var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+  font-weight: 700;
+  -webkit-tap-highlight-color: transparent;
+  /* заборона виділення й копіювання тексту */
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+}
+
+input,
+textarea {
+  -webkit-user-select: text;
+  user-select: text;
+}
+
+img {
+  -webkit-user-drag: none;
+}
+
+.loading {
+  display: block;
+  text-align: center;
+  color: var(--muted);
+  animation: pulse 1.2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  50% { opacity: 0.4; }
+}
+
+[hidden] {
+  display: none !important;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  border: none;
+  cursor: pointer;
+  touch-action: manipulation;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+button:focus-visible {
+  outline: 3px solid var(--orange);
+  outline-offset: 3px;
+}
+
+.screen {
+  width: 100%;
+  max-width: 560px;
+  flex: 1 0 auto;
+  display: flex;
+  flex-direction: column;
+  animation: fade-in 0.25s ease-out;
+}
+
+/* ---------- Меню ---------- */
+
+#menu {
+  justify-content: center;
+  padding-bottom: 8vh;
+}
+
+.title {
+  margin: 0 0 28px;
+  font-size: clamp(30px, 8vw, 42px);
+  line-height: 1.15;
+  text-align: center;
+}
+
+/* Сітка ігор: «Наголоси» на всю ширину, решта — плитки по 2 (на компі по 3) */
+.game-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+@media (min-width: 520px) {
+  .game-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.game-tile {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  min-height: 112px;
+  padding: 14px;
+  text-align: left;
+  background: var(--surface);
+  border: 2px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: 0 4px 0 var(--line);
+  transition: transform 0.12s ease, box-shadow 0.12s ease, border-color 0.15s ease;
+}
+
+.game-tile:active {
+  transform: translateY(3px);
+  box-shadow: 0 1px 0 var(--line);
+}
+
+.tile-icon {
+  font-size: 28px;
+  line-height: 1;
+}
+
+.tile-name {
+  /* на вузьких екранах шрифт трохи менший, щоб довгі слова не розривались */
+  font-size: clamp(14px, 4.4vw, 18px);
+  line-height: 1.15;
+  overflow-wrap: break-word;
+}
+
+.game-tile .badge {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+}
+
+.game-tile.featured {
+  grid-column: 1 / -1;
+  flex-direction: row;
+  align-items: center;
+  gap: 14px;
+  min-height: 0;
+  padding: 18px 20px;
+  background: var(--orange);
+  border-color: var(--orange);
+  box-shadow: 0 6px 0 var(--orange-dark);
+}
+
+.game-tile.featured:active {
+  box-shadow: 0 3px 0 var(--orange-dark);
+}
+
+.game-tile.featured .tile-icon {
+  font-size: 32px;
+}
+
+.game-tile.featured .tile-name {
+  flex: 1;
+  min-width: 0;
+  font-size: 24px;
+  overflow-wrap: normal;
+}
+
+.game-tile.featured .mode-best {
+  white-space: nowrap;
+}
+
+.game-tile.featured .mode-best {
+  opacity: 0.9;
+}
+
+/* Ще не готові ігри — приглушені */
+.game-tile.is-soon {
+  background: transparent;
+  border-style: dashed;
+  box-shadow: none;
+  color: var(--muted);
+}
+
+.game-tile.is-soon .tile-icon {
+  filter: grayscale(0.6);
+  opacity: 0.7;
+}
+
+.mode-best {
+  font-size: 14px;
+  font-weight: 400;
+  opacity: 0.8;
+}
+
+.mode-best:empty {
+  display: none;
+}
+
+.mode-arrow {
+  font-size: 28px;
+  line-height: 1;
+  opacity: 0.7;
+}
+
+.badge {
+  display: inline-block;
+  padding: 2px 9px;
+  border-radius: 999px;
+  background: var(--brown);
+  color: #fff;
+  font-size: 13px;
+}
+
+.badge-beta {
+  background: #2f6b33;
+}
+
+.badge-pro {
+  background: linear-gradient(135deg, #f2b705, #e07a10);
+  color: #fff;
+  font-weight: 700;
+}
+
+/* Турнірна таблиця — окремо від ігор */
+.leaders-btn {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  margin-top: 16px;
+  padding: 14px 18px;
+  background: var(--surface-2);
+  border: 2px solid var(--line);
+  border-radius: var(--radius);
+  font-size: 18px;
+  text-align: left;
+}
+
+.leaders-btn span:nth-child(2) {
+  flex: 1;
+}
+
+.brand-tag-soon {
+  margin: -8px 0 18px;
+}
+
+/* ---------- Верхня панель ---------- */
+
+.top-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.icon-btn {
+  padding: 8px 14px;
+  border-radius: 999px;
+  background: var(--brown);
+  font-size: 15px;
+}
+
+.lives {
+  flex: 1;
+  text-align: center;
+  font-size: 22px;
+  letter-spacing: 2px;
+}
+
+.lives .heart {
+  display: inline-block;
+  transition: opacity 0.3s ease, filter 0.3s ease, transform 0.3s ease;
+}
+
+.lives .heart.lost {
+  opacity: 0.25;
+  filter: grayscale(1);
+  transform: scale(0.8);
+}
+
+.lives.hit {
+  animation: shake 0.4s ease;
+}
+
+.score {
+  min-width: 56px;
+  padding: 8px 14px;
+  border-radius: 999px;
+  background: var(--surface-2);
+  text-align: center;
+  font-size: 18px;
+}
+
+.score::before {
+  content: '⭐ ';
+}
+
+.score.bump {
+  animation: bump 0.3s ease;
+}
+
+/* ---------- Картка з питанням ---------- */
+
+.card {
+  padding: 24px 20px;
+  background: var(--surface);
+  border: 2px solid var(--line);
+  border-radius: 22px;
+}
+
+.question {
+  margin: 0 0 20px;
+  text-align: center;
+  font-size: 20px;
+  color: var(--muted);
+}
+
+.answers {
+  display: grid;
+  gap: 12px;
+}
+
+/* Варіанти наголосу */
+.answer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  width: 100%;
+  min-height: 64px;
+  padding: 14px 18px;
+  background: var(--surface-2);
+  border: 2px solid var(--line);
+  border-radius: var(--radius);
+  font-size: 28px;
+  letter-spacing: 0.5px;
+  box-shadow: 0 4px 0 var(--line);
+  transition: transform 0.1s ease, box-shadow 0.1s ease, background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.answer:active {
+  transform: translateY(3px);
+  box-shadow: 0 1px 0 var(--line);
+}
+
+.answer .stress {
+  color: var(--orange);
+}
+
+.answer .note {
+  font-size: 15px;
+  font-weight: 400;
+  color: var(--muted);
+  letter-spacing: 0;
+}
+
+@media (hover: hover) {
+  .answer:hover,
+  .chip:hover,
+  .ok-btn:hover {
+    border-color: var(--orange);
+  }
+
+  .game-tile:not(.featured):hover,
+  .leaders-btn:hover {
+    border-color: var(--orange);
+  }
+}
+
+/* ---------- Лексична помилка ---------- */
+
+.sentence {
+  margin-bottom: 18px;
+  line-height: 1.25;
+  text-align: left;
+}
+
+.chip {
+  display: inline-block;
+  margin: 3px 1px;
+  padding: 5px 7px;
+  background: transparent;
+  border: 2px solid transparent;
+  border-radius: 10px;
+  font-size: 20px;
+  font-weight: 400;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.ok-btn {
+  width: 100%;
+  min-height: 56px;
+  padding: 12px 18px;
+  background: var(--surface-2);
+  border: 2px solid var(--line);
+  border-radius: var(--radius);
+  font-size: 20px;
+  box-shadow: 0 4px 0 var(--line);
+}
+
+/* ---------- Стани відповідей ---------- */
+
+.correct,
+.answer.correct,
+.ok-btn.correct {
+  background-color: var(--green);
+  border-color: var(--green);
+  box-shadow: 0 4px 0 #3a8a3e;
+}
+
+.chip.correct {
+  box-shadow: none;
+}
+
+.correct .stress,
+.correct .note {
+  color: #fff;
+}
+
+.wrong {
+  background-color: var(--red);
+  border-color: var(--red);
+  box-shadow: 0 4px 0 #a63a2a;
+  animation: shake 0.4s ease;
+}
+
+.chip.wrong {
+  box-shadow: none;
+}
+
+.dim {
+  opacity: 0.45;
+}
+
+.blink {
+  animation: blink 0.5s linear infinite;
+}
+
+.strikethrough {
+  text-decoration: line-through;
+  text-decoration-thickness: 2px;
+}
+
+.feedback {
+  min-height: 1.4em;
+  margin: 16px 0 0;
+  text-align: center;
+  font-size: 17px;
+  color: var(--muted);
+}
+
+.feedback.good {
+  color: var(--green);
+}
+
+.feedback.bad {
+  color: var(--red);
+}
+
+.hint {
+  margin: 14px 0 0;
+  text-align: center;
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--muted);
+  opacity: 0.7;
+}
+
+@media (hover: none) {
+  .hint {
+    display: none;
+  }
+}
+
+/* ---------- Кінець гри ---------- */
+
+#over {
+  justify-content: center;
+  padding-bottom: 8vh;
+}
+
+.over-card {
+  text-align: center;
+}
+
+.over-emoji {
+  font-size: 48px;
+}
+
+.over-card h2 {
+  margin: 8px 0 4px;
+  font-size: 28px;
+}
+
+.over-score {
+  margin: 8px 0;
+  font-size: 64px;
+  line-height: 1;
+  color: var(--orange);
+}
+
+.over-best {
+  margin: 0 0 24px;
+  color: var(--muted);
+}
+
+.over-actions {
+  display: grid;
+  gap: 12px;
+}
+
+.btn-primary,
+.btn-secondary {
+  width: 100%;
+  padding: 16px;
+  border-radius: var(--radius);
+  font-size: 20px;
+  transition: transform 0.1s ease, box-shadow 0.1s ease;
+}
+
+.btn-primary {
+  background: var(--orange);
+  box-shadow: 0 5px 0 var(--orange-dark);
+}
+
+.btn-primary:active {
+  transform: translateY(3px);
+  box-shadow: 0 2px 0 var(--orange-dark);
+}
+
+.btn-secondary {
+  background: var(--brown);
+}
+
+/* ---------- Логотип і підпис ---------- */
+
+.menu-logo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 18px;
+}
+
+.menu-logo img {
+  width: 96px;
+  height: 96px;
+  filter: drop-shadow(0 6px 14px rgba(255, 121, 0, 0.35));
+}
+
+.handle {
+  color: var(--orange);
+  font-size: 18px;
+  letter-spacing: 0.5px;
+}
+
+/* Плашка з логотипом у картці гри — щоб її було видно на скриншотах */
+.brand-tag {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin: -6px 0 14px;
+  color: var(--orange);
+  font-size: 16px;
+  letter-spacing: 0.5px;
+}
+
+.brand-tag img {
+  width: 28px;
+  height: 28px;
+}
+
+.brand-tag-bottom {
+  margin: 18px 0 0;
+}
+
+.over-logo {
+  width: 80px;
+  height: 80px;
+  filter: drop-shadow(0 6px 14px rgba(255, 121, 0, 0.35));
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 28px;
+  padding: 6px 16px 6px 6px;
+  border-radius: 999px;
+  background: var(--surface);
+  border: 2px solid var(--line);
+  color: var(--text);
+  font-size: 16px;
+  font-weight: 400;
+  letter-spacing: 0.5px;
+}
+
+.brand img {
+  width: 36px;
+  height: 36px;
+}
+
+.brand b {
+  color: var(--orange);
+}
+
+/* ---------- Анімації ---------- */
+
+@keyframes blink {
+  50% { background-color: #e6c200; border-color: #e6c200; }
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-6px); }
+  75% { transform: translateX(6px); }
+}
+
+@keyframes bump {
+  50% { transform: scale(1.15); }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Маленькі телефони */
+@media (max-width: 360px) {
+  .answer {
+    font-size: 24px;
+  }
+
+  .chip {
+    font-size: 18px;
+  }
+}
+
+/* ---------- Прогрес (Наголоси) ---------- */
+
+.progress {
+  margin: -4px 0 16px;
+}
+
+.progress-track {
+  height: 10px;
+  border-radius: 999px;
+  background: var(--surface-2);
+  overflow: hidden;
+}
+
+.progress-fill {
+  width: 0;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--orange-dark), var(--orange));
+  transition: width 0.4s ease;
+}
+
+.progress.done .progress-fill {
+  background: linear-gradient(90deg, #3a8a3e, var(--green));
+}
+
+/* ---------- Помилки після гри ---------- */
+
+.mistakes {
+  margin-top: 16px;
+}
+
+.mistakes h3 {
+  margin: 0 0 12px;
+  font-size: 20px;
+  text-align: center;
+}
+
+.mistakes-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 10px;
+}
+
+.mistakes-list li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: center;
+  gap: 6px 12px;
+  padding: 12px;
+  border-radius: 12px;
+  background: var(--surface-2);
+  font-size: 22px;
+}
+
+.mistakes-list .was {
+  color: var(--red);
+  text-decoration: line-through;
+  font-size: 18px;
+}
+
+.mistakes-list .arrow {
+  color: var(--muted);
+  font-size: 18px;
+}
+
+.mistakes-list .right .stress {
+  color: var(--green);
+}
+
+.mistakes-list .note {
+  margin-left: 6px;
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--muted);
+}
+
+.mistakes-list .sentence-mistake {
+  display: block;
+  width: 100%;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.4;
+  text-align: left;
+}
+
+.mistakes-list .sentence-mistake mark {
+  padding: 0 3px;
+  border-radius: 4px;
+  background: var(--green);
+  color: #fff;
+}
+
+/* ---------- Форма для таблиці ---------- */
+
+.submit-form {
+  margin: 0 0 20px;
+  text-align: left;
+}
+
+.submit-form label {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 15px;
+  color: var(--muted);
+}
+
+.submit-row {
+  display: flex;
+  gap: 8px;
+}
+
+.submit-row input {
+  flex: 1;
+  min-width: 0;
+  padding: 12px 14px;
+  border: 2px solid var(--line);
+  border-radius: 12px;
+  background: var(--bg);
+  color: var(--text);
+  font: inherit;
+  font-size: 18px;
+}
+
+.submit-row input:focus {
+  outline: none;
+  border-color: var(--orange);
+}
+
+.btn-small {
+  width: auto;
+  padding: 12px 16px;
+  font-size: 17px;
+}
+
+.submit-status {
+  min-height: 1.2em;
+  margin: 8px 0 0;
+  font-size: 15px;
+  font-weight: 400;
+  color: var(--muted);
+}
+
+.submit-status.good {
+  color: var(--green);
+}
+
+.submit-status.bad {
+  color: var(--red);
+}
+
+/* ---------- Турнірна таблиця ---------- */
+
+.screen-title {
+  flex: 1;
+  margin: 0;
+  font-size: 22px;
+  text-align: center;
+  padding-right: 70px;
+}
+
+.tabs {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+  gap: 6px;
+  margin-bottom: 14px;
+  padding: 5px;
+  border-radius: 14px;
+  background: var(--surface);
+}
+
+.tab {
+  padding: 10px 6px;
+  border-radius: 10px;
+  background: transparent;
+  font-size: 15px;
+  color: var(--muted);
+}
+
+.tab.active {
+  background: var(--orange);
+  color: #fff;
+}
+
+.leaders-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: place;
+}
+
+.leaders-list li {
+  counter-increment: place;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 4px;
+  border-bottom: 1px solid var(--line);
+  font-size: 18px;
+}
+
+.leaders-list li:last-child {
+  border-bottom: none;
+}
+
+.leaders-list li::before {
+  content: counter(place);
+  min-width: 32px;
+  height: 32px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--surface-2);
+  font-size: 15px;
+}
+
+.leaders-list li:nth-child(1)::before { background: #d4a017; }
+.leaders-list li:nth-child(2)::before { background: #8d8d8d; }
+.leaders-list li:nth-child(3)::before { background: #a0522d; }
+
+.leaders-list .name {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.leaders-list .points {
+  color: var(--orange);
+}
+
+.leaders-list li.me {
+  background: rgba(255, 121, 0, 0.1);
+  border-radius: 10px;
+}
+
+.leaders-status {
+  margin: 8px 0 0;
+  text-align: center;
+  font-weight: 400;
+  color: var(--muted);
+}
+
+.leaders-status:empty {
+  display: none;
+}
+
+/* ---------- Святкування ---------- */
+
+.modal {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  display: grid;
+  place-items: center;
+  padding: 16px;
+  background: rgba(20, 15, 11, 0.75);
+  animation: fade-in 0.25s ease-out;
+}
+
+.modal-card {
+  width: 100%;
+  max-width: 400px;
+  padding: 28px 22px;
+  border: 2px solid var(--orange);
+  border-radius: 22px;
+  background: var(--surface);
+  text-align: center;
+  animation: pop 0.4s ease-out;
+}
+
+.modal-card h2 {
+  margin: 8px 0;
+  font-size: 30px;
+}
+
+.modal-card p {
+  margin: 0 0 22px;
+  font-size: 18px;
+  line-height: 1.4;
+  color: var(--muted);
+}
+
+/* Вікно PRO-підписки */
+#pro .modal-card > button,
+#pro .pro-buy {
+  display: block;
+  margin-top: 12px;
+}
+
+.pro-buy {
+  text-align: center;
+  color: inherit;
+  text-decoration: none;
+  box-sizing: border-box;
+}
+
+#pro .pro-status {
+  margin: 12px 0 0;
+  font-size: 16px;
+}
+
+#pro .pro-status:empty {
+  display: none;
+}
+
+/* Форма звернення: лише вона, вгорі екрана */
+#pro {
+  overflow-y: auto;
+}
+
+#pro.pro-form {
+  align-items: start;
+}
+
+#pro.pro-form .pro-intro,
+#pro.pro-form #btn-pro-buy,
+#pro.pro-form #btn-pro-check,
+#pro.pro-form #btn-pro-help {
+  display: none;
+}
+
+#pro .pro-help h2 {
+  margin: 0 0 10px;
+  font-size: 24px;
+  text-align: center;
+}
+
+.pro-help-link {
+  display: block;
+  margin: 14px auto 0;
+  background: none;
+  color: var(--muted);
+  font-size: 16px;
+  text-decoration: underline;
+}
+
+.pro-help {
+  margin-top: 16px;
+  text-align: left;
+}
+
+#pro .pro-help p {
+  margin: 0 0 12px;
+  font-size: 16px;
+}
+
+.pro-help textarea {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 12px;
+  border: 2px solid var(--line);
+  border-radius: 12px;
+  background: var(--surface-2);
+  color: var(--text);
+  font: inherit;
+  font-size: 16px;
+  resize: vertical;
+}
+
+.confetti {
+  position: fixed;
+  inset: 0;
+  z-index: 30;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.confetti i {
+  position: absolute;
+  top: -20px;
+  width: 10px;
+  height: 14px;
+  border-radius: 2px;
+  animation: fall linear forwards;
+}
+
+@keyframes fall {
+  to { transform: translate3d(var(--dx), 110vh, 0) rotate(var(--rot)); }
+}
+
+@keyframes pop {
+  from { transform: scale(0.8); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+/* ---------- Тестовий режим ---------- */
+
+.test-note {
+  margin: 16px 0 0;
+  padding: 10px 14px;
+  border: 2px dashed var(--brown);
+  border-radius: 12px;
+  background: rgba(87, 68, 53, 0.25);
+  color: var(--muted);
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.35;
+  text-align: center;
+}
+
+/* Маленькі телефони: компактніша шапка меню, щоб влізло більше ігор */
+@media (max-width: 380px) {
+  .menu-logo img {
+    width: 72px;
+    height: 72px;
+  }
+
+  .title {
+    margin-bottom: 20px;
+  }
+
+  .game-tile {
+    min-height: 100px;
+    padding: 12px;
+  }
+
+
+  .game-tile.featured .tile-name {
+    font-size: 22px;
+  }
+}
+
+/* ---------- Наголоси: режими й групи ---------- */
+
+#modes .screen-title {
+  padding-right: 70px;
+}
+
+.modes-lead {
+  margin: 0 0 12px;
+  color: var(--muted);
+  font-size: 16px;
+  text-align: center;
+}
+
+/* Два режими — дві однакові за виглядом панелі з помаранчевою рамкою */
+.mode-panel {
+  margin-bottom: 16px;
+  padding: 16px;
+  border: 2px solid var(--orange);
+  border-radius: 20px;
+  background: var(--surface);
+}
+
+.mode-head {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.mode-num {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: var(--orange);
+  font-size: 16px;
+}
+
+.mode-head-text {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.mode-title {
+  font-size: 20px;
+  line-height: 1.2;
+}
+
+.mode-desc {
+  color: var(--muted);
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.35;
+}
+
+.mode-start {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.mode-start .mode-best {
+  font-size: 13px;
+}
+
+.group-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+@media (min-width: 560px) {
+  .group-grid {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+}
+
+.group-tile {
+  /* --h: відтінок від жовтого (45) до жовто-зеленого (100), --p: прогрес 0…1.
+     Чистий зелений — лише для вивчених груп */
+  --h: 45;
+  --p: 0;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  min-height: 76px;
+  padding: 10px 6px;
+  background: var(--surface);
+  border: 2px solid var(--line);
+  border-radius: 14px;
+  box-shadow: 0 4px 0 var(--line);
+  transition: transform 0.1s ease, box-shadow 0.1s ease, border-color 0.15s ease;
+}
+
+.group-tile:active {
+  transform: translateY(3px);
+  box-shadow: 0 1px 0 var(--line);
+}
+
+.group-label {
+  font-size: 20px;
+  white-space: nowrap;
+}
+
+.group-info {
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--muted);
+}
+
+/* Уже пробував: фон і рамка від жовтого до зеленого залежно від результату */
+.group-tile.tried {
+  background: hsla(var(--h), 65%, 42%, calc(0.12 + 0.2 * var(--p)));
+  border-color: hsl(var(--h), 65%, 45%);
+  box-shadow: 0 4px 0 hsl(var(--h), 55%, 30%);
+}
+
+.group-tile.tried .group-info {
+  color: hsl(var(--h), 75%, 65%);
+}
+
+/* Смужка прогресу внизу плитки */
+.group-tile.tried::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 4px;
+  width: calc(var(--p) * 100%);
+  background: hsl(var(--h), 70%, 50%);
+}
+
+.group-tile.mastered {
+  background: var(--green);
+  border-color: var(--green);
+  box-shadow: 0 4px 0 #3a8a3e;
+}
+
+.group-tile.mastered .group-info {
+  color: #fff;
+}
+
+.group-legend {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 4px 6px;
+  margin: 14px 0 0;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 400;
+}
+
+.legend-item {
+  white-space: nowrap;
+}
+
+.legend-dot {
+  display: inline-block;
+  vertical-align: -1px;
+  width: 12px;
+  height: 12px;
+  margin-left: 6px;
+  border-radius: 4px;
+  border: 2px solid var(--line);
+}
+
+.legend-new {
+  background: var(--surface);
+}
+
+.legend-mid {
+  background: linear-gradient(90deg, hsl(45, 65%, 45%), hsl(100, 65%, 45%));
+  border-color: transparent;
+}
+
+.legend-done {
+  background: var(--green);
+  border-color: transparent;
+}
+
+@media (hover: hover) {
+  .group-tile:hover {
+    border-color: var(--orange);
+  }
+}
+
+/* ---------- Підпис на плитці гри ---------- */
+
+.tile-sub {
+  display: block;
+  margin-top: 4px;
+  font-size: 14px;
+  font-weight: 400;
+  opacity: 0.95;
+}
+
+/* ---------- Дуель: налаштування ---------- */
+
+.duel-setup {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 14px;
+}
+
+.setup-controls {
+  flex: 1;
+  min-width: 0;
+  display: grid;
+  gap: 10px;
+}
+
+/* Підпис над перемикачем — щоб влазили зрозумілі довгі підписи */
+.setup-row {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 4px;
+}
+
+.setup-label {
+  color: var(--muted);
+  font-size: 13px;
+  padding-left: 4px;
+}
+
+/* Сегментований перемикач */
+.seg {
+  flex: 1;
+  display: flex;
+  gap: 4px;
+  padding: 4px;
+  border-radius: 12px;
+  background: var(--bg);
+}
+
+.seg button {
+  flex: 1;
+  padding: 8px 6px;
+  border-radius: 9px;
+  background: transparent;
+  color: var(--muted);
+  font-size: 15px;
+  white-space: nowrap;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.seg button.active {
+  background: var(--orange);
+  color: #fff;
+}
+
+.seg button:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.setup-hint {
+  margin: 0;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1.35;
+}
+
+/* Мініатюра поділу екрана */
+.duel-preview {
+  flex: none;
+  display: grid;
+  gap: 3px;
+  width: 92px;
+  height: 120px;
+  padding: 5px;
+  border: 3px solid var(--line);
+  border-radius: 14px;
+  background: var(--bg);
+}
+
+.duel-preview.landscape {
+  width: 132px;
+  height: 84px;
+}
+
+.pv-cell {
+  display: grid;
+  place-items: center;
+  border-radius: 6px;
+  background: var(--pc);
+  color: #fff;
+  font-size: 15px;
+}
+
+.pv-cell.flipped {
+  transform: rotate(180deg);
+}
+
+.duel-preview.layout-table.n-2 { grid-template-rows: 1fr 4px 1fr; }
+.duel-preview.layout-table.n-4 { grid-template-rows: 1fr 4px 1fr; }
+.duel-preview.layout-wall,
+.duel-preview.layout-table.n-3 { grid-template-rows: 4px 1fr; }
+
+.pv-bar {
+  border-radius: 2px;
+  background: var(--line);
+}
+
+/* Телефони: мініатюра зверху, менша */
+@media (max-width: 560px) {
+  .duel-setup {
+    flex-direction: column-reverse;
+    align-items: stretch;
+    gap: 12px;
+  }
+
+  .duel-preview {
+    align-self: center;
+    width: 70px;
+    height: 92px;
+  }
+
+  .duel-preview.landscape {
+    width: 110px;
+    height: 70px;
+  }
+
+}
+
+/* ---------- Дуель: поле ---------- */
+
+body.duel-open {
+  overflow: hidden;
+}
+
+body.duel-open > footer {
+  display: none;
+}
+
+.duel {
+  position: fixed;
+  inset: 0;
+  z-index: 15;
+  background: var(--bg);
+  touch-action: none;
+}
+
+.duel-board {
+  display: grid;
+  height: 100%;
+  gap: 0;
+}
+
+/* Розкладки: де чия частина екрана */
+.layout-table.n-2 {
+  grid-template-areas: "p1" "bar" "p0";
+  grid-template-rows: 1fr auto 1fr;
+}
+
+/* 3 гравці на столі: двоє крайніх з одного боку, середній — навпроти */
+.layout-table.n-3 {
+  grid-template-areas: "bar bar bar" "p0 p1 p2";
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-rows: auto 1fr;
+}
+
+.layout-table.n-4 {
+  grid-template-areas: "p2 p3" "bar bar" "p0 p1";
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr auto 1fr;
+}
+
+.layout-wall.n-2 {
+  grid-template-areas: "bar bar" "p0 p1";
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-rows: auto 1fr;
+}
+
+.layout-wall.n-3 {
+  grid-template-areas: "bar bar bar" "p0 p1 p2";
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-rows: auto 1fr;
+}
+
+.layout-wall.n-4 {
+  grid-template-areas: "bar bar bar bar" "p0 p1 p2 p3";
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-rows: auto 1fr;
+}
+
+.duel-pane {
+  --pc: var(--orange);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 12px;
+  min-width: 0;
+  min-height: 0;
+  padding: 14px 16px;
+  background: linear-gradient(180deg, color-mix(in srgb, var(--pc) 10%, transparent), transparent 60%);
+  transition: background-color 0.25s ease;
+}
+
+/* Хто сидить навпроти — бачить свою частину перевернутою */
+.duel-pane.flipped {
+  transform: rotate(180deg);
+}
+
+/* Кольорова смужка гравця */
+.duel-pane::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 5px;
+  background: var(--pc);
+}
+
+.layout-table.n-2 .duel-pane::before,
+.layout-table.n-3 .duel-pane::before,
+.layout-table.n-4 .duel-pane::before {
+  top: auto;
+  bottom: 0;
+}
+
+/* Роздільники між колонками / чвертями */
+.layout-wall .duel-pane + .duel-pane,
+.layout-table.n-3 .duel-pane + .duel-pane,
+.layout-table.n-4 .duel-pane[data-player="1"],
+.layout-table.n-4 .duel-pane[data-player="3"] {
+  border-left: 2px solid var(--line);
+}
+
+.layout-table.n-4 .duel-pane[data-player="3"] {
+  border-left: none;
+  border-right: 2px solid var(--line);
+}
+
+.duel-pane.won-round {
+  background-color: rgba(76, 175, 80, 0.18);
+}
+
+.duel-pane.lost-round {
+  background-color: rgba(224, 83, 61, 0.12);
+}
+
+.duel-pane.winner {
+  background-color: color-mix(in srgb, var(--pc) 28%, transparent);
+}
+
+.duel-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 520px;
+  margin: 0 auto;
+}
+
+.duel-head {
+  gap: 8px;
+}
+
+.duel-name {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  color: var(--pc);
+  font-size: 17px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.duel-score {
+  flex: none;
+}
+
+.duel-score {
+  min-width: 52px;
+  padding: 4px 14px;
+  border-radius: 999px;
+  background: var(--pc);
+  font-size: 24px;
+  text-align: center;
+}
+
+.duel-answers {
+  display: grid;
+  gap: 10px;
+  width: 100%;
+  max-width: 520px;
+  margin: 0 auto;
+}
+
+.duel-answer {
+  position: relative;
+  min-height: 56px;
+  padding: 10px 14px;
+  font-size: clamp(22px, 6vw, 30px);
+}
+
+/* На стіні: великі кнопки для великих сенсорних панелей */
+.layout-wall .duel-answer {
+  min-height: clamp(60px, 11vh, 120px);
+  font-size: clamp(22px, 3vw, 46px);
+}
+
+.layout-wall.n-4 .duel-answer {
+  font-size: clamp(20px, 2.4vw, 40px);
+}
+
+.layout-wall .duel-score {
+  font-size: clamp(22px, 2.4vw, 36px);
+}
+
+.layout-wall .duel-name {
+  font-size: clamp(16px, 1.6vw, 24px);
+}
+
+/* Підказка клавіші на кнопці (лише на комп'ютері в режимі «на стіні») */
+.duel-answer kbd {
+  position: absolute;
+  top: 6px;
+  right: 8px;
+  padding: 1px 6px;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 6px;
+  color: var(--muted);
+  font-family: inherit;
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.duel-status {
+  min-height: 1.3em;
+  margin: 0;
+  color: var(--muted);
+  font-size: 16px;
+  text-align: center;
+}
+
+.layout-wall .duel-status {
+  font-size: clamp(15px, 1.4vw, 22px);
+}
+
+.duel-status.good {
+  color: var(--green);
+}
+
+.duel-status.bad {
+  color: var(--red);
+}
+
+.duel-status.win {
+  font-size: clamp(28px, 4vw, 48px);
+}
+
+.duel-status.lose {
+  font-size: clamp(18px, 2vw, 26px);
+}
+
+/* Смуга керування: вихід, логотип, «до 10» / «Ще раз» */
+.duel-bar {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 52px;
+  padding: 8px 16px;
+  padding-top: max(8px, env(safe-area-inset-top));
+  background: var(--surface);
+  border-bottom: 2px solid var(--orange);
+}
+
+.layout-table .duel-bar {
+  padding-top: 8px;
+  border-top: 2px solid var(--orange);
+}
+
+.duel-exit {
+  position: absolute;
+  left: 12px;
+  padding: 6px 12px;
+}
+
+.duel-brand {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--orange);
+  font-size: 14px;
+}
+
+.duel-goal {
+  position: absolute;
+  right: 14px;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.duel-again {
+  position: absolute;
+  right: 12px;
+}
+
+@media (max-height: 640px) {
+  .duel-answer {
+    min-height: 44px;
+    padding: 6px 12px;
+  }
+
+  .duel-answer .note {
+    font-size: 12px;
+  }
+
+  .duel-answers {
+    gap: 6px;
+  }
+}
+
+/* Чверті на маленькому екрані — компактніше */
+.layout-table.n-4 .duel-pane {
+  padding: 10px;
+  gap: 8px;
+}
+
+.layout-table.n-4 .duel-answer {
+  min-height: 46px;
+  font-size: clamp(18px, 4.2vw, 28px);
+}
+
+.layout-table.n-4 .duel-status {
+  font-size: 14px;
+}
+
+/* ---------- Репліка маскота в меню ---------- */
+
+/* Бульбашка над маскотом, по центру; хвостик навскіс заходить на лого збоку */
+.speech {
+  position: relative;
+  z-index: 1;
+  max-width: 260px;
+  margin: 0 0 -4px;
+  padding: 10px 16px;
+  border-radius: 18px;
+  background: #fff;
+  color: #211a14;
+  font-size: 16px;
+  line-height: 1.25;
+  text-align: center;
+  box-shadow: 0 4px 0 rgba(0, 0, 0, 0.25);
+  animation: pop 0.45s ease-out 0.2s both;
+}
+
+.speech::after {
+  content: '';
+  position: absolute;
+  top: calc(100% - 2px);
+  left: calc(50% + 18px);
+  width: 24px;
+  height: 30px;
+  background: #fff;
+  clip-path: polygon(0 0, 100% 0, 10% 100%);
+}
+
+@media (max-width: 380px) {
+  .speech {
+    font-size: 14px;
+  }
+}
+
+/* ---------- Посилання @ukr_movych ---------- */
+
+a[data-tg-link] {
+  text-decoration: none;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: opacity 0.15s ease, transform 0.1s ease;
+}
+
+a[data-tg-link]:active {
+  opacity: 0.7;
+  transform: scale(0.97);
+}
+
+@media (hover: hover) {
+  a[data-tg-link]:hover span,
+  a.handle[data-tg-link]:hover {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+}
+
+footer {
+  display: flex;
+  justify-content: center;
+}
+
+/* «2 на 2» на телефоні: компактні чверті */
+@media (max-width: 560px) {
+  .layout-table.n-4 .duel-pane {
+    padding: 8px;
+    gap: 6px;
+  }
+
+  .layout-table.n-4 .duel-name {
+    font-size: 13px;
+  }
+
+  .layout-table.n-4 .duel-score {
+    min-width: 38px;
+    padding: 2px 10px;
+    font-size: 18px;
+  }
+
+  .layout-table.n-4 .duel-answer {
+    min-height: 42px;
+    padding: 6px 8px;
+  }
+
+  .layout-table.n-4 .duel-answer .note {
+    font-size: 11px;
+  }
+
+  .layout-table.n-4 .duel-status {
+    font-size: 12px;
+  }
+
+  .layout-table.n-4 .duel-status.win {
+    font-size: 22px;
+  }
+
+  .layout-table.n-4 .duel-status.lose {
+    font-size: 14px;
+  }
+}
+
+/* Кнопка не ширша за свою частину екрана; слово не переноситься — шрифт підганяє script.js */
+.duel-answers {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.duel-answer {
+  min-width: 0;
+  overflow: hidden;
+}
+
+.duel-answer > span:first-child {
+  white-space: nowrap;
+}
+
+/* ---------- «Поверни пристрій» ---------- */
+
+.duel-rotate {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 24px;
+  background: rgba(20, 15, 11, 0.95);
+  text-align: center;
+}
+
+.duel-rotate[hidden] {
+  display: none;
+}
+
+.rotate-phone {
+  font-size: 64px;
+  line-height: 1;
+}
+
+.rotate-phone span {
+  display: inline-block;
+}
+
+/* Анімація: телефон повертається в потрібне положення */
+.want-landscape .rotate-phone span {
+  animation: turn-landscape 1.8s ease-in-out infinite;
+}
+
+.want-portrait .rotate-phone span {
+  transform: rotate(90deg);
+  animation: turn-portrait 1.8s ease-in-out infinite;
+}
+
+@keyframes turn-landscape {
+  0%, 25% { transform: rotate(0deg); }
+  60%, 100% { transform: rotate(90deg); }
+}
+
+@keyframes turn-portrait {
+  0%, 25% { transform: rotate(90deg); }
+  60%, 100% { transform: rotate(0deg); }
+}
+
+.rotate-title {
+  margin: 8px 0 0;
+  font-size: 22px;
+}
+
+.rotate-sub {
+  margin: 0 0 8px;
+  color: var(--muted);
+  font-size: 15px;
+  font-weight: 400;
+}
+
+.rotate-skip {
+  width: auto;
+  padding: 10px 18px;
+  font-size: 15px;
+}
+
+/* ---------- Кличний відмінок ---------- */
+
+.address-line {
+  margin: 0;
+  font-size: clamp(22px, 6vw, 28px);
+  line-height: 1.3;
+  text-align: center;
+}
+
+.address-gap {
+  display: inline-block;
+  min-width: 3.5em;
+  padding: 0 2px;
+  border-bottom: 3px dashed var(--orange);
+  color: var(--muted);
+  transition: color 0.2s ease, border-color 0.2s ease;
+}
+
+.address-gap.filled-ok {
+  border-bottom-style: solid;
+  border-color: var(--green);
+  color: var(--green);
+}
+
+.address-gap.filled-fix {
+  border-bottom-style: solid;
+  border-color: var(--green);
+  color: #fff;
+}
+
+.mistakes-list .plain-right {
+  font-size: 18px;
+}
+
+/* Початок речення в дуелі (кличний відмінок) */
+.duel-lead {
+  margin: 0 auto;
+  width: 100%;
+  max-width: 520px;
+  font-size: clamp(18px, 4.5vw, 26px);
+  text-align: center;
+}
+
+.layout-wall .duel-lead {
+  font-size: clamp(18px, 2.2vw, 34px);
+}
+
+.layout-table.n-4 .duel-lead,
+.layout-table.n-3 .duel-lead {
+  font-size: clamp(14px, 3.6vw, 22px);
+}
+
+/* ---------- Онлайн-режими ---------- */
+
+.online-modes {
+  display: grid;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.online-mode-btn {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 12px 14px;
+  text-align: left;
+  background: var(--surface-2);
+  border: 2px solid var(--line);
+  border-radius: 14px;
+  box-shadow: 0 4px 0 var(--line);
+  transition: transform 0.1s ease, box-shadow 0.1s ease, border-color 0.15s ease;
+}
+
+.online-mode-btn:active {
+  transform: translateY(3px);
+  box-shadow: 0 1px 0 var(--line);
+}
+
+@media (hover: hover) {
+  .online-mode-btn:hover {
+    border-color: var(--orange);
+  }
+}
+
+.om-title {
+  font-size: 18px;
+}
+
+.om-desc {
+  color: var(--muted);
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.3;
+}
+
+.online-body {
+  display: grid;
+  gap: 14px;
+}
+
+.online-card {
+  display: grid;
+  gap: 14px;
+}
+
+.online-label {
+  display: grid;
+  gap: 6px;
+  color: var(--muted);
+  font-size: 15px;
+}
+
+.online-label input {
+  padding: 12px 14px;
+  border: 2px solid var(--line);
+  border-radius: 12px;
+  background: var(--bg);
+  color: var(--text);
+  font: inherit;
+  font-size: 18px;
+}
+
+.online-label input:focus {
+  outline: none;
+  border-color: var(--orange);
+}
+
+.code-input {
+  text-align: center;
+  letter-spacing: 8px;
+  text-transform: uppercase;
+  font-size: 28px !important;
+}
+
+.room-code {
+  padding: 14px;
+  border: 3px dashed var(--orange);
+  border-radius: 16px;
+  color: var(--orange);
+  font-size: clamp(40px, 13vw, 64px);
+  letter-spacing: 10px;
+  text-align: center;
+  -webkit-user-select: text;
+  user-select: text;
+}
+
+.online-hint,
+.online-note {
+  margin: 0;
+  color: var(--muted);
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 1.4;
+  text-align: center;
+}
+
+.online-note {
+  font-size: 18px;
+}
+
+.online-sub {
+  margin: 4px 0 0;
+  font-size: 18px;
+}
+
+.online-players {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.online-players li {
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: var(--surface-2);
+  font-size: 16px;
+}
+
+.online-players li.me {
+  background: var(--orange);
+}
+
+.online-score {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.online-score span {
+  padding: 6px 14px;
+  border-radius: 999px;
+  background: var(--surface-2);
+  font-size: 17px;
+}
+
+.online-score span.me {
+  background: var(--orange);
+}
+
+.answer.picked {
+  border-color: var(--orange);
+}
+
+.countdown {
+  display: grid;
+  place-items: center;
+  min-height: 50vh;
+  color: var(--orange);
+  font-size: clamp(80px, 30vw, 160px);
+  animation: pop 0.4s ease-out;
+}
+
+.sprint-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 20px;
+}
+
+.sprint-time.low {
+  color: var(--red);
+  animation: pulse 0.8s ease-in-out infinite;
+}
+
+.sprint-rivals {
+  display: grid;
+  gap: 6px;
+}
+
+.rival {
+  display: grid;
+  grid-template-columns: 90px 1fr 32px;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+}
+
+.rival-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.rival-track {
+  height: 10px;
+  border-radius: 999px;
+  background: var(--surface-2);
+  overflow: hidden;
+}
+
+.rival-fill {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--brown);
+  transition: width 0.3s ease;
+}
+
+.rival.me .rival-fill {
+  background: var(--orange);
+}
+
+.rival-num {
+  text-align: right;
+}
+
+.class-timer {
+  height: 8px;
+  margin: -6px 0 16px;
+  border-radius: 999px;
+  background: var(--surface-2);
+  overflow: hidden;
+}
+
+.class-timer-fill {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: var(--orange);
+}
+
+.class-words .answer {
+  font-size: clamp(28px, 6vw, 48px);
+  min-height: 80px;
+  cursor: default;
+}
+
+.online-result-title {
+  margin: 0;
+  font-size: 26px;
+  text-align: center;
+}
+
+.online-results li.me {
+  background: rgba(255, 121, 0, 0.12);
+  border-radius: 10px;
+}
+
+/* ---------- Згортальні режими ---------- */
+
+.mode-panel .mode-toggle {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  align-items: center;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.mode-panel.collapsible {
+  padding: 14px 16px;
+  margin-bottom: 12px;
+  transition: border-color .15s;
+}
+
+.mode-panel.collapsible:not(.open) {
+  border-color: var(--line);
+}
+
+.mode-panel.collapsible:not(.open):hover {
+  border-color: var(--orange);
+}
+
+.mode-panel.collapsible .mode-head {
+  margin-bottom: 0;
+}
+
+.mode-panel.collapsible.open .mode-head {
+  margin-bottom: 14px;
+}
+
+.mode-head-text {
+  flex: 1;
+  min-width: 0;
+}
+
+.mode-chevron {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: var(--surface-2);
+  color: var(--orange);
+  font-size: 22px;
+  line-height: 1;
+  transition: transform .2s;
+}
+
+.mode-panel.open .mode-chevron {
+  transform: rotate(90deg);
+}
+
+.mode-body {
+  display: none;
+}
+
+.mode-panel.open .mode-body {
+  display: block;
+  animation: mode-open .2s ease-out;
+}
+
+@keyframes mode-open {
+  from { opacity: 0; transform: translateY(-6px); }
+  to { opacity: 1; transform: none; }
+}
+
+.mode-progress {
+  color: var(--green);
+  font-size: 13px;
+}
+
+.mode-progress:empty {
+  display: none;
+}
+
+.mode-note {
+  margin: 0 0 12px;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.35;
+}
+
+/* ---------- QR-код запрошення ---------- */
+
+.invite-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.invite-actions .btn-secondary {
+  margin: 0;
+  padding-left: 8px;
+  padding-right: 8px;
+  font-size: 16px;
+}
+
+.qr-box {
+  width: 100%;
+  max-width: 260px;
+  aspect-ratio: 1;
+  margin: 0 auto;
+  padding: 0;
+  border-radius: 16px;
+  background: #fff;
+  overflow: hidden;
+}
+
+.qr-box svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.qr-box.qr-error {
+  display: grid;
+  place-items: center;
+  padding: 16px;
+  color: #211a14;
+  font-size: 14px;
+  text-align: center;
+}
+
+.qr-inline {
+  display: grid;
+  gap: 8px;
+}
+
+.qr-target {
+  display: grid;
+  gap: 6px;
+}
+
+.qr-target .seg button {
+  font-size: 14px;
+}
+
+.qr-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 56px 16px 16px;
+  background: var(--bg);
+  overflow-y: auto;
+}
+
+.qr-close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+}
+
+.qr-overlay-body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(16px, 4vw, 48px);
+  width: 100%;
+  max-width: 1100px;
+}
+
+.qr-overlay .qr-box {
+  flex: none;
+  width: min(80vw, 72vh);
+  max-width: none;
+}
+
+.qr-side {
+  display: grid;
+  gap: 12px;
+  max-width: 360px;
+  text-align: center;
+}
+
+.qr-caption {
+  margin: 0;
+  font-size: clamp(18px, 2.4vw, 26px);
+  line-height: 1.3;
+}
+
+.qr-or,
+.qr-count {
+  margin: 0;
+  color: var(--muted);
+  font-size: 15px;
+}
+
+.qr-count {
+  color: var(--green);
+  font-size: 18px;
+}
+
+@media (max-aspect-ratio: 1/1) {
+  .qr-overlay-body {
+    flex-direction: column;
+  }
+}
+
+/* ---------- Відгук ---------- */
+
+.feedback-btn {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  margin-top: 12px;
+  padding: 14px 18px;
+  background: linear-gradient(135deg, rgba(255, 121, 0, .16), rgba(255, 121, 0, .04)), var(--surface);
+  border: 2px dashed var(--orange);
+  border-radius: var(--radius);
+  text-align: left;
+}
+
+.feedback-btn-emoji {
+  font-size: 26px;
+}
+
+.feedback-btn-text {
+  flex: 1;
+  display: grid;
+  gap: 2px;
+}
+
+.feedback-btn-title {
+  font-size: 18px;
+}
+
+.feedback-btn-sub {
+  color: var(--muted);
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.35;
+}
+
+.feedback-card {
+  display: grid;
+  gap: 16px;
+  text-align: left;
+}
+
+.feedback-lead {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.45;
+}
+
+.feedback-field {
+  display: grid;
+  gap: 6px;
+}
+
+.feedback-field .optional {
+  font-weight: 400;
+  opacity: .8;
+}
+
+.feedback-rating {
+  display: flex;
+  justify-content: space-between;
+  gap: 6px;
+}
+
+.feedback-rating button {
+  flex: 1;
+  padding: 8px 0;
+  border: 2px solid var(--line);
+  border-radius: 12px;
+  background: var(--bg);
+  font-size: 28px;
+  line-height: 1.1;
+  filter: grayscale(.7);
+  opacity: .75;
+  transition: transform .15s, filter .15s, opacity .15s, border-color .15s;
+}
+
+.feedback-rating button.active {
+  border-color: var(--orange);
+  filter: none;
+  opacity: 1;
+  transform: scale(1.08);
+}
+
+.feedback-card textarea,
+.feedback-card input[type="text"] {
+  width: 100%;
+  padding: 12px 14px;
+  border: 2px solid var(--line);
+  border-radius: 12px;
+  background: var(--bg);
+  color: var(--text);
+  font: inherit;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.4;
+  resize: vertical;
+}
+
+.feedback-card textarea:focus,
+.feedback-card input[type="text"]:focus {
+  outline: none;
+  border-color: var(--orange);
+}
+
+.feedback-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: -8px;
+}
+
+.chip {
+  padding: 6px 12px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--surface-2);
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.seg.seg-wrap {
+  flex-wrap: wrap;
+}
+
+.seg.seg-wrap button {
+  flex: 1 1 45%;
+}
+
+.feedback-check {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  color: var(--muted);
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.35;
+  cursor: pointer;
+}
+
+.feedback-check input {
+  flex: none;
+  width: 20px;
+  height: 20px;
+  margin: 0;
+  accent-color: var(--orange);
+}
+
+.feedback-thanks {
+  text-align: center;
+}
+
+.feedback-thanks h3 {
+  margin: 0;
+  font-size: 24px;
+}
+
+.feedback-thanks p {
+  margin: 0;
+  color: var(--muted);
+  font-weight: 400;
+}
+
+@media (hover: hover) {
+  .feedback-btn:hover {
+    border-style: solid;
+  }
+
+  .chip:hover {
+    border-color: var(--orange);
+    color: var(--text);
+  }
+}
+
+/* Відгук у сітці ігор — на всю ширину, під головною грою */
+.game-grid .feedback-btn {
+  grid-column: 1 / -1;
+  margin-top: 0;
+  padding: 12px 16px;
+}
+
+.address-alt {
+  margin: 6px 0 0;
+  color: var(--muted);
+  font-size: 15px;
+  font-weight: 400;
+  text-align: center;
+}
+
+/* ---------- Фразеологізми ---------- */
+
+.frazeo-sentence {
+  margin: 0;
+  font-size: 20px;
+  line-height: 1.45;
+  text-align: left;
+}
+
+.frazeo-sentence .address-gap {
+  min-width: 90px;
+}
+
+/* фразеологізми: пропуск — помаранчеві квадратні дужки з розтягнутими крапками, без пунктиру й порожнього місця (власниця, 08.11.2026) */
+.address-gap.gap-br:not(.filled-ok):not(.filled-fix) {
+  min-width: 0;
+  padding: 0 1px;
+  border-bottom: none;
+  color: var(--orange);
+  font-weight: 800;
+  font-size: 1.12em;
+  letter-spacing: 0.14em;
+  margin-right: -0.14em; /* без зайвого проміжку перед «:» */
+  line-height: 1;
+}
+
+.frazeo-meaning {
+  margin: 10px 0 0;
+  padding: 8px 12px;
+  border-radius: 12px;
+  background: var(--surface-2);
+  color: var(--muted);
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 1.4;
+  text-align: left;
+}
+
+.frazeo-meaning b {
+  color: var(--green);
+}
+
+.frazeo-meaning-wrong b {
+  color: var(--red);
+}
+
+.frazeo-answers {
+  gap: 8px;
+}
+
+.frazeo-answer {
+  min-height: 0;
+  padding: 12px 14px;
+  font-size: 18px;
+  line-height: 1.25;
+  white-space: normal;
+}
+
+.frazeo-was {
+  display: block;
+  margin-top: 2px;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.duel-lead.frazeo-lead,
+.duel-lead:has(.address-gap) {
+  overflow-wrap: anywhere;
+}
+
+.frazeo-next {
+  display: block;
+  width: auto;
+  margin: 10px 0 0 auto;
+  padding: 8px 18px;
+  font-size: 16px;
+}
+
+.online-game {
+  margin: 0;
+  color: var(--orange);
+  font-size: 16px;
+  text-align: center;
+}
+
+/* Гра для класу у фразеологізми: екран учителя (проєктор) */
+.class-frazeo .frazeo-sentence {
+  margin: 8px 0 4px;
+  font-size: clamp(20px, 2.6vw, 34px);
+}
+
+.class-frazeo .frazeo-answer {
+  font-size: clamp(16px, 1.8vw, 24px);
+  padding: 10px 14px;
+}
+
+.class-frazeo .frazeo-answer:disabled:not(.dim) {
+  opacity: 1;
+  cursor: default;
+}
+
+.class-frazeo .frazeo-meaning {
+  font-size: clamp(15px, 1.6vw, 20px);
+}
+
+/* Повернутися в онлайн-гру після випадкового виходу */
+.rejoin-btn {
+  width: 100%;
+  margin: 0 0 14px;
+  padding: 14px 16px;
+  border: 2px solid var(--green);
+  border-radius: var(--radius);
+  background: color-mix(in srgb, var(--green) 18%, var(--surface));
+  font-size: 17px;
+  animation: fade-in 0.3s ease-out;
+}
+
+.rejoin-btn b {
+  letter-spacing: 2px;
+}
+
+/* Гра для класу: учитель від'єднався / розподіл відповідей / завершення */
+.host-away {
+  margin: 0 0 12px;
+  padding: 10px 14px;
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--orange) 18%, var(--surface));
+  border: 2px solid var(--orange);
+  font-size: 15px;
+  text-align: center;
+}
+
+.answer.with-count {
+  position: relative;
+  overflow: hidden;
+  padding-right: 64px;
+}
+
+.answer.with-count::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: var(--share, 0%);
+  background: rgba(255, 255, 255, 0.10);
+  pointer-events: none;
+}
+
+.answer-count {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.35);
+  color: #fff;
+  font-size: 15px;
+  letter-spacing: 0;
+}
+
+.class-end {
+  margin-top: 6px;
+  opacity: 0.85;
+}
+
+/* ================== Приємні анімації відповідей (усі ігри) ================== */
+
+/* Натискання: кнопка пружно «втискається» */
+.answer {
+  transition: transform 0.18s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.12s ease,
+    background-color 0.2s ease, border-color 0.2s ease, opacity 0.25s ease;
+}
+
+.answer:active {
+  transform: translateY(3px) scale(0.96);
+}
+
+/* Нове питання: варіанти з'являються один за одним */
+.answers > .answer {
+  animation: answer-in 0.32s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+.answers > .answer:nth-child(2) { animation-delay: 0.05s; }
+.answers > .answer:nth-child(3) { animation-delay: 0.1s; }
+.answers > .answer:nth-child(4) { animation-delay: 0.15s; }
+.answers > .answer:nth-child(5) { animation-delay: 0.2s; }
+
+@keyframes answer-in {
+  from { opacity: 0; transform: translateY(10px) scale(0.96); }
+  to { opacity: 1; transform: none; }
+}
+
+/* Правильна відповідь: «пружний» поп + світіння */
+.answer.correct:not(.blink),
+.answers > .answer.correct:not(.blink) {
+  position: relative;
+  animation: correct-pop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+.answer.correct:not(.blink)::after {
+  content: "";
+  position: absolute;
+  inset: -3px;
+  border-radius: inherit;
+  border: 3px solid var(--green);
+  animation: correct-ring 0.7s ease-out forwards;
+  pointer-events: none;
+}
+
+@keyframes correct-pop {
+  0% { transform: scale(1); }
+  35% { transform: scale(1.07); }
+  65% { transform: scale(0.98); }
+  100% { transform: scale(1); }
+}
+
+@keyframes correct-ring {
+  from { opacity: 0.9; transform: scale(1); }
+  to { opacity: 0; transform: scale(1.12); }
+}
+
+/* Помилка: виразніше «трусне» */
+.answers > .answer.wrong,
+.answer.wrong {
+  animation: wrong-shake 0.45s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+}
+
+@keyframes wrong-shake {
+  10%, 90% { transform: translateX(-2px); }
+  20%, 80% { transform: translateX(4px); }
+  30%, 50%, 70% { transform: translateX(-7px) rotate(-1deg); }
+  40%, 60% { transform: translateX(7px) rotate(1deg); }
+}
+
+/* Іскорки навколо правильної відповіді */
+.sparkle {
+  position: fixed;
+  z-index: 60;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  pointer-events: none;
+  animation: sparkle-fly 0.7s ease-out forwards;
+}
+
+.sparkle.star {
+  width: auto;
+  height: auto;
+  background: none !important;
+  font-size: 16px;
+  line-height: 1;
+}
+
+@keyframes sparkle-fly {
+  from { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+  to { opacity: 0; transform: translate(calc(-50% + var(--dx)), calc(-50% + var(--dy))) scale(0.4); }
+}
+
+/* Рахунок підстрибує, коли росте */
+.score.bump {
+  animation: score-bump 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes score-bump {
+  40% { transform: scale(1.25); }
+}
+
+/* ================== Рівні «Кличного» ================== */
+
+.level-line {
+  margin: 6px 0 0;
+  color: var(--muted);
+  font-size: 14px;
+  font-weight: 400;
+  text-align: center;
+}
+
+.level-up {
+  position: fixed;
+  left: 50%;
+  top: 38%;
+  z-index: 70;
+  display: grid;
+  gap: 4px;
+  justify-items: center;
+  padding: 18px 26px;
+  border: 3px solid var(--orange);
+  border-radius: 24px;
+  background: color-mix(in srgb, var(--surface) 92%, transparent);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.45), 0 0 calc(30px * var(--power, 1)) rgba(255, 121, 0, 0.45);
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  animation: level-in 0.55s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  text-align: center;
+}
+
+.level-up.out {
+  animation: level-out 0.45s ease-in forwards;
+}
+
+.level-up-emoji {
+  font-size: calc(40px * var(--power, 1));
+  line-height: 1.1;
+  animation: level-emoji 1s ease-in-out infinite alternate;
+}
+
+.level-up-title {
+  color: var(--orange);
+  font-size: calc(30px * var(--power, 1));
+  line-height: 1.1;
+}
+
+.level-up-sub {
+  font-size: 18px;
+}
+
+.level-up.big {
+  border-width: 4px;
+  background: linear-gradient(135deg, rgba(255, 121, 0, 0.35), rgba(76, 175, 80, 0.25)), var(--surface);
+}
+
+@keyframes level-in {
+  from { opacity: 0; transform: translate(-50%, -50%) scale(0.4) rotate(-6deg); }
+  to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+}
+
+@keyframes level-out {
+  to { opacity: 0; transform: translate(-50%, -70%) scale(0.85); }
+}
+
+@keyframes level-emoji {
+  from { transform: rotate(-8deg) scale(1); }
+  to { transform: rotate(8deg) scale(1.15); }
+}
+
+body.level-flash::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 65;
+  background: radial-gradient(circle at 50% 40%, rgba(255, 121, 0, 0.35), transparent 65%);
+  pointer-events: none;
+  animation: level-flash 1.2s ease-out forwards;
+}
+
+@keyframes level-flash {
+  0% { opacity: 0; }
+  20% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+/* Фінал: кнопки складаються в «ТИ МОЛОДЕЦЬ» */
+.answers > .answer.assemble-hide,
+.answer.assemble-hide {
+  animation: none;
+  opacity: 0.08;
+  transform: scale(0.92);
+}
+
+.assemble {
+  position: fixed;
+  z-index: 70;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  pointer-events: none;
+}
+
+.assemble-word {
+  white-space: nowrap;
+}
+
+.assemble-letter {
+  display: inline-block;
+  color: var(--orange);
+  font-size: clamp(30px, 10vw, 60px);
+  line-height: 1.1;
+  text-shadow: 0 4px 0 #8a3f00, 0 0 24px rgba(255, 121, 0, 0.6);
+  transition: transform 0.75s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.4s ease;
+}
+
+.assemble-space {
+  display: inline-block;
+  width: 0.4em;
+  font-size: clamp(34px, 11vw, 64px);
+}
+
+.assemble.in .assemble-letter {
+  animation: letter-wave 1s ease-in-out 0.9s infinite alternate;
+}
+
+.assemble.out .assemble-letter {
+  transition: transform 0.5s ease-in, opacity 0.5s ease-in;
+  transform: scale(1.6) !important;
+  opacity: 0 !important;
+}
+
+@keyframes letter-wave {
+  to { transform: translateY(-6px) scale(1.05); }
+}
+
+/* ---------- Рандомний тест НМТ ---------- */
+.nmt-card {
+  text-align: left;
+}
+
+.nmt-topic {
+  display: inline-block;
+  margin-bottom: 12px;
+  padding: 4px 12px;
+  border-radius: 999px;
+  background: var(--surface-2);
+  color: var(--orange);
+  font-size: 15px;
+}
+
+.nmt-question {
+  margin-bottom: 18px;
+  font-size: 19px;
+  line-height: 1.45;
+}
+
+/* Виділені букви (наголос, звуки) — підкреслені й помаранчеві, щоб було видно на жирному шрифті */
+.nmt-question u,
+.nmt-text u {
+  color: #ffb36b;
+  text-decoration-thickness: 3px;
+  text-underline-offset: 3px;
+}
+
+.answer.correct .nmt-text u,
+.answer.wrong .nmt-text u {
+  color: #fff;
+}
+
+.answer.nmt-answer {
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: flex-start;
+  gap: 12px;
+  min-height: 0;
+  padding: 12px 14px;
+  font-size: 17px;
+  line-height: 1.4;
+  letter-spacing: 0;
+  text-align: left;
+}
+
+.nmt-letter {
+  flex: none;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--orange);
+  color: #fff;
+  display: grid;
+  place-items: center;
+  font-size: 16px;
+}
+
+.nmt-text {
+  padding-top: 2px;
+}
+
+.answer.nmt-answer:disabled {
+  cursor: default;
+}
+
+#nmttest .feedback {
+  text-align: center;
+}
+
+#btn-nmt-next {
+  margin-top: 8px;
+}
+
+.nmt-source {
+  display: block;
+  margin-top: 16px;
+  color: var(--muted);
+  font-size: 13px;
+  text-align: center;
+}
+
+.nmt-score::before {
+  content: '✅ ';
+}
+
+/* «‹ Попереднє» / «До поточного ›» — у всіх тренажерах */
+.btn-back {
+  padding: 8px 14px;
+  border-radius: 999px;
+  background: var(--surface-2);
+  border: 2px solid var(--line);
+  color: var(--muted);
+  font-size: 15px;
+}
+
+.nmt-nav {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.nmt-nav .btn-back:only-child,
+.nmt-nav #btn-nmt-return {
+  margin-left: auto;
+}
+
+.nmt-review {
+  margin: 0 0 10px;
+  color: var(--muted);
+  font-size: 15px;
+}
+
+.nmt-result-title {
+  margin: 0 0 8px;
+  text-align: center;
+}
+
+.nmt-result-score {
+  margin: 0;
+  font-size: 22px;
+  text-align: center;
+}
+
+.nmt-result-best {
+  margin: 6px 0 18px;
+  color: var(--orange);
+  font-size: 18px;
+  text-align: center;
+}
+
+.nmt-mistakes-title {
+  margin: 0 0 10px;
+}
+
+.nmt-mistakes {
+  display: grid;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.nmt-mistake {
+  padding: 14px;
+  border: 2px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface-2);
+}
+
+.nmt-mistake .nmt-question {
+  margin-bottom: 10px;
+  font-size: 17px;
+}
+
+.nmt-your,
+.nmt-right {
+  margin: 4px 0;
+  font-size: 16px;
+  line-height: 1.4;
+}
+
+.nmt-your { color: var(--red); }
+.nmt-right { color: #7fd483; }
+
+.nmt-mistake .nmt-source {
+  margin-top: 8px;
+  text-align: left;
+}
+
+.nmt-no-mistakes {
+  text-align: center;
+  font-size: 18px;
+}
+
+.game-nav {
+  display: flex;
+  margin-top: 12px;
+}
+
+.game-nav:not(:has(:not([hidden]))) {
+  display: none;
+}
+
+#prev-modal {
+  overflow-y: auto;
+}
+
+.prev-modal-card {
+  text-align: left;
+}
+
+.prev-content .card {
+  margin: 0 0 14px;
+  pointer-events: none;
+}
+
+.prev-content .answer {
+  animation: none;
+}
+
+.prev-content .brand-tag {
+  display: none;
+}
+
+.endless-start {
+  margin-top: 10px;
+}
+
+.endless-mark {
+  margin-left: 4px;
+  font-size: 22px;
+  font-weight: 700;
+}
+
+/* ---------- Спецтеми за посиланням (вебінари) ---------- */
+.topic-picker {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0 0 14px;
+}
+
+.topic-hint {
+  width: 100%;
+  margin: 0;
+  color: var(--muted);
+  font-size: 15px;
+}
+
+.topic-chip {
+  padding: 8px 14px;
+  border-radius: 999px;
+  border: 2px solid var(--line);
+  background: var(--surface-2);
+  font-size: 16px;
+}
+
+.topic-chip.on {
+  border-color: var(--orange);
+  background: var(--orange);
+  color: #fff;
+}
+
+.group-tile.topic-tile .group-label {
+  font-size: 15px;
+  white-space: normal;
+  text-align: center;
+}
+
+/* Кількість питань у грі для класу: 10/20/30 або своє число */
+.count-stepper {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 6px;
+}
+
+.count-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: var(--surface-2);
+  border: 2px solid var(--line);
+  font-size: 22px;
+  line-height: 1;
+}
+
+.count-input {
+  width: 72px;
+  height: 40px;
+  border-radius: 10px;
+  border: 2px solid var(--line);
+  background: var(--bg);
+  color: var(--text);
+  font: inherit;
+  font-size: 18px;
+  text-align: center;
+}
+
+.count-max {
+  color: var(--muted);
+  font-size: 14px;
+}
+
+/* ---------- Лексична помилка (словосполучення): slovospoluch.js ---------- */
+
+.slovo-phrase {
+  margin: 0;
+  padding: 6px 0;
+  font-size: 26px;
+  font-weight: 700;
+  line-height: 1.3;
+  text-align: center;
+  overflow-wrap: anywhere;
+}
+
+.slovo-phrase.slovo-ok { color: var(--green); }
+.slovo-phrase.slovo-bad { color: var(--red); text-decoration: line-through; }
+
+.slovo-pair {
+  margin: 8px 0 0;
+  font-size: 18px;
+  line-height: 1.4;
+  text-align: center;
+}
+
+.slovo-pair s { color: var(--red); }
+.slovo-pair b { color: var(--green); }
+
+.slovo-answer {
+  font-size: 22px;
+}
+
+.slovo-groups {
+  display: grid;
+  gap: 12px;
+  width: 100%;
+}
+
+.slovo-group {
+  color: inherit;
+  font-size: 17px;
+}
+
+.slovo-warn {
+  color: var(--red);
+}
+
+/* згорнутий вибір груп словосполучень (05.11.2026) */
+.slovo-picker {
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+.slovo-picker > summary {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  font-size: 15px;
+  cursor: pointer;
+  list-style: none;
+}
+.slovo-picker > summary::-webkit-details-marker { display: none; }
+.slovo-picker > summary b { color: var(--orange); font-size: 14px; font-weight: 600; }
+.slovo-picker[open] > summary b { visibility: hidden; }
+.slovo-picker > .topic-hint, .slovo-picker > .slovo-groups, .slovo-picker > .slovo-all { margin-left: 14px; margin-right: 14px; width: auto; }
+.slovo-picker > .slovo-groups { margin-bottom: 14px; }
+.slovo-all {
+  margin-bottom: 10px;
+  padding: 6px 12px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: none;
+  color: var(--orange);
+  font-size: 14px;
+}
+
+.duel-lead .slovo-pair {
+  margin: 0;
+  font-size: inherit;
+}
+
+/* ---------- 👥 Мій клас (myclass.js) ---------- */
+.myclass-btn {
+  margin-top: 10px;
+}
+
+.class-card {
+  display: grid;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.class-h {
+  margin: 0;
+  font-size: 22px;
+}
+
+.class-note {
+  margin: 0;
+  color: var(--muted);
+  font-size: 15px;
+  line-height: 1.4;
+}
+
+.class-input,
+.class-code-input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 12px 14px;
+  border: 2px solid var(--line);
+  border-radius: 12px;
+  background: var(--bg);
+  color: var(--text);
+  font: inherit;
+  font-size: 18px;
+}
+
+.class-code-input {
+  text-align: center;
+  font-size: 30px;
+  letter-spacing: 4px;
+}
+
+.class-code {
+  margin: 0;
+  color: var(--orange);
+  font-size: 40px;
+  letter-spacing: 4px;
+  text-align: center;
+}
+
+.class-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.class-actions .btn-secondary {
+  padding: 12px;
+  font-size: 17px;
+}
+
+.class-qr {
+  width: 220px;
+  margin: 0 auto;
+  padding: 10px;
+  border-radius: 12px;
+  background: #fff;
+}
+
+.class-qr svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.class-invite {
+  text-align: center;
+}
+
+/* Ігри в таблиці класу: одним рядком, гортаються вбік */
+.class-tabs {
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x proximity;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+
+.class-tabs::-webkit-scrollbar {
+  display: none;
+}
+
+.class-tabs .tab {
+  flex: none;
+  padding: 10px 14px;
+  white-space: nowrap;
+  scroll-snap-align: start;
+}
+
+.class-kick {
+  margin-left: 8px;
+  padding: 2px 8px;
+  border-radius: 8px;
+  background: var(--surface-2);
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.class-leave {
+  display: block;
+  margin: 14px auto 0;
+  background: none;
+  color: var(--muted);
+  font-size: 14px;
+  text-decoration: underline;
+}
+
+.class-back {
+  margin-top: 4px;
+}
+
+.over-class {
+  margin: 6px 0 0;
+  color: #7fd483;
+  font-size: 15px;
+}
+
+/* ---------- 👥 Мій клас: «НОВЕ!» у меню й пояснення на першому екрані ---------- */
+
+.myclass-label {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.myclass-sub {
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 400;
+}
+
+.myclass-btn .badge-new {
+  flex: none;
+  background: var(--orange);
+  color: #fff;
+  font-weight: 700;
+  animation: new-pulse 1.6s ease-in-out infinite;
+}
+
+.game-grid .myclass-btn.is-new {
+  grid-column: 1 / -1;
+  margin-top: 0;
+  background: linear-gradient(135deg, rgba(255, 121, 0, .22), rgba(255, 121, 0, .06)), var(--surface-2);
+  border-color: var(--orange);
+  box-shadow: 0 0 0 3px rgba(255, 121, 0, .18);
+}
+
+.myclass-btn.is-new > span:first-child {
+  font-size: 26px;
+}
+
+@keyframes new-pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.08); }
+}
+
+.class-intro {
+  margin-bottom: 14px;
+  background: linear-gradient(135deg, rgba(255, 121, 0, .18), rgba(255, 121, 0, .04)), var(--surface);
+  border: 2px solid var(--orange);
+}
+
+.class-intro-title {
+  margin: 0 0 10px;
+  font-size: 20px;
+}
+
+.class-intro-list {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 15px;
+  line-height: 1.3;
+}
+
+.class-intro-list li {
+  display: flex;
+  gap: 10px;
+}
+
+.class-intro-icon {
+  flex: none;
+  width: 22px;
+  text-align: center;
+}
+
+.class-intro-cta {
+  margin: 12px 0 0;
+  color: var(--orange);
+  font-size: 15px;
+}
+
+/* ---------- Іншомовні слова: inshomovni.js ---------- */
+.insh-word {
+  margin: 0;
+  font-size: 30px;
+  font-weight: 700;
+  text-align: center;
+  overflow-wrap: anywhere;
+}
+
+/* «👥 Мій клас» завжди на всю ширину під головною грою */
+.game-grid .myclass-btn {
+  grid-column: 1 / -1;
+  margin-top: 0;
+}
+
+/* ---------- Відповіді на відгуки: feedback-reply.js ---------- */
+.feedback-btn.has-reply {
+  border-style: solid;
+  box-shadow: 0 0 0 3px rgba(255, 121, 0, .2);
+}
+
+.fb-reply-badge {
+  flex: none;
+  background: var(--orange);
+  color: #fff;
+  font-weight: 700;
+  animation: new-pulse 1.6s ease-in-out infinite;
+}
+
+.fb-replies {
+  margin-bottom: 14px;
+  border: 2px solid var(--orange);
+}
+
+.fb-replies-title {
+  margin: 0 0 10px;
+  font-size: 18px;
+}
+
+.fb-reply {
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: var(--surface-2);
+}
+
+.fb-reply + .fb-reply {
+  margin-top: 8px;
+}
+
+.fb-reply.fresh {
+  box-shadow: inset 3px 0 0 var(--orange);
+}
+
+.fb-reply-mine {
+  margin: 0 0 6px;
+  color: var(--muted);
+  font-size: 14px;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.fb-reply-text {
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.4;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+/* ⏱ час у грі в таблиці класу (game-time.js) */
+.leaders-list .class-time {
+  display: block;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 400;
+}
+
+/* ---------- «🎓 Я на курсі Укрмовича»: course.js ---------- */
+.course-link {
+  display: block;
+  margin: 14px auto 0;
+  padding: 6px 12px;
+  background: none;
+  border: none;
+  color: var(--muted);
+  font-size: 14px;
+  text-decoration: underline dotted;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+
+.course-link.on {
+  color: var(--green);
+  text-decoration: none;
+}
+
+.course-title {
+  margin: 0 0 10px;
+  font-size: 20px;
+}
+
+.course-note {
+  margin: 0 0 12px;
+  color: var(--muted);
+  line-height: 1.45;
+}
+
+.course-note.small {
+  font-size: 14px;
+}
+
+.course-card .class-code-input {
+  margin-bottom: 10px;
+  text-transform: uppercase;
+}
+
+/* Іншомовні слова: плитки груп ширші (назви тем довші) */
+.insh-group-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+@media (min-width: 560px) {
+  .insh-group-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.insh-tile .group-label {
+  font-size: 15px;
+  line-height: 1.25;
+  white-space: normal;
+  overflow: visible;
+  text-overflow: clip;
+  text-align: center;
+  overflow-wrap: anywhere;
+}
+
+/* Іншомовні слова: картинка й асоціація після відповіді (inshomovni-notes.js) */
+.insh-note {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 8px 0 0;
+  padding: 8px 12px;
+  border-radius: 12px;
+  background: rgba(255, 121, 0, .1);
+  color: var(--text);
+  font-size: 15px;
+  line-height: 1.4;
+  text-align: left;
+}
+
+.insh-pic {
+  flex: none;
+  font-size: 34px;
+  line-height: 1;
+}
+
+/* «💥 Було на іспиті» — іншомовні слова й фразеологізми з НМТ */
+.exam-badge {
+  display: table;
+  margin: 0 auto 6px;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: rgba(255, 121, 0, .18);
+  color: var(--orange);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+/* ---------- Тренування групами: groups.js ---------- */
+.train-bar {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 8px;
+}
+
+.train-chip {
+  padding: 6px 12px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--surface-2);
+  color: var(--text);
+  font-size: 14px;
+}
+
+.train-chip.on {
+  border-color: var(--orange);
+  color: var(--orange);
+}
+
+.train-tiles.wide {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+@media (min-width: 560px) {
+  .train-tiles.wide {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.train-tiles.wide .group-label {
+  font-size: 15px;
+  line-height: 1.25;
+  white-space: normal;
+  text-align: center;
+  overflow-wrap: anywhere;
+}
+
+.group-sub {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.train-multi .train-tile {
+  outline: 2px dashed transparent;
+}
+
+.train-tile.picked {
+  border-color: var(--orange);
+  box-shadow: 0 0 0 3px rgba(255, 121, 0, .35), 0 4px 0 var(--line);
+}
+
+.train-tile.picked::before {
+  content: "✓";
+  position: absolute;
+  top: 4px;
+  right: 8px;
+  color: var(--orange);
+  font-weight: 700;
+}
+
+.train-more {
+  display: block;
+  width: 100%;
+  margin-top: 10px;
+  padding: 8px;
+  border: 1px dashed var(--line);
+  border-radius: 12px;
+  background: none;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.train-go {
+  position: sticky;
+  bottom: 10px;
+  z-index: 5;
+  margin-top: 12px;
+}
+
+/* 🎲 Групи для дуелі й онлайну (groups.js) */
+.play-groups {
+  margin: 0 0 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+
+.play-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 10px 14px;
+  background: none;
+  border: none;
+  color: var(--text);
+  font-size: 15px;
+  text-align: left;
+}
+
+.play-change {
+  flex: none;
+  color: var(--orange);
+  font-size: 14px;
+}
+
+.play-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 0 12px 12px;
+}
+
+.course-widget {
+  display: flex;
+  justify-content: center;
+  min-height: 48px;
+  margin: 6px 0 12px;
+}
+
+.course-note a {
+  color: var(--orange);
+}
+
+/* ---------- 📂 Інше (inshe.js) ---------- */
+.inshe-sub { margin: 0 0 12px; color: var(--muted); text-align: center; }
+.inshe-list { margin-bottom: 16px; }
+.inshe-text u { text-decoration-color: var(--orange); text-decoration-thickness: 3px; text-underline-offset: 4px; }
+.inshe-text b { color: var(--orange); }
+.inshe-answer u { text-decoration-thickness: 2px; text-underline-offset: 3px; }
+.address-gap .stress, .inshe-answer .stress { color: var(--orange); font-weight: 700; text-decoration: underline; text-underline-offset: 3px; }
+.inshe-bad { font-size: 26px; color: var(--red); text-decoration-thickness: 2px; }
+.inshe-src { margin: 6px 0 0; color: var(--muted); font-size: 14px; }
+.inshe-input { display: flex; gap: 8px; width: 100%; }
+.inshe-input input {
+  flex: 1; min-width: 0; padding: 12px 14px; border-radius: 12px; border: 2px solid var(--line);
+  background: var(--surface-2); color: var(--text); font: inherit; font-size: 20px;
+}
+.inshe-input input.ok { border-color: var(--green); }
+.inshe-input input.bad { border-color: var(--red); }
+.inshe-right { margin: 8px 0 0; font-size: 20px; color: var(--green); width: 100%; }
+.komy-line { line-height: 2.1; }
+.komy-word { white-space: nowrap; }
+.komy-gap {
+  display: inline-block; min-width: 18px; height: 30px; margin: 0 1px; padding: 0 2px; vertical-align: middle;
+  border: 0; border-bottom: 2px dashed var(--line); background: transparent; color: var(--orange);
+  font: inherit; font-size: 24px; line-height: 24px; cursor: pointer;
+}
+.komy-gap.on { border-bottom-color: var(--orange); }
+.komy-gap.ok { color: var(--green); border-bottom-color: var(--green); }
+.komy-gap.miss { color: var(--green); border-bottom: 2px solid var(--red); }
+.komy-gap.extra { color: var(--red); border-bottom-color: var(--red); text-decoration: line-through; }
+.komy-check { width: 100%; }
+.inshe-opt { display: block; }
+
+/* ---------- 🧠 Пам'ять і забування на плитках груп (memory.js) ----------
+   --mh: відтінок за точністю (15 червоно-жовтий … 125 зелений), --mg: яскравість пам'яті (1 — свіжа, 0 — згасла),
+   --mr: пам'ять 0…1. Варіанти вигляду: .mem-v1 … .mem-v6 (5 = 1 + батарейка, 6 = 1 + рослинка) */
+.group-tile.mem-tile { --mg: 1; --mh: 125; }
+.group-tile.mem-tile .group-info { color: hsl(var(--mh), calc((25 + 55 * var(--mg)) * 1%), calc((55 + 15 * var(--mg)) * 1%)); }
+
+/* 1 — «Згасання»: уся плитка кольору знань, з часом блякне до сірого */
+.group-tile.mem-v1, .group-tile.mem-v5, .group-tile.mem-v6 {
+  background: hsla(var(--mh), calc((12 + 63 * var(--mg)) * 1%), calc((26 + 16 * var(--mg)) * 1%), calc(0.35 + 0.65 * var(--mg)));
+  border-color: hsl(var(--mh), calc((15 + 60 * var(--mg)) * 1%), calc((32 + 16 * var(--mg)) * 1%));
+  box-shadow: 0 4px 0 hsl(var(--mh), calc((10 + 45 * var(--mg)) * 1%), calc((20 + 10 * var(--mg)) * 1%));
+}
+.group-tile.mem-v1 .group-info, .group-tile.mem-v5 .group-info, .group-tile.mem-v6 .group-info { color: hsl(var(--mh), calc((20 + 50 * var(--mg)) * 1%), calc((72 + 18 * var(--mg)) * 1%)); }
+
+/* 2 — «Батарейка»: заряд пам'яті в куточку, рамка кольору знань */
+.group-tile.mem-v2 {
+  background: hsla(var(--mh), 40%, 30%, calc(0.12 + 0.18 * var(--mg)));
+  border-color: hsl(var(--mh), calc((20 + 55 * var(--mg)) * 1%), calc((35 + 12 * var(--mg)) * 1%));
+}
+/* значок (батарейка, рослинка) — окремим рядком над назвою, щоб не налазив на букву */
+.mem-mark { display: flex; align-items: center; justify-content: center; height: 16px; font-size: 15px; line-height: 1; }
+.mem-bat {
+  display: block; width: 22px; height: 11px; padding: 1px; border: 1.5px solid hsl(var(--mh), 30%, 70%);
+  border-radius: 3px; position: relative;
+}
+.mem-bat::after { content: ''; position: absolute; right: -4px; top: 2.5px; width: 2px; height: 4px; background: hsl(var(--mh), 30%, 70%); border-radius: 0 1px 1px 0; }
+.mem-bat-fill {
+  display: block; height: 100%; width: calc(var(--mr) * 100%); border-radius: 1px;
+  background: hsl(calc(var(--mr) * 125), 75%, 50%);
+}
+
+/* 3 — «Сяйво»: плитка світиться кольором знань, світіння згасає */
+.group-tile.mem-v3 {
+  background: hsla(var(--mh), 50%, 32%, calc(0.15 + 0.3 * var(--mg)));
+  border-color: hsl(var(--mh), calc((20 + 60 * var(--mg)) * 1%), calc((38 + 14 * var(--mg)) * 1%));
+  box-shadow: 0 4px 0 var(--line), 0 0 calc(4px + 16px * var(--mg)) calc(3px * var(--mg)) hsla(var(--mh), 85%, 55%, calc(0.75 * var(--mg)));
+}
+
+/* 4 — «Рослинка»: як 1, але м'якше, і в куточку — рослинка, що в'яне */
+.group-tile.mem-v4 {
+  background: hsla(var(--mh), calc((12 + 50 * var(--mg)) * 1%), calc((25 + 14 * var(--mg)) * 1%), calc(0.3 + 0.55 * var(--mg)));
+  border-color: hsl(var(--mh), calc((15 + 50 * var(--mg)) * 1%), calc((32 + 14 * var(--mg)) * 1%));
+}
+
+/* Час повторити — у всіх варіантах */
+.mem-due-tag {
+  font-size: 11px; font-weight: 700; padding: 1px 7px; border-radius: 99px;
+  background: rgba(255, 121, 0, 0.18); color: var(--orange); border: 1px solid rgba(255, 121, 0, 0.5);
+}
+.group-tile.mem-due { animation: mem-breathe 2.8s ease-in-out infinite; }
+@keyframes mem-breathe { 0%, 100% { filter: brightness(1); } 50% { filter: brightness(1.25); } }
+@media (prefers-reduced-motion: reduce) { .group-tile.mem-due { animation: none; } }
+
+/* Підсумок тренування: «Повтори через 5 годин!» (memory.js → memOverNote) */
+.mem-note { margin: 6px 0 4px; text-align: center; }
+.mem-note-big { margin: 4px 0 6px; font-size: 26px; line-height: 1.2; color: var(--orange); }
+.mem-note-small { margin: 0 auto 8px; max-width: 440px; font-size: 14px; line-height: 1.45; color: var(--muted); font-weight: 400; }
+.mem-note-link { display: inline-block; font-size: 15px; color: var(--orange); text-decoration: underline; text-underline-offset: 3px; }
+
+/* 🧠 загальний стан пам'яті в шапці «Тренування» (memory.js → memSummary) */
+.mem-sum { display: flex; flex-direction: column; gap: 3px; margin-top: 4px; }
+.mem-sum-bar { display: block; height: 6px; border-radius: 3px; background: var(--line); overflow: hidden; max-width: 260px; }
+.mem-sum-bar > span { display: block; height: 100%; border-radius: 3px;
+  background: hsl(var(--mh), calc((20 + 60 * var(--mg)) * 1%), calc((38 + 14 * var(--mg)) * 1%)); }
+.mem-sum-txt { font-size: 12.5px; color: var(--muted); }
+
+/* 🏛️ Історія України (inshe/istoriia.js) */
+.ist-photo { display: block; max-width: 100%; height: auto; border-radius: 12px; background: var(--surface-2); }
+.ist-photo.big { max-height: 300px; margin: 0 auto; object-fit: contain; }
+.ist-gallery { display: flex; gap: 8px; justify-content: center; margin: 10px 0 2px; }
+.ist-gallery .ist-photo { width: calc((100% - 16px) / 3); max-width: 120px; aspect-ratio: 3 / 4; object-fit: cover; }
+.ist-credit { margin: 2px 0 0; text-align: center; font-size: 11px; color: var(--muted); }
+.ist-star { background: rgba(255, 196, 0, .16); color: #ffcf40; }
+.ist-level { display: flex; flex-wrap: wrap; gap: 6px; margin: 0 0 10px; }
+/* панель для вписування дати */
+.ist-type { width: 100%; }
+.ist-screen {
+  min-height: 56px; margin: 0 0 10px; padding: 10px 14px; border-radius: 14px; border: 2px solid var(--line);
+  background: var(--surface-2); font-size: 30px; letter-spacing: 1px; text-align: center; font-variant-numeric: tabular-nums;
+}
+.ist-screen.empty { color: var(--muted); }
+.ist-screen.ok { border-color: var(--green); color: var(--green); }
+.ist-screen.bad { border-color: var(--red); color: var(--red); }
+.ist-pad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.ist-key {
+  min-height: 54px; border-radius: 14px; border: 2px solid var(--line); background: var(--surface-2); color: var(--text);
+  font: inherit; font-size: 24px; box-shadow: 0 4px 0 var(--line); cursor: pointer; touch-action: manipulation;
+}
+.ist-key:active { transform: translateY(3px); box-shadow: 0 1px 0 var(--line); }
+.ist-key.sign { color: var(--orange); }
+.ist-key.back { grid-column: 1 / 2; font-size: 20px; }
+.ist-key.go { grid-column: 2 / 4; background: var(--orange); border-color: var(--orange-dark); box-shadow: 0 4px 0 var(--orange-dark); color: #fff; font-size: 19px; }
+.ist-key:disabled { opacity: .45; }
+
+/* 🧪 Панель тестувальника (tester.js) */
+body.has-tester { padding-bottom: 64px; }
+#tester-panel {
+  position: fixed; left: 50%; bottom: max(6px, env(safe-area-inset-bottom)); transform: translateX(-50%); z-index: 900;
+  display: grid; grid-template-columns: auto auto; align-items: center; gap: 2px 4px; max-width: calc(100vw - 12px);
+  padding: 4px 4px 5px 8px; background: rgba(33, 26, 20, .92); border: 1px solid var(--line); border-radius: 14px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, .35); font-family: var(--font); font-size: 12px; color: var(--muted);
+}
+#tester-panel .tp-title { grid-column: 1; font-size: 11px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding-left: 2px; }
+#tester-panel .tp-row { grid-column: 1; display: flex; gap: 6px; }
+#tester-panel .tp-x { grid-column: 2; grid-row: 1 / span 2; }
+#tester-panel button { font: inherit; border: 0; cursor: pointer; border-radius: 999px; }
+#tester-panel .tp-btn { flex: 1 1 auto; padding: 5px 9px; background: var(--brown); color: var(--text); white-space: nowrap; }
+#tester-panel .tp-btn:active { transform: scale(.95); }
+#tester-panel .tp-x { background: none; color: var(--muted); padding: 4px 6px; }
+#tester-panel .tp-open { display: none; background: none; font-size: 18px; padding: 2px; }
+#tester-panel.min { left: auto; right: 8px; transform: none; padding: 3px; opacity: .7; border-radius: 999px; display: block; }
+#tester-panel.min > :not(.tp-open) { display: none; }
+#tester-panel.min .tp-open { display: block; }
+#tester-modal {
+  position: fixed; inset: 0; z-index: 950; background: rgba(0, 0, 0, .55);
+  display: flex; align-items: center; justify-content: center; padding: 16px;
+}
+#tester-modal .tester-box {
+  width: min(420px, 100%); background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
+  padding: 16px; font-family: var(--font); color: var(--text);
+}
+#tester-modal .tester-q { margin: 0 0 10px; font-size: 20px; font-weight: 700; }
+#tester-modal textarea {
+  width: 100%; box-sizing: border-box; font: inherit; font-size: 16px; padding: 10px; border-radius: 12px;
+  border: 1px solid var(--line); background: var(--bg); color: var(--text); resize: vertical;
+}
+#tester-modal .tester-where { margin: 8px 0 12px; font-size: 12px; color: var(--muted); }
+#tester-modal .tester-row { display: flex; gap: 8px; justify-content: flex-end; }
+#tester-modal .tester-row button { font: inherit; border: 0; border-radius: 12px; padding: 9px 14px; cursor: pointer; }
+#tester-modal .tester-cancel { background: var(--brown); color: var(--text); }
+#tester-modal .tester-send { background: var(--orange); color: #fff; font-weight: 700; }
+#tester-modal .tester-send:disabled { opacity: .6; }
+.tester-shake { animation: tester-shake .35s; border-color: var(--red) !important; }
+@keyframes tester-shake { 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
+.tester-toast {
+  position: fixed; left: 50%; top: 40%; transform: translate(-50%, -50%); z-index: 960; padding: 16px 22px;
+  background: var(--surface); border: 2px solid var(--orange); border-radius: var(--radius); font-family: var(--font);
+  font-size: 22px; font-weight: 700; color: var(--text); box-shadow: 0 8px 30px rgba(0, 0, 0, .5); transition: opacity .5s;
+}
+.tester-toast.go { opacity: 0; }
+
+/* Гра для класу: правильних відповідей біля кожного учня на підсумку */
+.online-results .ok-count { display: none; }
+.online-results.show-ok .ok-count { display: inline; flex: none; font-size: 15px; color: var(--muted); white-space: nowrap; }
+.class-copy { width: 100%; box-sizing: border-box; font: 13px/1.4 monospace; padding: 8px; border-radius: 10px;
+  border: 1px solid var(--line); background: var(--bg); color: var(--text); margin-top: 6px; }
+.emo-img { width: 1.1em; height: 1.1em; vertical-align: -0.18em; margin-right: 0.3em; }
+.ok-toggle { display: block; margin: 4px auto 10px; padding: 5px 12px; font: inherit; font-size: 13px; color: var(--muted);
+  background: none; border: 1px solid var(--line); border-radius: 999px; cursor: pointer; }
+.ok-toggle .emo-img { margin-right: 0.25em; }
+
+/* 📱 PRO: вибір пристрою, який відключити (pro-devices.js) */
+#pro-dev-modal { position: fixed; inset: 0; z-index: 980; background: rgba(0, 0, 0, .6); display: flex; align-items: center; justify-content: center; padding: 16px; }
+#pro-dev-modal .pro-dev-box { width: min(420px, 100%); background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 18px; font-family: var(--font); color: var(--text); }
+#pro-dev-modal .pro-dev-title { margin: 0 0 8px; font-size: 20px; font-weight: 700; }
+#pro-dev-modal .pro-dev-text { margin: 0 0 14px; color: var(--muted); font-size: 15px; line-height: 1.35; }
+#pro-dev-modal .pro-dev-row { display: flex; align-items: center; gap: 10px; padding: 10px; border: 1px solid var(--line); border-radius: 12px; margin-bottom: 8px; background: var(--bg); }
+#pro-dev-modal .pro-dev-ico { font-size: 24px; }
+#pro-dev-modal .pro-dev-name { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+#pro-dev-modal .pro-dev-name small { color: var(--muted); font-size: 12px; }
+#pro-dev-modal .pro-dev-row button { font: inherit; font-size: 14px; border: 0; border-radius: 10px; padding: 8px 10px; background: var(--orange); color: #fff; cursor: pointer; }
+#pro-dev-modal .pro-dev-row button:disabled { opacity: .6; }
+#pro-dev-modal .pro-dev-err { color: var(--red); font-size: 14px; }
+#pro-dev-modal .pro-dev-later { display: block; margin: 10px auto 0; font: inherit; background: none; border: 0; color: var(--muted); cursor: pointer; text-decoration: underline; }
+
+/* 📅 Мій план (plan.js) */
+.plan-body { max-width: 640px; margin: 0 auto; padding: 0 4px 40px; }
+.plan-intro { color: var(--muted); font-size: 15px; line-height: 1.4; margin: 4px 0 14px; }
+.plan-step, .plan-card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 14px; margin-bottom: 12px; }
+.plan-step h3, .plan-card h3 { margin: 0 0 10px; font-size: 18px; display: flex; align-items: center; gap: 8px; }
+.plan-card h3 { margin-top: 6px; }
+.plan-off { opacity: .45; }
+.plan-off h3 { margin: 0; }
+.plan-num { display: inline-grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; background: var(--orange); color: #fff; font-size: 15px; flex: none; }
+.plan-hint { color: var(--muted); font-size: 14px; line-height: 1.4; margin: 6px 0; }
+.plan-help { background: var(--bg); border: 1px dashed var(--line); border-radius: 10px; padding: 8px 10px; font-size: 14px; color: var(--muted); }
+.plan-total { font-size: 15px; margin: 10px 0 0; }
+.plan-units { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 8px; }
+.plan-unit { display: flex; align-items: center; gap: 8px; padding: 8px 10px; border: 1px solid var(--line); border-radius: 12px; cursor: pointer; background: var(--bg); }
+.plan-unit.on { border-color: var(--orange); background: rgba(255, 121, 0, .12); }
+.plan-unit input { accent-color: var(--orange); width: 18px; height: 18px; flex: none; }
+.plan-unit-ico { font-size: 22px; }
+.plan-unit-name { display: flex; flex-direction: column; font-size: 15px; }
+.plan-unit-name small { color: var(--muted); font-size: 12px; }
+.plan-field { display: flex; flex-direction: column; gap: 6px; font-size: 15px; margin-bottom: 8px; }
+.plan-body input[type=date], .plan-body input[type=number] { font: inherit; font-size: 17px; padding: 8px 10px; border-radius: 10px; border: 1px solid var(--line); background: var(--bg); color: var(--text); color-scheme: dark; }
+.plan-body input[type=number] { width: 90px; text-align: center; }
+.plan-days { display: flex; flex-wrap: wrap; gap: 6px; margin: 6px 0; }
+.plan-day { font: inherit; font-size: 15px; padding: 7px 12px; border-radius: 999px; border: 1px solid var(--line); background: var(--bg); color: var(--text); cursor: pointer; }
+.plan-day.on { background: var(--orange); border-color: var(--orange); color: #fff; }
+.plan-q { font-weight: 700; font-size: 16px; margin: 14px 0 6px; }
+.plan-row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.plan-mini { font: inherit; font-size: 13px; padding: 6px 10px; border-radius: 999px; border: 1px solid var(--line); background: none; color: var(--muted); cursor: pointer; }
+.plan-ok { color: #8bd48e; font-size: 15px; line-height: 1.4; }
+.plan-bad { color: #ff8f7a; font-size: 15px; line-height: 1.4; }
+.plan-cp { width: 100%; border-collapse: collapse; font-size: 14px; margin: 6px 0; }
+.plan-cp th { text-align: left; color: var(--muted); font-weight: 400; padding: 4px; }
+.plan-cp td { padding: 4px; border-top: 1px solid var(--line); }
+.plan-cp input[type=number] { width: 70px; font-size: 15px; padding: 5px; }
+.plan-check { display: flex; gap: 8px; align-items: flex-start; font-size: 15px; margin: 4px 0 12px; }
+.plan-check input { accent-color: var(--orange); width: 18px; height: 18px; flex: none; margin-top: 2px; }
+.plan-goal { font-size: 17px; margin: 0 0 4px; line-height: 1.4; }
+.plan-bar { position: relative; height: 16px; border-radius: 999px; background: var(--bg); overflow: hidden; margin: 12px 0 6px; border: 1px solid var(--line); }
+.plan-bar span { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 999px; }
+.plan-bar-exp { background: rgba(255, 255, 255, .18); }
+.plan-bar-fact { background: var(--orange); }
+.plan-legend { font-size: 13px; color: var(--muted); margin: 0 0 8px; }
+.plan-dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; vertical-align: -1px; }
+.plan-dot.fact { background: var(--orange); } .plan-dot.exp { background: rgba(255, 255, 255, .35); }
+.plan-status { font-size: 16px; font-weight: 700; margin: 8px 0; }
+.plan-next { font-size: 15px; margin: 8px 0 0; }
+.plan-cps { list-style: none; padding: 0; margin: 0 0 8px; }
+.plan-cps li { display: flex; justify-content: space-between; gap: 10px; padding: 6px 2px; border-bottom: 1px solid var(--line); font-size: 15px; }
+.plan-cps li.past { color: var(--muted); }
+.plan-actions { display: flex; flex-direction: column; gap: 8px; }
+
+/* 📖 Повний список для навчання (wordlist.js) */
+.wl-open { display: block; width: 100%; margin: 0 0 12px; }
+.wl-search { display: block; width: 100%; box-sizing: border-box; font: inherit; font-size: 16px; padding: 10px 12px; border-radius: 12px; border: 1px solid var(--line); background: var(--surface); color: var(--text); margin: 4px 0 8px; }
+.wl-sub { color: var(--muted); font-size: 14px; margin: 0 0 10px; }
+.wl-list { width: 100%; max-width: 680px; margin: 0 auto; padding-bottom: 30px; box-sizing: border-box; }
+.wl-group { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); margin-bottom: 10px; overflow: hidden; }
+.wl-group summary { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 12px 14px; cursor: pointer; font-weight: 700; font-size: 16px; list-style: none; }
+.wl-group summary::-webkit-details-marker { display: none; }
+.wl-group summary::after { content: "▾"; color: var(--muted); }
+.wl-group[open] summary::after { content: "▴"; }
+.wl-count { margin-left: auto; color: var(--muted); font-weight: 400; font-size: 13px; }
+.wl-group ul { list-style: none; margin: 0; padding: 0 14px; }
+.wl-group li { padding: 8px 0; border-top: 1px solid var(--line); display: flex; flex-direction: column; gap: 2px; }
+.wl-main { font-size: 18px; font-weight: 700; }
+.wl-acc { color: var(--orange); font-weight: 800; text-decoration: underline; text-underline-offset: 3px; }
+.wl-not { font-size: 13px; color: var(--muted); }
+.wl-not .wl-acc { color: #c9a58a; text-decoration: underline; text-underline-offset: 2px; }
+.wl-mean { font-size: 15px; color: var(--text); opacity: .85; }
+.wl-ex { font-size: 13px; color: var(--muted); font-style: italic; }
+.wl-ex i { color: var(--orange); font-style: normal; }
+.wl-exam { font-size: 11px; font-weight: 400; color: var(--muted); border: 1px solid var(--line); border-radius: 999px; padding: 1px 6px; vertical-align: 2px; }
+.wl-train { display: block; margin: 8px 14px 14px; font: inherit; font-size: 14px; padding: 8px 12px; border-radius: 999px; border: 1px solid var(--orange); background: none; color: var(--orange); cursor: pointer; }
+.wl-or { color: var(--orange); }
+.wl-group li.wl-li-row { flex-direction: row; align-items: flex-start; gap: 12px; }
+.wl-emo { font-size: 30px; line-height: 1.1; flex: none; width: 38px; text-align: center; }
+.wl-txt { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.plan-sub { font-size: 14px; font-weight: 700; margin: 12px 0 6px; }
+.plan-in { font: inherit; font-size: 17px; padding: 8px 10px; border-radius: 10px; border: 1px solid var(--line); background: var(--bg); color: var(--text); width: 90px; text-align: center; }
+.plan-in-sm { width: 70px; font-size: 15px; padding: 5px; }
+.plan-in[readonly] { opacity: .8; border-color: transparent; }
+.plan-cp-now td { background: rgba(255, 121, 0, .08); }
+.plan-cp-now .plan-in { border-color: var(--orange); }
+.plan-cp-hint td { border-top: 0 !important; padding-top: 0; }
+.plan-help-now { margin: 4px 0 6px; color: var(--text); border-color: var(--orange); }
+.plan-cp-lock { color: var(--muted); }
+.plan-tabs { display: flex; gap: 6px; margin: 0 0 10px; background: var(--bg); padding: 4px; border-radius: 999px; border: 1px solid var(--line); }
+.plan-tab { flex: 1; font: inherit; font-size: 14px; padding: 8px 10px; border: 0; border-radius: 999px; background: none; color: var(--muted); cursor: pointer; }
+.plan-tab.on { background: var(--orange); color: #fff; font-weight: 700; }
+.plan-pts { color: var(--orange); font-size: 13px; }
+.plan-score { font-size: 18px; margin: 12px 0 2px; padding: 10px 12px; border-radius: 12px; background: rgba(255, 121, 0, .12); border: 1px solid var(--orange); }
+
+/* 🔎 Лексична помилка: речення (leks.js) */
+.leks-lead { color: var(--muted); font-size: 15px; line-height: 1.4; margin: 0 4px 12px; }
+.leks-sentence { line-height: 2.1; margin: 0 0 6px; }
+.leks-sentence .chip { margin: 3px 1px; padding: 6px 10px; border-radius: 12px; font-size: 19px; color: var(--text); } /* крупно й світло (власниця: дрібно й темно) */
+.leks-sentence { line-height: 1.9; }
+.leks-explain .leks-head { font-size: 16px; }
+.leks-explain .leks-fixed { font-size: 18px; color: var(--text); }
+.leks-explain .leks-pair { font-size: 16px; }
+.leks-explain .frazeo-meaning { font-size: 16px; color: #f3e9df; line-height: 1.45; }
+.leks-note { color: #e6d8ca; font-size: 15px; }
+.leks-nmt-opt { font-size: 17px; color: var(--text); }
+.chip.leks-okword { border-color: var(--green); color: #a7e3aa; }
+.leks-explain { margin-top: 12px; padding: 10px 12px; border-radius: 12px; background: var(--surface); border: 1px solid var(--line); text-align: left; }
+.leks-head { margin: 0 0 4px; font-weight: 700; font-size: 15px; }
+.leks-fixed { margin: 0 0 8px; font-size: 16px; line-height: 1.5; }
+.leks-fixed b { color: #8bd48e; text-decoration: underline; text-underline-offset: 3px; }
+.leks-fixed-sm { font-size: 14px; margin: 0 0 2px; }
+.leks-pair { margin: 0 0 4px; font-size: 15px; }
+.leks-pair s { color: #ff8f7a; }
+.leks-pair b { color: #8bd48e; }
+.leks-note { color: var(--muted); font-size: 14px; margin: 6px 0 0; }
+.leks-nmt-opt { text-align: left; line-height: 1.4; font-size: 15px; padding: 10px 12px; }
+/* «Як на НМТ»: буква варіанта — ліворуч від кнопки (власниця, 06.11.2026) */
+.leks-nmt-row { display: flex; align-items: center; gap: 10px; width: 100%; }
+.leks-nmt-row .leks-nmt-opt { flex: 1; min-width: 0; margin: 0; }
+.leks-nmt-letter { flex: none; width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center;
+  background: var(--surface-2); border: 1px solid var(--line); color: var(--orange); font-weight: 800; font-size: 17px; }
+.leks-locked { margin-top: 12px; border: 1px dashed var(--line); border-radius: var(--radius); padding: 8px 12px; }
+.leks-locked > summary { cursor: pointer; color: var(--muted); font-size: 15px; }
+.leks-locked-list { display: flex; flex-wrap: wrap; gap: 6px; margin: 10px 0; }
+.leks-locked-chip { font-size: 13px; color: var(--muted); background: var(--surface-2); border-radius: 999px; padding: 4px 10px; }
+.leks-locked-btn { width: 100%; }
+.wl-wrong { color: #ff8f7a; font-weight: 400; }
+
+/* онлайн «Лексична помилка: речення» */
+.leks-online-q { font-weight: 700; }
+.leks-online-answers .frazeo-answer { text-align: left; font-size: 16px; line-height: 1.4; }
+
+/* «НОВЕ!» на плитках ігор у меню (06.11.2026) */
+.game-tile .badge-new { background: #ff3d6e; color: #fff; }
+/* 🧠 нижче 80 % — «Нагадай мені повернутися пізніше» (memory.js, memLowNote) */
+.mem-later { margin: 6px auto 10px; max-width: 440px; }
+.mem-later-btn { width: 100%; }
+.mem-later-opts { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
+.mem-later-opts button { flex: 1 1 30%; min-width: 110px; padding: 10px 8px; font-size: 15px; }
+/* 📂 «Інше» закрите — перелік тренажерів у вікні PRO / «скоро» (script.js insheLockShow) */
+.inshe-lock { max-height: 46vh; overflow-y: auto; margin: 6px 0 12px; text-align: left; padding-right: 4px; }
+.inshe-lock-head { margin: 0 0 8px; font-size: 15px; color: var(--muted); text-align: center; }
+.inshe-lock-sec { margin: 0 0 10px; }
+.inshe-lock-sec > b { display: block; font-size: 15px; margin: 0 0 5px; }
+.inshe-lock-sec > div { display: flex; flex-wrap: wrap; gap: 5px; }
+.inshe-lock-chip { font-size: 13px; padding: 4px 9px; border-radius: 12px; background: rgba(255,255,255,.07); line-height: 1.3; }
+.inshe-lock-chip i { font-style: normal; color: var(--orange); margin-left: 3px; }
+/* 🎁 Демо для новачків (demo.js) */
+.badge-demo { background: #2e7d5b; color: #fff; }
+.demo-banner { margin: 4px 0 14px; padding: 12px 14px; border-radius: 16px; border: 2px dashed rgba(70, 196, 126, .6); background: rgba(70, 196, 126, .08); display: flex; flex-direction: column; gap: 8px; text-align: center; }
+.demo-banner b { font-size: 17px; }
+.demo-banner span { font-size: 14px; line-height: 1.45; color: var(--muted); }
+.demo-nudge { margin: 10px auto 12px; max-width: 460px; padding: 12px 14px; border-radius: 16px; background: rgba(255, 138, 61, .1); border: 1px solid rgba(255, 138, 61, .35); text-align: center; }
+.demo-nudge p { margin: 0 0 10px; font-size: 15px; line-height: 1.45; }
+.demo-nudge-btn { width: 100%; font-size: 15px; }
+/* 🏛️ «Історія України» — особливо помітна плитка (власниця, 07.11.2026) */
+.game-tile.tile-highlight {
+  grid-column: 1 / -1;
+  flex-direction: row;
+  align-items: center;
+  gap: 14px;
+  min-height: 0;
+  padding: 16px 18px;
+  background: linear-gradient(120deg, #1f3c88 0%, #2b59c3 55%, #f2b632 140%);
+  border: 2px solid #f2c94c;
+  box-shadow: 0 5px 0 #14285c, 0 0 18px rgba(242, 201, 76, .35);
+  position: relative;
+  overflow: hidden;
+}
+.game-tile.tile-highlight:active { box-shadow: 0 2px 0 #14285c; }
+.game-tile.tile-highlight .tile-icon { font-size: 34px; }
+.game-tile.tile-highlight .tile-name { flex: 1; min-width: 0; font-size: 21px; }
+.game-tile.tile-highlight .tile-sub { color: #ffe7a3; }
+.game-tile.tile-highlight::after {
+  content: ""; position: absolute; top: 0; left: -60%; width: 40%; height: 100%;
+  background: linear-gradient(100deg, transparent, rgba(255, 255, 255, .22), transparent);
+  animation: tileShine 4.5s ease-in-out infinite; pointer-events: none;
+}
+@keyframes tileShine { 0%, 60% { left: -60%; } 100% { left: 130%; } }
+@media (prefers-reduced-motion: reduce) { .game-tile.tile-highlight::after { animation: none; display: none; } }
+.plan-btn { margin-top: 10px; }
+/* 🔒 закриті групи в демо (demo.js demoLockedGroups) */
+.demo-lock-head { grid-column: 1 / -1; margin: 10px 2px 2px; font-size: 14px; color: var(--muted); text-align: center; }
+.demo-lock-head b { color: var(--orange); }
+.group-tile.demo-locked { opacity: .45; filter: grayscale(.5); border-style: dashed; }
+.group-tile.demo-locked:active { opacity: .6; }
+.demo-lock-cta { grid-column: 1 / -1; margin-top: 6px; font-size: 15px; }
+/* 💡 лайфхак «Кличного відмінка» після відповіді (klych-rules.js) */
+.klych-rule { margin: 10px auto 0; max-width: 460px; padding: 10px 14px; border-radius: 14px; background: rgba(255, 200, 80, .08); border: 1px solid rgba(255, 200, 80, .25); text-align: left; display: flex; flex-direction: column; gap: 6px; }
+.klych-rule .kr-word { font-size: 18px; font-weight: 700; }
+.klych-rule .kr-line { display: flex; flex-direction: column; }
+.klych-rule .kr-r { font-size: 15px; font-weight: 700; }
+.klych-rule .kr-e { font-size: 14px; color: var(--muted); padding-left: 10px; display: flex; flex-wrap: wrap; gap: 2px 14px; }
+.klych-rule .kr-ex { white-space: nowrap; }
+.klych-rule .kr-end { color: var(--orange); font-weight: 800; }
+/* 🏛️ «Історія України»: заголовки груп «Дати», «Персоналії» над кнопками (inshe.js) */
+.inshe-group-head { grid-column: 1 / -1; margin: 14px 4px 2px; font-size: 20px; text-align: left; }
+.inshe-group-head:first-child { margin-top: 0; }
+.demo-link { color: var(--orange); text-decoration: underline; text-underline-offset: 3px; font-weight: 700; }
+
+/* 🏠 ДЗ з платформи (hw-mode.js) */
+.ghw-box { max-width: 720px; margin: 0 auto; padding: 0 12px 24px; display: flex; flex-direction: column; gap: 12px; }
+.ghw-lead { margin: 4px 0 0; line-height: 1.5; }
+.ghw-go { align-self: center; min-width: 240px; }
+.train-hw { margin: 12px auto 4px; max-width: 520px; padding: 12px 14px; border-radius: 14px; display: flex; flex-direction: column; gap: 8px; text-align: center; line-height: 1.45; }
+.train-hw b:first-child { font-size: 1.25em; }
+.train-hw.ok { background: rgba(46, 170, 90, .16); border: 2px solid #2eaa5a; }
+.train-hw.bad { background: rgba(230, 70, 60, .14); border: 2px solid #e6463c; }
+/* 🏁 «Грати» в турнірній таблиці (leaders-play.js) */
+.leaders-play { display: block; width: 100%; margin: 12px 0; }
+/* 🤖 «Підпишись на бота» поверх гри (bot-gate.js) */
+.bot-gate { position: fixed; inset: 0; z-index: 9999; background: rgba(23, 18, 15, .97); display: flex; align-items: center; justify-content: center;
+  padding: calc(16px + env(safe-area-inset-top, 0px)) 16px calc(16px + env(safe-area-inset-bottom, 0px)); overflow-y: auto; }
+.bot-gate-card { max-width: 420px; width: 100%; text-align: center; display: flex; flex-direction: column; gap: 12px; align-items: stretch; }
+.bot-gate-logo { align-self: center; border-radius: 50%; }
+.bot-gate-card h2 { margin: 0; }
+.bot-gate-card p { margin: 0; line-height: 1.5; }
+.bot-gate-hint { font-size: 14px; opacity: .85; }
+/* 🔎 у полі пошуку переліку — картинкою (у placeholder смайлик-картинку не вставиш) */
+.wl-search { padding-left: 38px; background: var(--surface) url(img/emoji/1f50e.png) no-repeat 12px center / 18px; }
+/* ---------- 08.11.2026 (власниця): менше суцільного тексту, ясна будова ---------- */
+/* 🏠 ДЗ: кроки замість абзацу */
+.ghw-lead { margin: 4px 0 0; }
+.ghw-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-bottom: 12px; }
+.ghw-head b { font-size: 24px; }
+.ghw-head span { color: var(--muted); font-size: 15px; white-space: nowrap; }
+.ghw-steps { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+.ghw-steps li { display: flex; gap: 10px; align-items: flex-start; font-size: 17px; line-height: 1.35; }
+.ghw-steps li > span:first-child { flex: none; width: 1.4em; text-align: center; }
+.ghw-note { margin: 10px 0 0; color: var(--muted); font-size: 14px; }
+/* 🏠 підсумок ДЗ: у тебе / треба */
+.hw-stats { display: flex; justify-content: center; gap: 12px; }
+.hw-stats span { display: flex; flex-direction: column; align-items: center; min-width: 96px; padding: 8px 12px; border-radius: 12px; background: rgba(255, 255, 255, .06); }
+.hw-stats small { font-size: 13px; color: var(--muted); }
+.hw-stats b { font-size: 28px; line-height: 1.1; }
+.train-hw small { color: var(--muted); font-size: 13px; }
+/* підсумок тренування: дрібні кнопки парою, «Нагадати пізніше» — посиланням */
+#train-over .over-actions { grid-template-columns: 1fr 1fr; }
+#train-over .over-actions > * { grid-column: 1 / -1; }
+#train-over .over-actions > .over-small { grid-column: auto; font-size: 16px; padding: 12px 8px; }
+.mem-later { margin: 0 auto 6px; }
+.mem-later-btn { width: auto; background: none; border: none; color: var(--orange); font: inherit; font-size: 15px; text-decoration: underline; text-underline-offset: 3px; padding: 4px; cursor: pointer; }
+#train-over .over-actions > .wl-open { margin: 0; }
+#train-over .over-actions:not(:has(#btn-wl-train:not([hidden]))) > #btn-train-groups { grid-column: 1 / -1; }
+.mem-later { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 4px 16px; }
+.mem-later .mem-note-link { font-size: 15px; }
+/* 🔎 вибір «Лексичної помилки» (leks-menu.js) */
+.lc-box { max-width: 560px; margin: 0 auto; padding: 0 16px 24px; display: grid; gap: 12px; }
+.lc-tip { margin: 4px 0 6px; font-size: 17px; line-height: 1.45; }
+.lc-tip small { color: var(--muted); font-size: 14px; }
+.lc-tile { width: 100%; flex-direction: row; align-items: center; gap: 14px; text-align: left; position: relative; }
+.lc-first { border: 2px solid var(--orange); }
+.lc-badge { background: var(--orange); color: #fff; }
+/* остання плитка без пари — на всю ширину, у рядок (renderMenu) */
+.game-tile.tile-wide { grid-column: 1 / -1; flex-direction: row; align-items: center; gap: 14px; min-height: 0; }
+/* ---------- Меню «Ж» (власниця, 08.11.2026): трійка рівних угорі, Історія — стримано, далі решта ---------- */
+.game-grid { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+.game-tile { grid-column: span 3; }
+@media (min-width: 520px) { .game-grid { grid-template-columns: repeat(6, minmax(0, 1fr)); } } /* і на широкому — по дві, щоб не лишалося «дірок» */
+.game-tile.tile-top { grid-column: span 2; align-items: center; text-align: center; min-height: 0; padding: 12px 6px 10px; gap: 4px; }
+.game-tile.tile-top .tile-icon { font-size: 30px; }
+.game-tile.tile-top .tile-name { font-size: 15px; line-height: 1.15; display: flex; flex-direction: column; align-items: center; gap: 3px; }
+.game-tile.tile-top .tile-sub { font-size: 12px; }
+.game-tile.tile-top .badge { position: static; margin-top: 2px; font-size: 11px; }
+.game-tile.tile-top .mode-best { display: none; }
+.game-tile.tile-glow { border-color: var(--orange); box-shadow: 0 0 0 3px rgba(255, 121, 0, .2), 0 4px 0 var(--line); }
+.game-tile.tile-soft { grid-column: 1 / -1; flex-direction: row; align-items: center; gap: 14px; min-height: 0; padding: 14px 16px;
+  border-color: rgba(242, 193, 78, .55); background: linear-gradient(90deg, rgba(242, 193, 78, .12), var(--surface) 65%); }
+.game-tile.tile-soft .tile-icon { font-size: 30px; }
+/* «Далі →» у попередньому завданні — натискається й повертає до поточного (script.js, prev-content) */
+.prev-content .card button:not(.answer) { pointer-events: auto; cursor: pointer; }
+
+/* 🔥 Вогник — дні поспіль (streak.js, власниця 08.11.2026) */
+.menu-logo { position: relative; }
+.streak-badge {
+  position: absolute; top: 14px; left: calc(50% + 64px);
+  display: grid; grid-template-columns: auto auto; grid-template-rows: auto auto; align-items: center; column-gap: 6px;
+  padding: 6px 12px 6px 8px; border-radius: 16px; border: 2px solid var(--orange);
+  background: rgba(255, 121, 0, .12); color: var(--text); font: inherit; cursor: pointer; text-align: left;
+  box-shadow: 0 0 18px rgba(255, 121, 0, .25);
+}
+.streak-badge .streak-fire { grid-row: 1 / span 2; font-size: 28px; line-height: 1; filter: drop-shadow(0 0 6px rgba(255, 121, 0, .7)); }
+.streak-badge b { font-size: 20px; line-height: 1; color: var(--orange); }
+.streak-badge small { font-size: 11.5px; line-height: 1.1; color: var(--muted); white-space: nowrap; }
+.streak-badge.is-wait { border-style: dashed; box-shadow: none; }
+.streak-badge.is-wait .streak-fire { filter: grayscale(.4) opacity(.75); animation: streakWait 1.6s ease-in-out infinite; }
+.streak-badge.is-off { border-color: var(--line); background: transparent; box-shadow: none; }
+.streak-badge.is-off .streak-fire { filter: grayscale(1) opacity(.5); }
+.streak-badge.is-off b { color: var(--muted); }
+.streak-badge.pop { animation: streakPop .7s cubic-bezier(.2, 1.6, .4, 1); }
+@keyframes streakPop { 0% { transform: scale(1); } 40% { transform: scale(1.35) rotate(-6deg); } 100% { transform: scale(1); } }
+@keyframes streakWait { 50% { transform: scale(.88); } }
+@media (max-width: 420px) { .streak-badge { left: auto; right: 0; top: 10px; padding: 5px 9px 5px 6px; } .streak-badge .streak-fire { font-size: 24px; } }
+.streak-toast {
+  position: fixed; left: 50%; top: 18px; transform: translateX(-50%); z-index: 9999;
+  background: #2b2219; border: 2px solid var(--orange); border-radius: 16px; padding: 10px 16px; text-align: center;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, .5); animation: streakIn .45s cubic-bezier(.2, 1.4, .4, 1); transition: opacity .5s, transform .5s;
+}
+.streak-toast.out { opacity: 0; transform: translate(-50%, -20px); }
+@keyframes streakIn { from { opacity: 0; transform: translate(-50%, -30px) scale(.8); } }
+#streak .st-box { display: grid; gap: 14px; max-width: 520px; margin: 0 auto; }
+.st-hero { display: flex; align-items: center; gap: 14px; padding: 16px; border-radius: 18px; border: 2px solid var(--orange); background: rgba(255, 121, 0, .1); }
+.st-hero.is-off { border-color: var(--line); background: transparent; }
+.st-big-fire { font-size: 56px; line-height: 1; filter: drop-shadow(0 0 12px rgba(255, 121, 0, .7)); }
+.st-hero.is-off .st-big-fire { filter: grayscale(1) opacity(.5); }
+.st-num { font-size: 40px; color: var(--orange); line-height: 1; }
+.st-title { margin: 6px 0 0; font-weight: 700; }
+.st-note { margin: 6px 0 0; color: var(--muted); font-size: 14px; }
+.st-rules { list-style: none; padding: 0; margin: 0; display: grid; gap: 6px; font-size: 15px; }
+.st-next { margin: 0; text-align: center; font-size: 16px; }
+.st-road { list-style: none; padding: 0 0 0 4px; margin: 0; position: relative; display: grid; gap: 10px; }
+.st-road::before { content: ""; position: absolute; left: 25px; top: 18px; bottom: 18px; width: 4px; border-radius: 4px; background: var(--line); }
+.st-road li { position: relative; display: flex; align-items: center; gap: 12px; }
+.st-dot { position: relative; z-index: 1; flex: none; width: 46px; height: 46px; border-radius: 50%; display: grid; place-items: center; font-size: 22px;
+  background: #2b2219; border: 2px solid var(--line); filter: grayscale(.6); }
+.st-road li.done .st-dot { border-color: var(--orange); background: rgba(255, 121, 0, .18); filter: none; box-shadow: 0 0 12px rgba(255, 121, 0, .4); }
+.st-road li.cur .st-dot { border-color: var(--orange); border-style: dashed; filter: none; }
+.st-goal { display: grid; gap: 2px; flex: 1; padding: 8px 12px; border-radius: 14px; background: #2b2219; border: 1px solid var(--line); }
+.st-goal span { color: var(--muted); font-size: 14px; }
+.st-road li.done .st-goal span { color: var(--text); }
+.st-bar { display: block; height: 6px; border-radius: 4px; background: #3a2e24; overflow: hidden; margin-top: 4px; }
+.st-bar i { display: block; height: 100%; background: var(--orange); }
+.st-soon { text-align: center; color: var(--muted); font-size: 14px; margin: 4px 0 20px; }
+
+/* ⏳ Перший запуск: «Завантажуємо тобі тренажери…» і збирання меню (власниця, 08.11.2026) */
+body.first-load #menu > button, body.first-load #menu > .feedback-btn { visibility: hidden; }
+.gl-loading { text-align: center; color: var(--muted); font-size: 17px; margin: 8px 0 18px; }
+.gl-loading span { animation: glDot 1.2s infinite; } .gl-loading span:nth-child(2) { animation-delay: .2s; } .gl-loading span:nth-child(3) { animation-delay: .4s; }
+@keyframes glDot { 0%, 60%, 100% { opacity: .2; } 30% { opacity: 1; } }
+.menu-assemble .fly-l, .menu-assemble .fly-r { animation: flyL .85s cubic-bezier(.18, 1.35, .4, 1) both; animation-delay: calc(var(--i) * 70ms); }
+.menu-assemble .fly-r { animation-name: flyR; }
+@keyframes flyL { 0% { opacity: 0; transform: translateX(-120vw) rotate(-25deg) scale(.6); } 70% { opacity: 1; transform: translateX(12px) rotate(3deg) scale(1.04); } 100% { transform: none; } }
+@keyframes flyR { 0% { opacity: 0; transform: translateX(120vw) rotate(25deg) scale(.6); } 70% { opacity: 1; transform: translateX(-12px) rotate(-3deg) scale(1.04); } 100% { transform: none; } }
+#menu.menu-assemble { overflow-x: hidden; }
+@media (prefers-reduced-motion: reduce) { .menu-assemble .fly-l, .menu-assemble .fly-r { animation: none; } }
+/* 🏛️ Дати: ⭐ лише обов'язкові / 📚 + додаткові (власниця, 08.11.2026) */
+.ist-scope { display: flex; flex-wrap: wrap; gap: 6px; width: 100%; order: -2; }
+.ist-scope-note { width: 100%; order: -1; margin: 0 0 6px; font-size: 13px; color: var(--muted); }
+/* Меню (власниця, 08.11.2026): 4 основні — великі по 2 в ряд, решта — менші по 3 */
+.game-tile.tile-main { grid-column: span 3; }
+.game-tile.tile-main.tile-soft { grid-column: span 3; flex-direction: column; align-items: flex-start; gap: 0; padding: 18px 16px; background: var(--surface); }
+.game-tile.tile-main.tile-soft .tile-icon { font-size: 34px; }
+.game-tile.tile-top.tile-half { grid-column: span 3; }
+.game-tile.tile-top.tile-full { grid-column: 1 / -1; }
+
+/* 🌳 group-tree.js — вибір групи: «Далі», «Повторити», вікно «Усі групи» з розділами й кружечками (08.11.2026) */
+.tree-box { display: block; }
+.tree-big { display: block; width: 100%; text-align: left; border: 0; border-radius: 16px; padding: 13px 16px; font: inherit; color: #fff; cursor: pointer; margin: 0 0 10px; }
+.tree-big b { display: block; font-size: 18px; line-height: 1.25; }
+.tree-big span { font-size: 14px; opacity: .85; }
+.tree-next { background: var(--orange); box-shadow: 0 4px 0 var(--orange-dark); }
+.tree-next:active { transform: translateY(2px); box-shadow: 0 2px 0 var(--orange-dark); }
+.tree-rep { background: var(--surface); border: 2px solid #f2c230; }
+.tree-rep b { color: #f2c230; }
+.tree-alldone { text-align: center; color: var(--muted); margin: 4px 0 10px; }
+.tree-replist { background: var(--surface); border: 2px solid var(--line); border-radius: 14px; margin: -4px 0 10px; overflow: hidden; }
+.tree-repit { display: flex; align-items: center; gap: 10px; width: 100%; padding: 10px 12px; border: 0; border-bottom: 1px solid var(--line); background: none; color: var(--text); font: inherit; font-size: 15px; text-align: left; cursor: pointer; }
+.tree-repit small { margin-left: auto; color: var(--muted); white-space: nowrap; }
+.tree-repit .tree-dot { width: 20px; height: 20px; flex: none; }
+.tree-repall { display: block; width: 100%; padding: 10px; border: 0; background: rgba(242, 194, 48, .12); color: #f2c230; font: inherit; font-size: 15px; cursor: pointer; }
+.tree-open { display: flex; align-items: center; gap: 10px; width: 100%; padding: 11px 14px; border: 2px dashed var(--line); border-radius: 14px; background: none; color: var(--text); font: inherit; text-align: left; cursor: pointer; }
+.tree-open > span:first-child { font-size: 22px; }
+.tree-open b { font-size: 16px; }
+.tree-open small { display: block; color: var(--muted); font-size: 13px; }
+.tree-arr { color: var(--muted); font-size: 20px; transition: transform .2s; }
+.tree-box .train-tiles { margin-top: 10px; }
+body.tree-lock { overflow: hidden; }
+.tree-ov { position: fixed; inset: 0; z-index: 900; background: var(--bg); overflow-y: auto; -webkit-overflow-scrolling: touch; }
+.tree-ov[hidden] { display: none; }
+.tree-panel { max-width: 560px; margin: 0 auto; padding: 0 16px 120px; }
+.tree-head { position: sticky; top: 0; z-index: 2; display: flex; align-items: center; gap: 8px; padding: 12px 0; background: var(--bg); }
+.tree-back { border: 0; border-radius: 999px; background: var(--brown); color: #fff; font: inherit; padding: 8px 14px; cursor: pointer; }
+.tree-title { flex: 1; font-size: 17px; line-height: 1.2; }
+.tree-multi { border: 1px solid var(--line); border-radius: 999px; background: var(--surface); color: var(--text); font: inherit; font-size: 13px; padding: 7px 10px; cursor: pointer; white-space: nowrap; }
+.tree-multi.on { border-color: var(--orange); }
+.tree-hint { color: var(--muted); font-size: 14px; margin: 0 0 10px; }
+.tree-sec { background: var(--surface); border: 2px solid var(--line); border-radius: 16px; margin-bottom: 8px; overflow: hidden; }
+.tree-sec-h { display: flex; align-items: center; gap: 10px; width: 100%; padding: 12px 14px; border: 0; background: none; color: var(--text); font: inherit; text-align: left; cursor: pointer; }
+.tree-ic { font-size: 24px; flex: none; }
+.tree-nm { flex: 1; min-width: 0; }
+.tree-nm b { display: block; font-size: 16px; }
+.tree-nm small { color: var(--muted); font-size: 13px; }
+.tree-bar { display: block; height: 5px; background: var(--line); border-radius: 3px; margin-top: 5px; overflow: hidden; }
+.tree-bar i { display: block; height: 100%; background: var(--green); }
+.tree-badge { background: #f2c230; color: #3a2a00; border-radius: 10px; padding: 2px 7px; font-size: 12px; font-weight: 700; white-space: nowrap; }
+.tree-sec.open .tree-sec-h .tree-arr { transform: rotate(90deg); }
+.tree-sec-b { display: none; padding: 0 10px 8px; }
+.tree-sec.open .tree-sec-b { display: block; }
+.tree-sec.flat { background: none; border: 0; }
+.tree-sec.flat .tree-sec-b { padding: 0; }
+.tree-sec.flat .tree-topic { background: var(--surface); border: 2px solid var(--line); border-radius: 14px; margin-bottom: 6px; padding: 10px 12px; }
+.tree-topic { display: flex; align-items: center; gap: 8px; padding: 9px 6px; border-top: 1px solid var(--line); }
+.tree-sec-b .tree-topic:first-child { border-top: 0; }
+.tree-tn { flex: 1; min-width: 0; font-size: 15px; line-height: 1.2; }
+.tree-tn small { display: block; color: var(--muted); font-size: 12px; margin-top: 2px; }
+.tree-dots { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 6px; max-width: 62%; }
+.tree-dot { width: 34px; height: 34px; border-radius: 50%; border: 2px solid #6b5543; background: transparent; color: var(--muted); font: inherit; font-size: 14px; font-weight: 700; display: inline-grid; place-items: center; cursor: pointer; position: relative; padding: 0; flex: none; }
+.tree-dot.ok { background: var(--green); border-color: var(--green); color: #fff; }
+.tree-dot.fade { background: #2f6b31; border-color: #2f6b31; color: #cfe8cf; }
+.tree-dot.due { background: #f2c230; border-color: #f2c230; color: #3a2a00; }
+.tree-dot.due::after { content: "🔁"; position: absolute; right: -6px; top: -8px; font-size: 12px; }
+.tree-dot.half { background: linear-gradient(90deg, #8a6a2a 50%, transparent 50%); border-color: #8a6a2a; color: #fff; }
+.tree-dot.next { border-color: var(--orange); color: var(--orange); box-shadow: 0 0 0 3px rgba(255, 121, 0, .25); }
+.tree-dot.picked { background: var(--orange); border-color: #fff; color: #fff; box-shadow: 0 0 0 3px rgba(255, 255, 255, .35); }
+.tree-legend { display: flex; flex-wrap: wrap; gap: 8px 14px; font-size: 13px; color: var(--muted); margin: 12px 0; }
+.tree-legend span { display: inline-flex; align-items: center; gap: 6px; }
+.tree-legend .tree-dot { width: 18px; height: 18px; cursor: default; }
+.tree-legend .tree-dot.due::after { font-size: 9px; right: -5px; top: -6px; }
+.tree-foot { position: fixed; left: 0; right: 0; bottom: 0; padding: 0 16px 16px; pointer-events: none; }
+.tree-go { display: block; width: 100%; max-width: 528px; margin: 0 auto; pointer-events: auto; }
+.tree-ask { position: fixed; left: 0; right: 0; bottom: 0; z-index: 3; max-width: 560px; margin: 0 auto; background: var(--surface); border-top: 2px solid var(--orange); border-radius: 18px 18px 0 0; padding: 16px 16px 22px; transform: translateY(110%); transition: transform .22s; }
+.tree-ask.open { transform: none; }
+.tree-ask b { font-size: 18px; display: block; padding-right: 30px; }
+.tree-ask p { color: var(--muted); margin: 6px 0 12px; font-size: 14px; }
+.tree-ask .tree-ask-go { width: 100%; }
+.tree-ask-x { position: absolute; right: 12px; top: 10px; border: 0; background: none; color: var(--muted); font-size: 20px; cursor: pointer; }
+
+/* 🔋 hw-debt.js — «Спершу врятуй забуте» в ДЗ учнів курсу */
+.ghw-debt { display: flex; flex-direction: column; gap: 6px; padding: 14px; border-radius: 16px; background: rgba(242, 194, 48, .1); border: 2px solid #f2c230; line-height: 1.4; }
+.ghw-debt > b { font-size: 19px; color: #f2c230; }
+.ghw-debt.ok { background: rgba(46, 170, 90, .14); border-color: #2eaa5a; }
+.ghw-debt.ok > b { color: #6fd08f; }
+.ghw-debt-count { color: var(--muted); font-size: 14px; }
+.ghw-debt-list { display: flex; flex-direction: column; gap: 6px; margin-top: 4px; }
+.ghw-debt-it { display: flex; align-items: center; gap: 10px; width: 100%; padding: 10px 12px; border: 2px solid var(--line); border-radius: 12px; background: var(--surface); color: var(--text); font: inherit; text-align: left; cursor: pointer; }
+.ghw-debt-it .ghw-debt-n { flex: 1; min-width: 0; }
+.ghw-debt-it small { color: #f2c230; white-space: nowrap; }
+.ghw-debt-it.done { opacity: .6; cursor: default; }
+.ghw-debt-it.done small { color: #6fd08f; }
+.ghw-go.ghw-locked, .ghw-go:disabled { opacity: .55; cursor: not-allowed; }
+
+/* 🚀 countdown.js — відлік до відкриття: 5 варіантів (?cd=1…5), на всю ширину меню */
+.cd-box { position: relative; width: 100%; box-sizing: border-box; margin: 2px 0 16px; padding: 14px 14px 12px; border-radius: 20px; text-align: center; overflow: hidden; color: #fff; }
+.cd-box .cd-top { font-size: 18px; margin-bottom: 10px; }
+.cd-box .cd-time { display: flex; justify-content: center; align-items: center; gap: 6px; }
+.cd-box .cd-c { flex: 1; max-width: 86px; display: flex; flex-direction: column; padding: 8px 2px; border-radius: 14px; }
+.cd-box .cd-c b { font-size: 30px; line-height: 1.05; font-variant-numeric: tabular-nums; }
+.cd-box .cd-c small { font-size: 12px; opacity: .8; }
+.cd-box .cd-sep { font-style: normal; font-size: 24px; font-weight: 700; opacity: .5; }
+.cd-box .cd-when { margin-top: 10px; font-size: 13px; opacity: .85; }
+.cd-flip { animation: cdFlip .35s ease; }
+@keyframes cdFlip { 0% { transform: translateY(-35%); opacity: .2; } 100% { transform: none; opacity: 1; } }
+/* 1 — бірюзове табло */
+.cd-v1 { background: linear-gradient(135deg, #0f7c7a, #13a39b 55%, #1fc7b4); box-shadow: 0 6px 0 #0a5554; }
+.cd-v1 .cd-c { background: rgba(0, 0, 0, .25); }
+.cd-v1 .cd-sep { display: none; }
+/* 2 — фіолетовий неон, у рядок */
+.cd-v2 { background: #1d1530; border: 2px solid #9b6bff; box-shadow: 0 0 18px rgba(155, 107, 255, .55), inset 0 0 18px rgba(155, 107, 255, .25); }
+.cd-v2 .cd-row { display: flex; align-items: center; gap: 8px; }
+.cd-v2 .cd-l { font-size: 15px; white-space: nowrap; color: #d9c8ff; }
+.cd-v2 .cd-time { flex: 1; gap: 2px; }
+.cd-v2 .cd-c { padding: 2px 0; }
+.cd-v2 .cd-c b { font-size: 28px; color: #c9a8ff; text-shadow: 0 0 10px rgba(155, 107, 255, .9); }
+.cd-v2 .cd-sep { color: #9b6bff; }
+.cd-v2 .cd-when { color: #b9a6e8; }
+/* 3 — золотий квиток */
+.cd-v3 { padding: 0; background: none; overflow: visible; }
+.cd-v3 .cd-tk { display: flex; border-radius: 18px; background: linear-gradient(135deg, #f7d46a, #e9b23a); color: #3a2400; position: relative; }
+.cd-v3 .cd-tk::before, .cd-v3 .cd-tk::after { content: ""; position: absolute; left: 33%; width: 22px; height: 22px; border-radius: 50%; background: var(--bg); transform: translateX(-50%); }
+.cd-v3 .cd-tk::before { top: -11px; } .cd-v3 .cd-tk::after { bottom: -11px; }
+.cd-v3 .cd-tk-l { width: 33%; padding: 12px 8px; border-right: 3px dashed rgba(58, 36, 0, .35); display: flex; flex-direction: column; justify-content: center; gap: 2px; }
+.cd-v3 .cd-tk-l b { font-size: 15px; line-height: 1.15; }
+.cd-v3 .cd-tk-l small { font-size: 11px; letter-spacing: .5px; opacity: .8; }
+.cd-v3 .cd-tk-r { flex: 1; padding: 10px 8px; display: flex; align-items: center; }
+.cd-v3 .cd-time { width: 100%; gap: 2px; }
+.cd-v3 .cd-c b { font-size: 26px; }
+.cd-v3 .cd-sep { font-size: 20px; }
+/* 4 — нічне небо й ракета */
+.cd-v4 { background: linear-gradient(180deg, #0d1b3d 0%, #1b2f66 100%); border: 2px solid #2f4a8f; }
+.cd-v4 .cd-sky { position: absolute; inset: 0; background-image: radial-gradient(1.5px 1.5px at 12% 20%, #fff, transparent), radial-gradient(1px 1px at 30% 70%, #fff, transparent), radial-gradient(1.5px 1.5px at 55% 15%, #fff, transparent), radial-gradient(1px 1px at 78% 55%, #fff, transparent), radial-gradient(1.5px 1.5px at 90% 25%, #fff, transparent), radial-gradient(1px 1px at 45% 45%, #cfe0ff, transparent); opacity: .8; pointer-events: none; }
+.cd-v4 > * { position: relative; }
+.cd-v4 .cd-c { background: rgba(255, 255, 255, .08); }
+.cd-v4 .cd-c b { color: #9fd0ff; }
+.cd-v4 .cd-sep { display: none; }
+.cd-v4 { padding: 9px 12px 12px; }
+.cd-v4 .cd-top { font-size: 15px; margin-bottom: 6px; }
+.cd-v4 .cd-top small { font-size: 12px; opacity: .8; }
+.cd-v4 .cd-c { padding: 3px 2px; border-radius: 10px; flex-direction: row; justify-content: center; align-items: baseline; gap: 4px; }
+.cd-v4 .cd-c b { font-size: 24px; }
+.cd-v4 .cd-c small { font-size: 11px; }
+.cd-v4 .cd-bar { margin: 10px 8px 0; height: 8px; border-radius: 4px; background: rgba(255, 255, 255, .15); position: relative; }
+.cd-v4 .cd-bar i { position: absolute; left: 0; top: 0; bottom: 0; width: calc(var(--p, 0) * 100%); border-radius: 4px; background: linear-gradient(90deg, #4f8cff, #9fd0ff); }
+.cd-v4 .cd-rk { position: absolute; top: -11px; left: calc(var(--p, 0) * 100% - 12px); font-size: 20px; transform: rotate(45deg); }
+/* 5 — малиновий перекидний годинник */
+.cd-v5 { background: linear-gradient(135deg, #b0183f, #e0335f); box-shadow: 0 6px 0 #7a0f2b; }
+.cd-v5 .cd-c { position: relative; background: #2a0d16; border-radius: 10px; box-shadow: 0 3px 0 rgba(0, 0, 0, .35); }
+.cd-v5 .cd-c::after { content: ""; position: absolute; left: 0; right: 0; top: 46%; height: 2px; background: rgba(0, 0, 0, .45); }
+.cd-v5 .cd-c b { font-size: 32px; color: #ffe1e8; }
+.cd-v5 .cd-sep { color: #ffd0dc; opacity: .8; }
+/* вікно «скоро» до відкриття: відлік і «Повідомити» (countdown.js) */
+.soon-cd { display: block; margin-top: 10px; font-size: 26px; font-weight: 700; color: #9fd0ff; font-variant-numeric: tabular-nums; }
+.soon-notify { margin-bottom: 8px; }
+/* 🔎 «Про НМТ-качалку» внизу меню (для пошуку) — згорнуто в один дрібний рядок */
+.seo-about { max-width: 560px; margin: 4px auto 0; padding: 0 16px; color: var(--muted); font-size: 12px; line-height: 1.5; text-align: center; }
+.seo-about summary { cursor: pointer; list-style: none; opacity: .6; font-size: 12px; }
+.seo-about summary::-webkit-details-marker { display: none; }
+.seo-about[open] summary { margin-bottom: 6px; }
+.seo-about a { color: var(--orange); }
+body.off-menu .seo-about { display: none; }
+body:not(.off-menu) #menu { padding-bottom: 6px; } /* без зайвого відступу над «Про НМТ-качалку» */
+
+/* 🏫 шкільна копія (mirror-config.js, GYM_ONLY): кілька плиток — рівними, по дві в ряд */
+.gym-only #game-list > button { grid-column: span 3 !important; }

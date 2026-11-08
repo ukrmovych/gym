@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<script src="../migrate.js?v=1"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#211a14">
+<title>Наголоси: антистрес</title>
+<link rel="icon" type="image/png" href="../favicon.png">
+<style>
+@font-face { font-family: 'Balsamiq Sans'; font-weight: 700; font-display: swap;
+  src: url(../fonts/balsamiq-sans-cyrillic-700-normal.woff2) format('woff2'); unicode-range: U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116; }
+@font-face { font-family: 'Balsamiq Sans'; font-weight: 700; font-display: swap;
+  src: url(../fonts/balsamiq-sans-latin-700-normal.woff2) format('woff2'); unicode-range: U+0000-00FF, U+2000-206F; }
+:root { --bg:#211a14; --surface:#2b2219; --surface-2:#362a20; --line:#45372b; --orange:#FF7900; --green:#4CAF50; --muted:#b9a797; }
+* { box-sizing: border-box; }
+body { margin:0; min-height:100dvh; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:18px;
+  padding:max(16px, env(safe-area-inset-top)) 16px max(16px, env(safe-area-inset-bottom));
+  background: radial-gradient(ellipse 80% 50% at 50% -10%, rgba(255,121,0,.15), transparent 70%), var(--bg);
+  color:#fff; font-family:'Balsamiq Sans','Comic Sans MS',system-ui,sans-serif; font-weight:700; text-align:center;
+  -webkit-tap-highlight-color:transparent; user-select:none; -webkit-user-select:none; overflow-x:hidden; }
+.top { display:flex; flex-direction:column; align-items:center; gap:6px; }
+.top img { width:72px; height:72px; }
+h1 { margin:0; font-size:clamp(24px,7vw,34px); }
+.counter { color:var(--muted); font-size:16px; }
+.counter b { color:var(--green); }
+.card { width:100%; max-width:480px; padding:22px 18px; border-radius:22px; background:var(--surface); border:2px solid var(--line); }
+.q { margin:0 0 16px; color:var(--muted); font-size:19px; }
+.answers { display:grid; gap:12px; }
+button { font:inherit; color:#fff; border:none; cursor:pointer; touch-action:manipulation; }
+.answer { position:relative; min-height:64px; padding:14px 18px; border-radius:16px; background:var(--surface-2);
+  border:2px solid var(--line); box-shadow:0 4px 0 var(--line); font-size:28px; transition:transform .1s ease; }
+.answer:active { transform:translateY(3px); box-shadow:0 1px 0 var(--line); }
+.answer .s { color:var(--orange); }
+.answer .note { display:block; font-size:15px; color:var(--muted); }
+.answer.yes { background:var(--green); border-color:var(--green); box-shadow:0 4px 0 #3a8a3e; animation:boing .5s ease; }
+.answer.yes .s, .answer.yes .note { color:#fff; }
+.msg { min-height:2.6em; margin:16px 0 0; font-size:20px; line-height:1.3; color:var(--green); }
+.msg.show { animation:pop .45s ease-out; }
+@keyframes boing { 30% { transform:scale(1.08) rotate(-2deg); } 60% { transform:scale(.97) rotate(1deg); } 100% { transform:none; } }
+@keyframes pop { from { transform:scale(.6); opacity:0; } to { transform:none; opacity:1; } }
+.bit { position:fixed; z-index:10; pointer-events:none; font-size:22px; will-change:transform,opacity; animation:fly 1.1s cubic-bezier(.2,.8,.3,1) forwards; }
+@keyframes fly { from { transform:translate(-50%,-50%) scale(.6); opacity:1; } to { transform:translate(calc(-50% + var(--dx)), calc(-50% + var(--dy))) rotate(var(--r)) scale(1.1); opacity:0; } }
+.brand { color:#7d6a59; font-size:14px; text-decoration:none; }
+@media (prefers-reduced-motion: reduce) { .bit { display:none; } .answer.yes, .msg.show { animation:none; } }
+</style>
+</head>
+<body>
+<div class="top">
+  <img src="../mascot-surprised.png" alt="">
+  <h1>Наголоси без стресу 😌</h1>
+  <div class="counter">Правильних відповідей: <b id="count">0</b> з <span id="total">0</span> 🔥</div>
+</div>
+<section class="card">
+  <p class="q">Обери будь-який наголос</p>
+  <div id="answers" class="answers"></div>
+  <p id="msg" class="msg"></p>
+</section>
+<a class="brand" href="https://t.me/+GkBggS477tlmODQy" target="_blank" rel="noopener">by @ukr_movych</a>
+<script>
+// Антистрес-версія: будь-яка відповідь правильна 🙂
+const WORDS = [["асиметрІя", "асимЕтрія"], ["агронОмія", "агрономІя"], ["видАння", "вИдання", "виданнЯ"], ["відвезтИ", "відвЕзти"], ["відвестИ", "відвЕсти"], ["віднестИ", "віднЕсти"], ["децимЕтр", "децИметр"], ["довезтИ", "довЕзти"], ["довестИ", "довЕсти"], ["донестИ", "донЕсти"], ["завдАння", "завданнЯ"], ["завезтИ", "завЕзти"], ["завестИ", "завЕсти"], ["занестИ", "занЕсти"], ["зібрАння", "зібраннЯ"], ["зрАння", "зраннЯ"], ["індУстрія", "індустрІя"], ["кіломЕтр", "кілОметр"], ["кОлія", "коліЯ"], ["кулінАрія", "кулінарІя"], ["металУргія", "металургІя"], ["мілімЕтр", "мілІметр"], ["навчАння", "навчаннЯ"], ["нанестИ", "нанЕсти"], ["нестИ", "нЕсти"], ["обрАння", "обраннЯ"], ["перевезтИ", "перевЕзти"], ["перевестИ", "перевЕсти"], ["перенестИ", "перенЕсти"], ["пізнАння", "пізнаннЯ"], ["піцЕрія", "піцерІя"], ["привезтИ", "привЕзти"], ["привестИ", "привЕсти"], ["принестИ", "принЕсти"], ["сантимЕтр", "сантИметр"], ["симетрІя", "симЕтрія"], ["течіЯ", "тЕчія", "течІя"], ["травестІя", "травЕстія", "трАвестія"], ["уподОбання", "уподобАння"], ["читАння", "читаннЯ", "чИтання"], ["Аркушик", "аркУшик"], ["багаторазОвий", "багаторАзовий", "багаторазовИй"], ["безпринцИпний", "безпрИнципний", "безпрнципнИй"], ["бЕшкет", "бешкЕт"], ["блАговіст", "благовІст", "благОвіст"], ["близькИй", "блИзький"], ["болотИстий", "болОтистий", "болотистИй"], ["борОдавка", "бородАвка"], ["босОніж", "босонІж", "бОсоніж"], ["боЯзнь", "бОязнь"], ["бурштинОвий", "бурштИновий", "бурштиновИй"], ["бюлетЕнь", "бЮлетень"], ["вАги", "вагИ"], ["вантажІвка", "вантАжівка"], ["вИгода (користь)", "вигОда (користь)"], ["вигОда (зручність)", "вИгода (зручність)"], ["визвОльний", "вИзвольний", "визвольнИй"], ["вимОга", "вИмога"], ["вИпадок", "випАдок"], ["вирАзний", "вИразний", "виразнИй"], ["вИсіти", "висІти", "висітИ"], ["вИтрата", "витрАта"], ["вишИваний", "вишивАний", "вишиванИй"], ["вІдгомін", "відгОмін"], ["вІдомість (список)", "відОмість (список)"], ["відОмість (дані, популярність)", "вІдомість (дані, популярність)"], ["вІрші", "віршІ"], ["віршовИй", "віршОвий", "вІршовий"], ["вітчИм", "вІтчим"], ["гальмО", "гАльмо"], ["гАльма (у множині)", "гальмА (у множині)"], ["глядАч", "глЯдач"], ["горошИна", "горОшина", "горошинА"], ["граблІ", "грАблі"], ["гуртОжиток", "гуртожИток"], ["данИна", "дАнина", "данинА"], ["дАно", "данО"], ["дЕщиця", "дещИця"], ["де-Юре", "де-юрЕ"], ["джерелО", "джЕрело"], ["дИвлячись", "дивлячИсь"], ["дичАвіти", "дичавІти"], ["діалОг", "діАлог"], ["добовИй", "добОвий"], ["добУток", "дОбуток"], ["довІдник", "довіднИк"], ["дОгмат", "догмАт"], ["дОнька", "донькА"], ["дочкА", "дОчка"], ["дрОва", "дровА"], ["експЕрт", "Експерт"], ["єретИк", "єрЕтик"], ["жалюзІ", "жАлюзі"], ["завчасУ", "завчАсу"], ["зАгадка", "загАдка"], ["заіржАвілий", "заіржавІлий", "заіржавілИй"], ["заіржАвіти", "заіржавІти"], ["закінчИти", "закІнчити"], ["зАкладка", "заклАдка"], ["зАкрутка", "закрУтка"], ["залишИти", "залИшити"], ["замІжня", "заміжнЯ", "зАміжня"], ["зАпонка", "запОнка"], ["зАставка", "застАвка"], ["зАстібка", "застІбка"], ["заробІток", "зАробіток"], ["застОпорити", "застопорИти"], ["звИсока", "звисОка", "звисокА"], ["здАлека", "здалЕка", "здалекА"], ["зобразИти", "зобрАзити"], ["зОзла", "зозлА"], ["зрУчний", "зручнИй"], ["зубОжіння", "зубожІння"], ["кАмбала", "камбалА", "камбАла"], ["каталОг", "катАлог"], ["квартАл", "квАртал"], ["кИшка", "кишкА"], ["кінчИти", "кІнчити"], ["кОлесо", "колесО"], ["кОпчений (дієприкметник)", "копчЕний (дієприкметник)"], ["копчЕний (прикметник)", "кОпчений (прикметник)"], ["корИсний", "кОрисний"], ["кОсий", "косИй"], ["котрИй", "кОтрий"], ["крицЕвий", "крИцевий", "крицевИй"], ["крОїти", "кроЇти"], ["кропивА", "кропИва"], ["кУрятина", "курЯтина", "курятинА"], ["лАте", "латЕ"], ["листопАд", "листОпад"], ["літОпис", "лІтопис", "літопИс"], ["лЮстро", "люстрО"], ["магістЕрський", "магІстерський", "магістерськИй"], ["мАркетинг", "маркЕтинг"], ["мерЕжа", "мережА"], ["напІй", "нАпій"], ["нАскрізний", "наскрІзний", "наскрізнИй"], ["нАчинка", "начИнка"], ["ненАвидіти", "ненавИдіти"], ["ненАвисний", "ненавИсний", "нЕнависний", "ненависнИй"], ["ненАвисть", "нЕнависть"], ["нІздря", "ніздрЯ"], ["новИй", "нОвий"], ["обіцЯнка", "обІцянка"], ["обрУч", "Обруч"], ["одинАдцять", "одИнадцять"], ["одноразОвий", "однорАзовий", "одноразовИй"], ["ознАка", "Ознака"], ["Олень", "олЕнь"], ["оптОвий", "Оптовий", "оптовИй"], ["осетЕр", "осЕтер"], ["отАман", "отамАн"], ["Оцет", "оцЕт"], ["павИч", "пАвич"], ["партЕр", "пАртер"], ["пЕкарський", "пекАрський", "пекарськИй"], ["перЕкис", "пЕрекис", "перекИс"], ["перелЯк", "перЕляк"], ["перЕпад", "перепАд", "пЕрепад"], ["перЕпис", "пЕрепис", "перепИс"], ["піалА", "піАла", "пІала"], ["пІдданий (дієприкметник)", "піддАний (дієприкметник)"], ["піддАний (іменник, істота)", "пІдданий (іменник, істота)"], ["пІдлітковий", "підліткОвий", "підлітковИй"], ["пітнИй", "пІтний"], ["пОдруга", "подрУга"], ["пОзначка", "познАчка"], ["помІщик", "поміщИк"], ["помОвчати", "помовчАти"], ["понЯття", "поняттЯ"], ["порядкОвий", "порЯдковий", "порядковИй"], ["посерЕдині", "посередИні", "посЕредині"], ["прИморозок", "приморОзок"], ["прИчіп", "причІп"], ["прОділ", "продІл"], ["промІжок", "прОміжок"], ["псевдонІм", "псевдОнім"], ["рАзом", "разОм"], ["рЕмінь", "ремІнь"], ["рЕшето", "решетО"], ["рИнковий", "ринкОвий", "ринковИй"], ["рівнИна", "рівнинА"], ["роздрібнИй", "роздрІбний", "рОздрібний"], ["рОзпірка", "розпІрка"], ["рукОпис", "рУкопис"], ["руслО", "рУсло"], ["свЕрдло", "свердлО"], ["серЕдина", "середИна", "серединА"], ["сЕча", "сечА"], ["сільськогосподАрський", "сільськогоспОдарський"], ["сімдесЯт", "сІмдесят"], ["слИна", "слинА"], ["соломИнка", "солОминка"], ["стАтуя", "статУя"], ["стовідсОтковий", "стовідсоткОвий", "стовідсотковИй"], ["стрибАти", "стрИбати"], ["текстовИй", "тЕкстовий"], ["тИгровий", "тигрОвий", "тигровИй"], ["тисОвий", "тИсовий", "тисовИй"], ["тім'янИй", "тім’Яний"], ["тризУб", "трИзуб"], ["тУлуб", "тулУб"], ["украЇнський", "укрАїнський"], ["урочИстий", "урОчистий"], ["усерЕдині", "усередИні"], ["фартУх", "фАртух"], ["фаховИй", "фАховий", "фахОвий"], ["фенОмен", "феномЕн"], ["фОльга", "фольгА"], ["фОрзац", "форзАц"], ["хАос (у міфології: стихія)", "хаОс (у міфології: стихія)"], ["хаОс (безлад)", "хАос (безлад)"], ["цАрина", "царинА", "царИна"], ["цемЕнт", "цЕмент"], ["цЕнтнер", "центнЕр"], ["ціннИк", "цІнник"], ["чарівнИй", "чарІвний"], ["черговИй", "чергОвий"], ["чорнОзем", "чорнозЕм"], ["чорнОслив", "чорнослИв"], ["чотирнАдцять", "чотИрнадцять"], ["шляхопровІд", "шляхопрОвід"], ["шовкОвий", "шовковИй", "шОвковий"], ["шофЕр", "шОфер"], ["щЕлепа", "щелЕпа"], ["щИпці", "щипцІ"], ["щодобовИй", "щодобОвий"], ["ярмаркОвий", "Ярмарковий", "ярмарковИй"], ["алфАвіт", "алфавІт", "Алфавіт"], ["веснЯний", "веснянИй", "вЕсняний"], ["пОмилка", "помИлка", "помилкА"], ["мАбуть", "мабУть"], ["зАвжди", "завждИ"]];
+const PHRASES = [
+  "та похуй, ти все одно добре знаєш українську",
+  "поїбать ваще",
+  "яка нахуй різниця",
+  "ну супер",
+  "єбать ти мовознавець",
+  "шли то все нахуй (Леся Українка)"
+];
+const BITS = ["🎉", "✨", "💛", "💙", "⭐", "🔥", "🥳", "👍", "💪", "🌻"];
+let order = [], count = 0, total = 0, phrase = 0, busy = false;
+
+function shuffle(a) { for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
+
+function render(btn, word) {
+  const m = word.match(/^(.*?)\s*\((.+)\)\s*$/);
+  const main = m ? m[1] : word;
+  const w = document.createElement("span");
+  for (const ch of main) {
+    if (ch !== ch.toLowerCase()) { const s = document.createElement("span"); s.className = "s"; s.textContent = ch; w.appendChild(s); }
+    else w.appendChild(document.createTextNode(ch));
+  }
+  btn.appendChild(w);
+  if (m) { const n = document.createElement("span"); n.className = "note"; n.textContent = m[2]; btn.appendChild(n); }
+}
+
+function burst(x, y) {
+  for (let i = 0; i < 18; i++) {
+    const b = document.createElement("span");
+    b.className = "bit";
+    b.textContent = BITS[Math.floor(Math.random() * BITS.length)];
+    const angle = Math.random() * Math.PI * 2, dist = 80 + Math.random() * 140;
+    b.style.left = x + "px"; b.style.top = y + "px";
+    b.style.setProperty("--dx", Math.cos(angle) * dist + "px");
+    b.style.setProperty("--dy", Math.sin(angle) * dist - 40 + "px");
+    b.style.setProperty("--r", (Math.random() * 360 - 180) + "deg");
+    document.body.appendChild(b);
+    setTimeout(() => b.remove(), 1200);
+  }
+}
+
+function next() {
+  if (!order.length) order = shuffle([...WORDS]);
+  const words = shuffle([...order.pop()]);
+  const box = document.getElementById("answers");
+  box.innerHTML = "";
+  words.forEach(word => {
+    const btn = document.createElement("button");
+    btn.className = "answer";
+    render(btn, word);
+    btn.addEventListener("click", e => {
+      if (busy) return;
+      busy = true;
+      btn.classList.add("yes");
+      const r = btn.getBoundingClientRect();
+      burst(e.clientX || r.left + r.width / 2, e.clientY || r.top + r.height / 2);
+      count++; total++;
+      document.getElementById("count").textContent = count;
+      document.getElementById("total").textContent = total;
+      const msg = document.getElementById("msg");
+      msg.textContent = PHRASES[phrase];
+      phrase = (phrase + 1) % PHRASES.length;
+      msg.classList.remove("show"); void msg.offsetWidth; msg.classList.add("show");
+      setTimeout(() => { busy = false; next(); }, 1100);
+    });
+    box.appendChild(btn);
+  });
+}
+next();
+</script>
+<script src="../emoji.js?v=20261108c"></script> <!-- 😀 смайлики як у Telegram -->
+</body>
+</html>

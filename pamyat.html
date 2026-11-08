@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Як працює забування</title>
+<!-- Довідка для учнів: чому забуваємо і як повторювати (посилання з підсумку тренування, memory.js → memOverNote) -->
+<link rel="stylesheet" href="style.css?v=20261104e">
+<style>
+  body { padding: 14px 16px 48px; max-width: 680px; margin: 0 auto; }
+  .back { display: inline-block; margin: 2px 0 10px; color: var(--muted); text-decoration: none; font-size: 15px; }
+  h1 { font-size: 28px; margin: 4px 0 6px; text-align: center; }
+  .lead { text-align: center; color: var(--muted); margin: 0 0 18px; font-size: 16px; line-height: 1.45; }
+  .blk { background: var(--surface); border: 2px solid var(--line); border-radius: 16px; padding: 14px 16px; margin-bottom: 14px; }
+  .blk h2 { font-size: 20px; margin: 0 0 8px; }
+  .blk p, .blk li { font-size: 15.5px; line-height: 1.55; color: #e9dfd5; font-weight: 400; }
+  .blk p { margin: 0 0 8px; }
+  .blk ul { margin: 0; padding-left: 20px; }
+  .blk b { color: var(--orange); font-weight: 700; }
+  .chart { width: 100%; height: auto; display: block; margin: 6px 0 4px; }
+  .legend { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 13px; color: var(--muted); }
+  .legend span::before { content: ''; display: inline-block; width: 14px; height: 4px; border-radius: 2px; margin-right: 6px; vertical-align: middle; background: var(--c); }
+  .steps { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin-top: 6px; }
+  .step { background: var(--surface-2); border-radius: 12px; padding: 10px 6px; text-align: center; }
+  .step b { display: block; font-size: 18px; color: var(--orange); }
+  .step span { font-size: 12.5px; color: var(--muted); }
+  .demo { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin: 8px 0 4px; }
+  .demo .group-tile { width: 100%; min-height: 96px; pointer-events: none; }
+  .cap { font-size: 12px; color: var(--muted); text-align: center; margin-top: 4px; line-height: 1.25; }
+  .go { display: block; text-align: center; margin-top: 8px; text-decoration: none; }
+</style>
+</head>
+<body>
+  <a class="back" href="./" onclick="if (history.length > 1) { history.back(); return false; }">‹ Назад до гри</a>
+  <h1>🧠 Як працює забування</h1>
+  <p class="lead">І як вивчити наголоси, фразеологізми та правила так, щоб на НМТ усе згадалося, — витративши якнайменше часу.</p>
+
+  <section class="blk">
+    <h2>📉 Мозок постійно «прибирає»</h2>
+    <p>Усе нове мозок спершу вважає неважливим і швидко викидає. Ще у XIX столітті вчений Герман Еббінгауз перевірив це на собі:
+    <b>за першу годину</b> зникає помітна частина вивченого, <b>за добу</b> — часто більше половини. Далі забування сповільнюється.</p>
+    <p>Тобто найнебезпечніші — <b>перші години</b> після вивчення. Саме тоді й варто «підхопити» тему.</p>
+    <svg id="chart" class="chart" viewBox="0 0 320 170" role="img" aria-label="Графік: як забувається вивчене без повторень і з повтореннями"></svg>
+    <div class="legend"><span style="--c:#e0533d">без повторень</span><span style="--c:#4CAF50">з повтореннями вчасно</span></div>
+  </section>
+
+  <section class="blk">
+    <h2>🔁 Повторювати — тоді, коли вже трохи забув</h2>
+    <p>Кожного разу, коли ти <b>згадуєш</b> (а не просто перечитуєш), мозок робить висновок: «це потрібно!» — і тримає знання довше.
+    Найсильніше пам'ять міцніє, коли згадувати вже трошки важко, але ще виходить.</p>
+    <p>Тому інтервали між повтореннями ростуть. Якщо щоразу все правильно:</p>
+    <div class="steps">
+      <div class="step"><b>~5 год</b><span>того ж дня, краще ввечері</span></div>
+      <div class="step"><b>завтра</b><span>після сну</span></div>
+      <div class="step"><b>2 дні</b><span>а далі ще рідше</span></div>
+      <div class="step"><b>тиждень</b><span></span></div>
+      <div class="step"><b>3 тижні</b><span></span></div>
+      <div class="step"><b>2 місяці</b><span>і так до НМТ</span></div>
+    </div>
+    <p style="margin-top:10px">Помилився — не страшно: інтервал просто стане коротшим, і гра нагадає раніше.</p>
+  </section>
+
+  <section class="blk">
+    <h2>😴 Сон — твоя суперсила</h2>
+    <p>Уночі мозок «переписує» вивчене за день у довгу пам'ять. Тому: повтори тему <b>ввечері перед сном</b> — і ще раз
+    <b>наступного дня</b>. Підліткам потрібно 8–10 годин сну: недоспав — запам'ятав гірше, хоч скільки зубри.</p>
+  </section>
+
+  <section class="blk">
+    <h2>🚫 Чому зубріння не працює</h2>
+    <ul>
+      <li>Пройти групу 5 разів поспіль за вечір ≈ пройти її 1 раз: мозок ще все пам'ятає, і повторення «не рахується».</li>
+      <li>5 разів <b>у різні дні</b> — і тема залишиться з тобою на місяці.</li>
+      <li>Ніч перед НМТ — найгірший час учити нове: забудеш уже за кілька днів (а то й зранку 🙃).</li>
+    </ul>
+  </section>
+
+  <section class="blk">
+    <h2>🎨 Як це показує гра</h2>
+    <p><b>Колір</b> плитки — наскільки добре ти вивчив групу: від червоно-жовтого до зеленого.
+    <b>Яскравість</b> — скільки пам'ятаєш саме зараз: без повторень плитка поступово блякне. Коли пора — з'являється «🔁 повтори».</p>
+    <div class="demo" id="demo"></div>
+    <p style="margin-top:8px">Групи, які час повторити, гра показує першими. 5–10 хвилин на день — і всі плитки залишаться яскравими до самого НМТ 💪</p>
+  </section>
+
+  <a class="btn-primary go" href="./" onclick="if (history.length > 1) { history.back(); return false; }">▶ До тренування</a>
+
+<script>
+function storageGet(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
+function storageSet() {}
+function plural(n, one, few, many) { const a = Math.abs(n) % 100, b = a % 10; return a > 10 && a < 20 ? many : b === 1 ? one : b >= 2 && b <= 4 ? few : many; }
+</script>
+<script src="memory.js?v=20261107b"></script>
+<script>
+// Графік: пам'ять за 30 днів без повторень і з повтореннями вчасно (та сама модель, що в грі)
+(function () {
+  const W = 320, H = 170, L = 34, B = 140, T = 12, Rr = 312, D = 30;
+  const x = d => L + (Rr - L) * d / D, y = r => B - (B - T) * r;
+  const pts = (f) => { const out = []; for (let i = 0; i <= 300; i++) { const d = D * i / 300; out.push(`${x(d).toFixed(1)},${y(f(d)).toFixed(1)}`); } return out.join(" "); };
+  const once = d => memRecall({ s: 0.2, t: 0 }, d * MEM_DAY);
+  // повторення вчасно: кожне — коли пам'ять падає до 90 %, стабільність росте за правилом гри (точність 100 %)
+  const reviews = []; let s = 0.2, t0 = 0;
+  while (t0 + s < D) { const k = Math.min(1.5, Math.max(0.1, 0.1 + 9 * 0.1)); t0 += s; reviews.push(t0); s = s * (1 + 2.2 * k); }
+  const spaced = d => { let last = 0, st = 0.2, ss = 0.2; for (const r of reviews) { if (d < r) break; last = r; st = ss = ss * 3.2; } return memRecall({ s: last ? st : 0.2, t: 0 }, (d - last) * MEM_DAY); };
+  const grid = [0, 0.5, 1].map(r => `<line x1="${L}" x2="${Rr}" y1="${y(r)}" y2="${y(r)}" stroke="#45372b" stroke-width="1"/><text x="${L - 6}" y="${y(r) + 4}" fill="#b9a797" font-size="10" text-anchor="end">${r * 100}%</text>`).join("");
+  const ticks = [0, 7, 14, 30].map(d => `<text x="${x(d)}" y="${B + 16}" fill="#b9a797" font-size="10" text-anchor="middle">${d === 0 ? "день 0" : d + " дн"}</text>`).join("");
+  const dots = reviews.map(r => `<circle cx="${x(r)}" cy="${y(0.9)}" r="3" fill="#4CAF50"/>`).join("");
+  document.getElementById("chart").innerHTML = grid + ticks +
+    `<polyline points="${pts(once)}" fill="none" stroke="#e0533d" stroke-width="3" stroke-linejoin="round"/>` +
+    `<polyline points="${pts(spaced)}" fill="none" stroke="#4CAF50" stroke-width="3" stroke-linejoin="round"/>` + dots;
+})();
+// Плитки-приклади
+(function () {
+  const demo = document.getElementById("demo");
+  [[1, 1, "щойно вивчив"], [1, 0.82, "минуло кілька днів"], [0.6, 0.97, "вивчив наполовину"]].forEach(([a, r, cap], i) => {
+    const wrap = document.createElement("div");
+    const btn = document.createElement("div");
+    btn.className = "group-tile train-tile";
+    btn.innerHTML = `<span class="group-label">${["А–Б", "В", "Г–Д"][i]}</span><span class="group-info">${a >= 1 ? "✓ вивчено" : Math.round(a * 100) + "%"}</span>`;
+    memPaint(btn, { a, r, due: r < MEM_DUE, days: 1 });
+    const c = document.createElement("div");
+    c.className = "cap";
+    c.textContent = cap;
+    wrap.append(btn, c);
+    demo.appendChild(wrap);
+  });
+})();
+</script>
+<script src="emoji.js?v=20261108c"></script> <!-- 😀 смайлики як у Telegram -->
+</body>
+</html>

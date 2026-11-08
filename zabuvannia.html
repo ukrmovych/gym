@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex, nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Індикація забування</title>
+<!-- Сторінка для власниці: варіанти вигляду плиток із забуванням (memory.js). У грі — …/?b&view=N -->
+<link rel="stylesheet" href="style.css?v=20261104e">
+<style>
+  body { padding: 16px; max-width: 760px; margin: 0 auto; }
+  h1 { font-size: 24px; margin: 8px 0 4px; text-align: center; }
+  .lead { color: var(--muted); text-align: center; margin: 0 0 16px; font-size: 15px; line-height: 1.4; }
+  .slider { position: sticky; top: 0; z-index: 5; background: var(--bg); padding: 10px 0 12px; border-bottom: 1px solid var(--line); margin-bottom: 14px; }
+  .slider label { display: block; text-align: center; font-size: 17px; margin-bottom: 6px; }
+  .slider input { width: 100%; accent-color: var(--orange); }
+  .variant { background: var(--surface); border: 2px solid var(--line); border-radius: 16px; padding: 14px; margin-bottom: 16px; }
+  .variant h2 { margin: 0 0 4px; font-size: 20px; }
+  .variant p { margin: 0 0 12px; color: var(--muted); font-size: 14px; line-height: 1.4; }
+  .variant a { color: var(--orange); }
+  .demo-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+  .demo-grid > div { display: flex; flex-direction: column; min-width: 0; }
+  .demo-grid .group-tile { width: 100%; flex: 1; min-height: 96px; }
+  .cap { font-size: 11px; color: var(--muted); text-align: center; margin-top: 4px; line-height: 1.25; }
+  .how { background: var(--surface-2); border-radius: 14px; padding: 12px 14px; font-size: 14px; line-height: 1.5; color: var(--muted); }
+  .how b { color: var(--text); }
+</style>
+</head>
+<body>
+  <h1>🧠 Як показати, що знання згасають</h1>
+  <p class="lead">Колір плитки — наскільки добре вивчено групу (червоно-жовтий → зелений).<br>
+  Яскравість — скільки учень пам'ятає <b>зараз</b>: з часом колір блякне. Коли пора повторити — «🔁 повтори».<br>
+  Посуньте повзунок, щоб «прожити» час без повторень.
+  <br><a href="simulator.html" style="color:var(--orange)">🎮 Симулятор: «потренуватися» в будь-якій грі й перемотувати час →</a></p>
+
+  <div class="slider">
+    <label>Минуло без повторення: <b id="days-out">0 днів</b></label>
+    <input id="days" type="range" min="0" max="14" step="1" value="0">
+  </div>
+
+  <div id="variants"></div>
+
+  <div class="how">
+    <b>Як рахуються інтервали.</b> Перше тренування групи без помилок → повторити <b>через ~5 годин</b> (того ж дня, краще ввечері перед сном),
+    далі — <b>наступного дня</b> після сну, і що далі, то інтервал росте приблизно втричі: <b>5 год → 15 год → 2 → 7 → 21 → 67 днів</b>.
+    Повторили зарано — інтервал майже не росте (зубріння нічого не дає). Багато помилок — інтервал коротшає.
+    Плитка підказує повторити, коли ймовірність згадати падає до ~90 %.
+    <br><br>На плитках нижче: 1-ша колонка — вивчено ідеально (100 %), 2-га — на 75 %, 3-тя — на 45 %.
+    Рядок 1 — вивчено вперше (пам'ять тримається ~5 годин), рядок 2 — після кількох повторень (~2 дні), рядок 3 — міцно (~3 тижні).
+  </div>
+
+<script>
+// Заглушки з script.js, потрібні memory.js
+function storageGet(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
+function storageSet() {}
+function plural(n, one, few, many) { const a = Math.abs(n) % 100, b = a % 10; return a > 10 && a < 20 ? many : b === 1 ? one : b >= 2 && b <= 4 ? few : many; }
+</script>
+<script src="memory.js?v=20261107b"></script>
+<script>
+const VARIANTS = [
+  [1, "1. Згасання", "Уся плитка кольору знань. З часом колір тьмяніє до сірого — як вицвіла фотографія."],
+  [2, "2. Батарейка", "Рамка — колір знань, у куточку — «заряд» пам'яті, що сідає з часом (від зеленого до червоного)."],
+  [3, "3. Сяйво", "Плитка світиться кольором знань; що давніше тренування, то слабше сяйво."],
+  [4, "4. Рослинка", "Як «Згасання», але м'якше, і над назвою — рослинка: 🌳 🌿 🌱 → 🍂 → 🥀, коли знання в'януть."],
+  [5, "5. Згасання + батарейка", "Колір блякне, як у «Згасанні», а над назвою — ще й заряд пам'яті."],
+  [6, "6. Згасання + рослинка", "Колір блякне, як у «Згасанні», а над назвою — рослинка, що в'яне."]
+];
+const ROWS = [[0.2, "вперше"], [2, "кілька повторень"], [21, "міцно"]];
+const STEPS = [0, 2 / 24, 5 / 24, 12 / 24, 1, 2, 3, 5, 7, 10, 14, 21, 30, 45, 60];
+const stepName = d => d < 1 ? `${Math.round(d * 24)} ${plural(Math.round(d * 24), "година", "години", "годин")}` : `${d} ${plural(d, "день", "дні", "днів")}`;
+const COLS = [[1, "100 %"], [0.75, "75 %"], [0.45, "45 %"]];
+const LETTERS = ["А", "Б", "В", "Г", "Ґ", "Д", "Е", "Є", "Ж"];
+
+function draw() {
+  const days = STEPS[Number(document.getElementById("days").value)];
+  document.getElementById("days-out").textContent = stepName(days);
+  const box = document.getElementById("variants");
+  box.innerHTML = "";
+  VARIANTS.forEach(([v, name, desc]) => {
+    const sec = document.createElement("section");
+    sec.className = "variant";
+    sec.innerHTML = `<h2>${name}</h2><p>${desc} Спробувати в грі: <a href="./?b&view=${v}">відкрити бету з цим варіантом</a></p>`;
+    const grid = document.createElement("div");
+    grid.className = "demo-grid";
+    let li = 0;
+    ROWS.forEach(([s, rowName]) => COLS.forEach(([a, colName]) => {
+      const m = { s, t: Date.now() - days * MEM_DAY, a };
+      const r = memRecall(m);
+      const st = { a, r, due: r < MEM_DUE, days: s - days, s };
+      const wrap = document.createElement("div");
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "group-tile train-tile";
+      btn.innerHTML = `<span class="group-label">${LETTERS[li++]}</span><span class="group-info">${a >= 1 ? "✓ вивчено" : Math.round(a * 100) + "%"}</span>`;
+      memPaint(btn, st, v);
+      const cap = document.createElement("div");
+      cap.className = "cap";
+      cap.textContent = `${colName}, ${rowName} · пам'ять ${Math.round(r * 100)}%`;
+      wrap.append(btn, cap);
+      grid.appendChild(wrap);
+    }));
+    sec.appendChild(grid);
+    box.appendChild(sec);
+  });
+}
+document.getElementById("days").addEventListener("input", draw);
+draw();
+</script>
+<script src="emoji.js?v=20261108c"></script> <!-- 😀 смайлики як у Telegram -->
+</body>
+</html>

@@ -1,0 +1,1464 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<script src="../migrate.js?v=2"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#211a14">
+<title>Статистика і відгуки</title>
+<link rel="icon" type="image/png" href="../favicon.png">
+<style>
+.ts-sub { margin: 12px 0 6px; font-weight: 700; }
+.sk-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px; margin-bottom: 8px; }
+.sk-hours { display: grid; grid-template-columns: repeat(24, 1fr); gap: 3px; height: 150px; align-items: end; margin: 8px 0 4px; }
+.sk-h { position: relative; height: 100%; display: flex; flex-direction: column-reverse; padding-bottom: 16px; }
+.sk-h i { display: block; width: 100%; border-radius: 3px 3px 0 0; }
+.sk-h span { position: absolute; bottom: 0; left: 0; right: 0; text-align: center; font-size: 10px; color: #b9a797; }
+.sk-h span.sk-19 { color: var(--orange); font-weight: 700; }
+.sk-self { background: var(--orange); } .sk-rem { background: #4CAF50; }
+.sk-key { display: inline-block; width: 10px; height: 10px; border-radius: 2px; vertical-align: middle; }
+.jr-chips { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 8px 0 14px; }
+.jr-archs { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 10px; }
+.jr-arch { border: 1px solid #45372b; border-radius: 12px; padding: 10px 12px; background: #2b2219; }
+.jr-arch p { margin: 6px 0 0; }
+.jr-arch-h { display: flex; justify-content: space-between; gap: 8px; font-size: 16px; }
+.jr-bar { height: 8px; background: #3a2e24; border-radius: 6px; overflow: hidden; margin-top: 6px; flex: 1; min-width: 60px; }
+.jr-bar i { display: block; height: 100%; background: var(--orange); border-radius: 6px; }
+.jr-map { overflow-x: auto; border: 1px solid #45372b; border-radius: 12px; background: #241c15; padding: 8px; }
+.jr-map svg { display: block; }
+.jr-head { fill: #b9a797; font-size: 13px; font-weight: 700; }
+.jr-lbl { fill: #fff; font-size: 12.5px; }
+.jr-routes { padding-left: 0; list-style: none; display: grid; gap: 8px; }
+.jr-routes li { display: flex; gap: 10px; align-items: flex-start; border-bottom: 1px solid #45372b; padding-bottom: 8px; }
+.jr-n { flex: none; min-width: 84px; color: var(--orange); font-weight: 700; font-size: 14px; }
+.jr-route { display: flex; flex-wrap: wrap; gap: 4px; align-items: center; }
+.jr-step { background: #3a2e24; border-radius: 999px; padding: 3px 10px; font-size: 13px; }
+.jr-step.jr-end { background: transparent; border: 1px solid #7a5a45; }
+.jr-ar { color: #b9a797; }
+.jr-two { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; }
+.jr-row { display: flex; align-items: center; gap: 8px; font-size: 14px; margin: 6px 0; }
+.jr-row > span { flex: 0 0 46%; } .jr-row > b { flex: none; font-size: 13px; }
+
+.fb.ts-sus { border-color: #e0533d; box-shadow: 0 0 0 2px rgba(224,83,61,.35); }
+.ts-fold { cursor: pointer; } .ts-fold td:first-child::before { content: "▸ "; } .ts-fold.open td:first-child::before { content: "▾ "; }
+.ts-subrow td { font-size: 12px; color: #b9a797; } .ts-subrow td:first-child { padding-left: 22px; }
+.tf-shot { display: block; max-width: min(100%, 360px); max-height: 70vh; margin-top: 8px; border-radius: 10px; border: 1px solid #45372b; }
+.tf-place { font-size: 12px; color: #b9a797; margin: 4px 0 0; }
+.ts-tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); gap: 6px; }
+.ts-tile { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; min-height: 62px; padding: 6px 4px;
+  border: 2px solid #45372b; border-radius: 10px; background: #2b2219; font-size: 13px; text-align: center; }
+.ts-tile small { font-size: 10.5px; opacity: .85; font-weight: 400; }
+.ts-scroll { overflow-x: auto; max-width: 100%; }
+#ts-list article { min-width: 0; overflow: hidden; }
+#ts-list { min-width: 0; }
+.ts-table { border-collapse: collapse; font-size: 13px; min-width: 520px; }
+.ts-table th, .ts-table td { padding: 4px 8px; border-bottom: 1px solid #45372b; text-align: left; }
+.ts-ev { margin: 6px 0; padding-left: 18px; font-size: 13px; line-height: 1.5; }
+.ts-at { color: #b9a797; }
+@font-face { font-family: 'Balsamiq Sans'; font-weight: 700; font-display: swap; src: url(../fonts/balsamiq-sans-cyrillic-700-normal.woff2) format('woff2'); }
+@font-face { font-family: 'Balsamiq Sans'; font-weight: 700; font-display: swap; src: url(../fonts/balsamiq-sans-latin-700-normal.woff2) format('woff2'); unicode-range: U+0000-00FF; }
+:root {
+  --bg: #211a14; --surface: #2b2219; --surface-2: #362a20; --line: #45372b;
+  --orange: #FF7900; --green: #4CAF50; --red: #e0533d; --text: #fff; --muted: #b9a797;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--text); font: 16px/1.4 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+h1, h2, .big { font-family: 'Balsamiq Sans', system-ui, sans-serif; }
+.wrap { max-width: 960px; margin: 0 auto; padding: 20px 16px 48px; }
+header { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 16px; }
+header img { width: 44px; height: 44px; }
+h1 { margin: 0; font-size: 26px; flex: 1; }
+h2 { font-size: 19px; margin: 28px 0 10px; }
+button { font: inherit; cursor: pointer; border: 2px solid var(--line); background: var(--surface-2); color: var(--text); border-radius: 999px; padding: 6px 14px; }
+button:hover { border-color: var(--orange); }
+button.on { background: var(--orange); border-color: var(--orange); color: #211a14; font-weight: 700; }
+.periods { display: flex; gap: 6px; flex-wrap: wrap; }
+.range { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px; margin: 10px 0 0; color: var(--muted); font-size: 14px; }
+.range label { display: flex; align-items: center; gap: 6px; }
+.range input { font: inherit; padding: 6px 10px; border-radius: 10px; border: 2px solid var(--line); background: var(--surface); color: var(--text); color-scheme: dark; }
+.range input:focus { outline: none; border-color: var(--orange); }
+.two { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 10px; }
+.pct { color: var(--muted); font-size: 13px; margin-left: 6px; }
+.muted { color: var(--muted); }
+.small { font-size: 13px; }
+.cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
+.card { background: var(--surface); border: 2px solid var(--line); border-radius: 16px; padding: 12px 14px; }
+.card .big { font-size: 30px; color: var(--orange); line-height: 1.1; }
+.card .label { color: var(--muted); font-size: 14px; }
+.panel { background: var(--surface); border: 2px solid var(--line); border-radius: 16px; padding: 14px; overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; font-size: 15px; }
+th, td { text-align: right; padding: 7px 8px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+th:first-child, td:first-child { text-align: left; }
+th { color: var(--muted); font-weight: 600; font-size: 13px; }
+tr:last-child td { border-bottom: 0; }
+.chart { display: flex; align-items: flex-end; gap: 3px; height: 150px; padding-top: 18px; }
+.chart .col { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; height: 100%; min-width: 0; position: relative; }
+.chart .bar { width: 100%; max-width: 34px; background: var(--orange); border-radius: 5px 5px 0 0; min-height: 2px; }
+.chart .bar.zero { background: var(--line); }
+.chart .val { font-size: 11px; color: var(--muted); margin-bottom: 2px; }
+.chart-labels { display: flex; gap: 3px; margin-top: 4px; }
+.chart-labels span { flex: 1; text-align: center; font-size: 11px; color: var(--muted); min-width: 0; overflow: hidden; }
+.legend { font-size: 13px; color: var(--muted); margin: 0 0 6px; }
+.rows .row { display: flex; align-items: center; gap: 10px; margin: 6px 0; }
+.rows .name { width: 40%; min-width: 110px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.rows .track { flex: 1; background: var(--surface-2); border-radius: 6px; height: 14px; }
+.rows .fill { background: var(--orange); height: 100%; border-radius: 6px; }
+.rows .n { width: 42px; text-align: right; }
+.login { max-width: 360px; margin: 12vh auto 0; text-align: center; }
+.login input { width: 100%; font: inherit; font-size: 18px; padding: 12px 14px; border-radius: 12px; border: 2px solid var(--line); background: var(--surface); color: var(--text); margin: 14px 0 10px; text-align: center; }
+.login input:focus { outline: none; border-color: var(--orange); }
+.login button { width: 100%; padding: 12px; font-size: 17px; }
+.error { color: var(--red); min-height: 1.4em; }
+.note { background: var(--surface-2); border-radius: 12px; padding: 10px 12px; font-size: 14px; color: var(--muted); margin-top: 10px; }
+.views { display: flex; flex-wrap: wrap; gap: 6px; margin: 0 0 12px; }
+.views button { font-size: 17px; padding: 8px 16px; }
+.cl-game { background: var(--surface); border: 2px solid var(--line); border-radius: 16px; padding: 0; }
+.cl-game summary { cursor: pointer; padding: 12px 14px; list-style: none; display: flex; flex-wrap: wrap; gap: 4px 12px; align-items: baseline; }
+.cl-game summary::-webkit-details-marker { display: none; }
+.cl-game summary b { font-size: 17px; }
+.cl-game[open] summary { border-bottom: 1px solid var(--line); }
+.cl-game .panel { border: 0; border-radius: 0 0 16px 16px; }
+.cl-actions { display: flex; gap: 8px; padding: 0 14px 12px; flex-wrap: wrap; }
+.fb-tools { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; margin: 6px 0 12px; }
+.fb-tools label { display: flex; align-items: center; gap: 8px; color: var(--muted); font-size: 14px; cursor: pointer; }
+.fb-tools input { width: 18px; height: 18px; accent-color: var(--orange); }
+.fb-list { display: grid; gap: 10px; }
+.fb { background: var(--surface); border: 2px solid var(--line); border-radius: 16px; padding: 14px; }
+.fb.pub { border-color: rgba(255, 121, 0, .55); }
+.fb-text { margin: 0 0 10px; font-size: 17px; line-height: 1.45; white-space: pre-wrap; overflow-wrap: anywhere; }
+.fb-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; color: var(--muted); font-size: 13px; }
+.fb-meta b { color: var(--text); font-weight: 600; }
+.fb-meta .tag { background: var(--surface-2); border-radius: 999px; padding: 2px 8px; }
+.fb-meta a.tag { color: inherit; }
+.game-links { display: flex; gap: 8px; flex-wrap: wrap; margin: -4px 0 12px; }
+.game-link { display: inline-block; padding: 6px 12px; border-radius: 999px; background: var(--surface-2); color: var(--text); text-decoration: none; font-size: 15px; }
+.login .game-link { margin-top: 12px; }
+.access-new { display: grid; gap: 8px; margin-bottom: 14px; }
+.access-new label, .access-actions label { display: grid; gap: 4px; font-size: 14px; }
+.access-body { padding: 0 14px 12px; min-width: 0; }
+#access-list > .cl-game, #room-list > .cl-game { min-width: 0; }
+#room-list .panel { overflow-x: auto; }
+.access-body .panel { overflow-x: auto; }
+.access-actions input { max-width: 100%; }
+.access-url code { word-break: break-all; font-size: 13px; }
+.access-actions { display: flex; flex-wrap: wrap; gap: 8px; align-items: end; margin: 8px 0 12px; }
+.cl-game summary .tag { font-size: 13px; background: var(--surface-2); border-radius: 999px; padding: 2px 8px; }
+.cl-game tr.muted td { opacity: 0.5; }
+.fb-meta .tag.ok { color: var(--green); }
+.fb-meta .tag.no { color: var(--red); }
+.fb-meta button { margin-left: auto; padding: 4px 12px; font-size: 13px; }
+.fb-answer { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 10px; padding-top: 10px; border-top: 1px dashed var(--surface-2); }
+.fb-answer textarea { flex: 1 1 100%; box-sizing: border-box; width: 100%; padding: 8px 10px; border-radius: 10px; border: 1px solid var(--surface-2); background: var(--bg, transparent); color: inherit; font: inherit; font-size: 15px; resize: vertical; }
+.fb-answer button { padding: 6px 14px; font-size: 14px; }
+.fb-reply-shown { flex: 1 1 100%; margin: 0; padding: 8px 10px; border-radius: 10px; background: var(--surface-2); font-size: 14px; white-space: pre-wrap; overflow-wrap: anywhere; }
+.fb-reply-status { color: var(--muted); font-size: 13px; }
+[hidden] { display: none !important; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <form id="login" class="login" hidden>
+    <img src="../logo.png" alt="" width="96" height="96">
+    <h1>Статистика гри</h1>
+    <input id="password" type="password" placeholder="Пароль" autocomplete="current-password" required>
+    <button class="on" type="submit">Увійти</button>
+    <p id="login-error" class="error"></p>
+    <p class="muted small">Пароль показується внизу, коли запускаєш <b>stats.sql</b> у Supabase.</p>
+    <a class="game-link" href="../">‹ До гри</a>
+  </form>
+
+  <main id="dash" hidden>
+    <header>
+      <img src="../logo.png" alt="">
+      <h1>Статистика гри</h1>
+      <button id="logout" type="button">Вийти</button>
+    </header>
+    <nav class="game-links">
+      <a class="game-link" href="../?b">🧪 Бета гри</a>
+      <a class="game-link" href="../">🎮 Основна гра</a>
+    </nav>
+    <div class="views" id="views">
+      <button type="button" data-view="stats" class="on">📊 Статистика</button>
+      <button type="button" data-view="feedback">💬 Відгуки <span id="fb-count"></span></button>
+      <button type="button" data-view="classes">🏫 Класи <span id="cl-count"></span></button>
+      <button type="button" data-view="pro">🦆 PRO <span id="pro-count"></span></button>
+      <button type="button" data-view="access">🔑 Доступи</button>
+      <button type="button" data-view="students">🎓 Мої учні <span id="st-count"></span></button>
+      <button type="button" data-view="testers">🧪 Тестери <span id="ts-count"></span></button>
+      <button type="button" data-view="plans">🧮 Плани</button>
+      <button type="button" data-view="journeys">🗺 Шляхи гравців</button>
+      <button type="button" data-view="streaks">🔥 Вогники</button>
+    </div>
+    <div id="stats-view">
+    <div class="periods" id="periods">
+      <button type="button" data-preset="today">Сьогодні</button>
+      <button type="button" data-preset="yesterday">Вчора</button>
+      <button type="button" data-preset="7">7 днів</button>
+      <button type="button" data-preset="30">30 днів</button>
+      <button type="button" data-preset="month">Цей місяць</button>
+      <button type="button" data-preset="prevmonth">Минулий місяць</button>
+      <button type="button" data-preset="all">Увесь час</button>
+      <button type="button" id="refresh" title="Оновити">↻</button>
+    </div>
+    <form class="range" id="range">
+      <label>з <input type="date" id="from" required></label>
+      <label>по <input type="date" id="to" required></label>
+      <button type="submit" class="on">Показати</button>
+    </form>
+    <p id="status" class="muted small"></p>
+    <div id="content"></div>
+    </div>
+    <div id="feedback-view" hidden>
+      <div class="fb-tools">
+        <label><input type="checkbox" id="fb-only-pub" checked> лише ті, що можна публікувати</label>
+        <label><input type="checkbox" id="fb-only-good"> лише з оцінкою 4–5</label>
+        <span id="fb-summary" class="muted small"></span>
+      </div>
+      <div id="fb-list" class="fb-list"></div>
+    </div>
+    <div id="classes-view" hidden>
+      <h2>👥 Класи учнів («Мій клас»)</h2>
+      <p class="muted small">Класи, які створили учні чи вчителі: учасники і їхні найкращі результати в кожній грі. Натисни на клас, щоб побачити таблицю.</p>
+      <div id="room-list" class="fb-list"></div>
+      <h2>🏫 Ігри для класу (онлайн)</h2>
+      <p class="muted small">Ігри для класу: підсумки кожної гри з нікнеймами учнів, датою й часом. Натисни на гру, щоб побачити результати.</p>
+      <div id="cl-list" class="fb-list"></div>
+    </div>
+    <div id="pro-view" hidden>
+      <p class="muted small">Звернення «Підписка є, а доступу немає». Перевір підписку в Base, зв'яжися з учнем (йому обіцяно відповідь протягом 24 годин) і познач звернення вирішеним.</p>
+      <div id="pro-list" class="fb-list"></div>
+      <h3 style="margin-top:18px">🦆 Пропозиція підписки новачкам</h3>
+      <p class="note">Новачки (перший вхід з 05.11.2026) бачать «🔒 PRO» і кнопку «🦆 Стати учасником спільноти й відкрити всі тренажери» (без ціни). Показ — новачок побачив пропозицію; натискання — перейшов на сторінку підписки в monobase. Купівлі тут не видно — їх видно в Base.</p>
+      <div id="upsell-stats" class="fb-list"></div>
+      <h3 style="margin-top:18px">🤖 Підписка на бота @ukrmovych_bot</h3>
+      <p class="note">У Telegram-мініапці грати можуть лише підписані на @ukrmovych_bot. Тут — скільки людей побачили вимогу підписатися і скільки з них підписалися (по днях).</p>
+      <div id="botgate-stats" class="fb-list"></div>
+      <h3 style="margin-top:18px">🎁 Демо-доступ новачків</h3>
+      <p class="note">Новачки (з 05.11.2026, без PRO) мають у кожному PRO-тренажері першу групу. Тут — скільки разів і скільки людей відкривали демо-тренажери, скільки тренувань пройшли в демо і скільки разів звідти перейшли на monobase.</p>
+      <div id="demo-stats" class="fb-list"></div>
+      <h3 style="margin-top:18px">📱 Пристрої PRO</h3>
+      <p class="note">Одна підписка — один Telegram-акаунт і щонайбільше 2 пристрої. Новий третій пристрій учень підключає сам: гра пропонує відключити один зі старих. «Скинути пристрої» — відключити всі разом.</p>
+      <div id="pro-devices" class="fb-list"></div>
+    </div>
+    <div id="students-view" hidden>
+      <h2>🎓 Мої учні (учні курсу)</h2>
+      <p class="muted small">Учні платформи, які натиснули в грі «🎓 Я на курсі Укрмовича» і ввели свій код. Їм відкрито всі тренажери з бети. Тут — скільки часу кожен провів у кожній грі (⏱, лише активна гра), найкращий результат і скільки разів грав. Час рахується з 01.11.2026. Натисни на учня — деталі по іграх.</p>
+      <div id="st-list" class="fb-list"></div>
+    </div>
+    <div id="streaks-view" hidden>
+      <h2>🔥 Вогники</h2>
+      <p class="muted small">Скільки учнів мають вогник, якої довжини, коли продовжують і чи допомагає нагадування бота о 19:00. Рахується від 08.11.2026.</p>
+      <div id="sk-box"></div>
+    </div>
+    <div id="journeys-view" hidden>
+      <h2>🗺 Шляхи гравців</h2>
+      <p class="muted small">Як поводяться гравці від першого заходу: що відкривають, де кидають і чи повертаються. Рахується з подій гри за останні 120 днів, щоразу свіже.</p>
+      <div id="jr-box"></div>
+    </div>
+    <div id="plans-view" hidden>
+      <h2>🧮 Як учні рахують свій план</h2>
+      <p class="muted small">У «📅 Мій план» учень сам рахує: скільки в нього занять до дати, скільки груп брати на заняття і скільки груп знатиме до кожної контрольної точки. Тут — лише числа, які учні <b>вписали самі</b> (не «заповни автоматично»), і правильна відповідь.</p>
+      <div id="pa-box" class="fb-list"></div>
+    </div>
+    <div id="testers-view" hidden>
+      <h2>🧪 Тестери</h2>
+      <p class="muted small">Ті, хто має PRO-доступ (учасники «НМТ-качок»). Час у кожній грі, що відкривали, як проходили тренування, останні дії і як у тестера зараз виглядають плитки тренування з індикацією забування (гра тестера надсилає знімок раз на 5 хв).</p>
+      <h3>💬 Відгуки з панелі тестувальника <span id="tf-count"></span></h3>
+      <div id="ts-feedback" class="fb-list"></div>
+      <h3>📊 Статистика тестерів</h3>
+      <div id="ts-list" class="fb-list"></div>
+    </div>
+    <div id="access-view" hidden>
+      <p class="muted small">Посилання на спецтеми (вебінари). Хто відкрив посилання в Telegram до дедлайну — має доступ до теми назавжди (поки ти його не забереш). У цьому браузері всі теми відкриті для тебе й так.</p>
+      <form id="access-new" class="panel access-new">
+        <b>Нове посилання</b>
+        <label>Тема <select id="access-topic"></select></label>
+        <label>Назва (для себе) <input id="access-title" type="text" maxlength="120" placeholder="Вебінар …"></label>
+        <label>Діє до <input id="access-expires" type="datetime-local" required></label>
+        <button type="submit">Створити посилання</button>
+        <span id="access-new-status" class="muted small"></span>
+      </form>
+      <div id="access-list" class="fb-list"></div>
+    </div>
+  </main>
+
+</div>
+<script src="../leaderboard-config.js"></script>
+<script src="../topics.js"></script>
+<script>
+const CFG = window.LEADERBOARD_CONFIG || {};
+// На github.io з ?stay (мережа блокує duckdns) — посилання на гру теж лишаються тут
+if (/[?&]stay(=|&|$)/.test(location.search)) {
+  document.querySelectorAll(".game-link").forEach(a => {
+    const h = a.getAttribute("href");
+    a.setAttribute("href", h + (h.includes("?") ? "&stay" : "?stay"));
+  });
+}
+const GAME_NAMES = {
+  naholosy: "🗣️ Наголоси", leksychna: "🔎 Лексична помилка: речення", klychnyi: "📣 Кличний відмінок",
+  chyslivnyky: "🔢 Числівники", frazeolohizmy: "💬 Фразеологізми", slovospoluch: "🧩 Лексична помилка: словосполучення", inshomovni: "🌍 Іншомовні слова",
+  nmttest: "🎲 Рандомний тест НМТ", istoriia: "🏛️ Історія України", inshe: "📂 Інше", leksmenu: "🔎 Лексична помилка"
+};
+const ONLINE_NAMES = { duel: "⚔️ Онлайн-дуель", sprint: "⏱ Спринт 60 с", class: "🏫 Гра для класу" };
+const $ = id => document.getElementById(id);
+
+const store = {
+  get(k) { try { return localStorage.getItem(k); } catch { return null; } },
+  set(k, v) { try { v === null ? localStorage.removeItem(k) : localStorage.setItem(k, v); } catch {} }
+};
+
+let password = store.get("stats_password") || "";
+// Період: дати «з» і «по» (включно) за київським часом
+const kyivDate = (d = new Date()) => d.toLocaleDateString("en-CA", { timeZone: "Europe/Kyiv" });
+const shiftDate = (iso, n) => { const d = new Date(iso + "T12:00:00Z"); d.setUTCDate(d.getUTCDate() + n); return d.toISOString().slice(0, 10); };
+const daysBetween = (a, b) => Math.round((new Date(b + "T12:00:00Z") - new Date(a + "T12:00:00Z")) / 86400000) + 1;
+let range = (() => { try { return JSON.parse(store.get("stats_range")) || null; } catch { return null; } })();
+let preset = store.get("stats_preset") || "7";
+function presetRange(name) {
+  const today = kyivDate();
+  if (name === "today") return { from: today, to: today };
+  if (name === "yesterday") { const y = shiftDate(today, -1); return { from: y, to: y }; }
+  if (name === "month") return { from: today.slice(0, 8) + "01", to: today };
+  if (name === "prevmonth") {
+    const first = today.slice(0, 8) + "01";
+    const lastPrev = shiftDate(first, -1);
+    return { from: lastPrev.slice(0, 8) + "01", to: lastPrev };
+  }
+  if (name === "all") return { from: "2025-01-01", to: today };
+  return { from: shiftDate(today, -(Number(name) - 1)), to: today };
+}
+if (preset !== "custom" || !range) range = presetRange(preset === "custom" ? "7" : preset);
+let days = daysBetween(range.from, range.to);
+
+function esc(s) {
+  return String(s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+}
+const num = v => (v === null || v === undefined ? "—" : Number(v).toLocaleString("uk-UA"));
+const pct = (a, b) => (b ? Math.round(a / b * 100) + "%" : "—");
+
+// Нова статистика (stats-v2.sql); якщо її ще немає — стара, за останні N днів
+let rangeMissing = false;
+async function fetchRange() {
+  const res = await fetch(`${CFG.url}/rest/v1/rpc/get_stats_range`, {
+    method: "POST",
+    headers: { apikey: CFG.anonKey, Authorization: `Bearer ${CFG.anonKey}`, "Content-Type": "application/json" },
+    body: JSON.stringify({ p_password: password, p_from: range.from, p_to: range.to })
+  });
+  if (res.ok) return res.json();
+  const text = await res.text();
+  if (text.includes("wrong password")) throw new Error("password");
+  if (res.status === 404 || text.includes("get_stats_range")) { rangeMissing = true; return null; }
+  throw new Error("network");
+}
+
+async function fetchStats() {
+  const res = await fetch(`${CFG.url}/rest/v1/rpc/get_stats`, {
+    method: "POST",
+    headers: { apikey: CFG.anonKey, Authorization: `Bearer ${CFG.anonKey}`, "Content-Type": "application/json" },
+    body: JSON.stringify({ p_password: password, p_days: days })
+  });
+  if (res.ok) return res.json();
+  const text = await res.text();
+  if (text.includes("wrong password")) throw new Error("password");
+  if (res.status === 404 || text.includes("get_stats")) throw new Error("nosql");
+  throw new Error("network");
+}
+
+// ---------- Відгуки ----------
+const ROLE_NAMES = { student: "🎒 учень/учениця", teacher: "👩‍🏫 вчитель/ка", parent: "👨‍👩‍👧 батьки", other: "✨ інше" };
+const RATING_EMOJI = ["", "😕", "😐", "🙂", "😃", "🤩"];
+let feedback = null;
+let view = ["feedback", "classes", "students", "testers", "plans", "journeys", "streaks"].includes(store.get("stats_view")) ? store.get("stats_view") : "stats";
+
+async function fetchFeedback() {
+  const res = await fetch(`${CFG.url}/rest/v1/rpc/get_feedback`, {
+    method: "POST",
+    headers: { apikey: CFG.anonKey, Authorization: `Bearer ${CFG.anonKey}`, "Content-Type": "application/json" },
+    body: JSON.stringify({ p_password: password })
+  });
+  if (res.ok) return res.json();
+  const text = await res.text();
+  if (text.includes("wrong password")) throw new Error("password");
+  if (res.status === 404 || text.includes("get_feedback")) throw new Error("nosql");
+  throw new Error("network");
+}
+
+async function loadFeedback() {
+  try {
+    feedback = await fetchFeedback();
+    $("fb-count").textContent = feedback.length ? `(${feedback.length})` : "";
+    renderFeedback();
+  } catch (err) {
+    if (err.message === "password") return;
+    $("fb-list").innerHTML = err.message === "nosql"
+      ? '<p class="note">У Supabase ще немає таблиці відгуків: запусти feedback.sql (див. STATS.md).</p>'
+      : '<p class="note">Не вдалося завантажити відгуки. Перевір інтернет.</p>';
+  }
+}
+
+function feedbackQuote(f) {
+  const who = [f.name, f.role === "teacher" ? "вчитель/ка" : f.role === "parent" ? "батьки" : ""].filter(Boolean).join(", ");
+  return `«${f.message.trim()}»${who ? ` — ${who}` : ""}`;
+}
+
+function renderFeedback() {
+  if (!feedback) return;
+  const onlyPub = $("fb-only-pub").checked;
+  const onlyGood = $("fb-only-good").checked;
+  const list = feedback.filter(f => (!onlyPub || f.can_publish) && (!onlyGood || f.rating >= 4));
+  const rated = feedback.filter(f => f.rating);
+  const avg = rated.length ? (rated.reduce((a, f) => a + f.rating, 0) / rated.length).toFixed(1).replace(".", ",") : "—";
+  $("fb-summary").textContent = `Усього: ${feedback.length} · середня оцінка: ${avg} з 5 · показано: ${list.length}`;
+  if (!list.length) {
+    $("fb-list").innerHTML = `<p class="note">${feedback.length ? "Немає відгуків за цим фільтром." : "Відгуків ще немає. Вони з'являться тут, щойно хтось натисне «Залиш відгук» у грі."}</p>`;
+    return;
+  }
+  $("fb-list").innerHTML = list.map((f, i) => `<article class="fb${f.can_publish ? " pub" : ""}">
+    <p class="fb-text">${esc(f.message)}</p>
+    <div class="fb-meta">
+      ${f.rating ? `<span title="Оцінка ${f.rating} з 5">${RATING_EMOJI[f.rating]} ${f.rating}/5</span>` : ""}
+      ${f.name ? `<b>${esc(f.name)}</b>` : '<span>без імені</span>'}
+      ${f.role ? `<span class="tag">${ROLE_NAMES[f.role] || esc(f.role)}</span>` : ""}
+      ${f.contact ? `<span class="tag">${esc(f.contact)}</span>` : ""}
+      <span class="tag ${f.can_publish ? "ok" : "no"}">${f.can_publish ? "✓ можна публікувати" : "✕ не публікувати"}</span>
+      <span>${new Date(f.created_at).toLocaleDateString("uk-UA", { day: "numeric", month: "long", year: "numeric" })}${f.source === "telegram" ? " · Telegram" : ""}</span>
+      <button type="button" data-copy="${i}">Скопіювати</button>
+    </div>
+    ${f.has_player === false ? "" : `<div class="fb-answer">
+      ${f.reply ? `<p class="fb-reply-shown"><b>Твоя відповідь</b> · ${f.reply_seen ? "✓ учень прочитав" : "ще не прочитано"}<br>${esc(f.reply)}</p>` : ""}
+      <textarea data-reply-text="${i}" rows="2" maxlength="2000" placeholder="Відповісти учню — він побачить відповідь у грі">${f.reply ? esc(f.reply) : ""}</textarea>
+      <button type="button" data-reply="${i}">${f.reply ? "Змінити відповідь" : "Відповісти"}</button>
+      <span class="fb-reply-status" data-reply-status="${i}"></span>
+    </div>`}
+  </article>`).join("");
+  $("fb-list").querySelectorAll("[data-reply]").forEach(b => b.addEventListener("click", async () => {
+    const i = Number(b.dataset.reply);
+    const f = list[i];
+    const text = $("fb-list").querySelector(`[data-reply-text="${i}"]`).value.trim();
+    const status = $("fb-list").querySelector(`[data-reply-status="${i}"]`);
+    b.disabled = true;
+    status.textContent = "Надсилаю…";
+    try {
+      const res = await fetch(`${CFG.url}/rest/v1/rpc/set_feedback_reply`, {
+        method: "POST",
+        headers: { apikey: CFG.anonKey, Authorization: `Bearer ${CFG.anonKey}`, "Content-Type": "application/json" },
+        body: JSON.stringify({ p_password: password, p_id: f.id, p_reply: text })
+      });
+      if (!res.ok) throw new Error(await res.text());
+      f.reply = text || null;
+      f.reply_seen = false;
+      renderFeedback();
+    } catch (e) {
+      b.disabled = false;
+      status.textContent = String(e.message).includes("set_feedback_reply") ? "Спершу запусти feedback-reply.sql" : "Не вдалося надіслати";
+    }
+  }));
+  $("fb-list").querySelectorAll("[data-copy]").forEach(b => b.addEventListener("click", () => {
+    navigator.clipboard.writeText(feedbackQuote(list[Number(b.dataset.copy)])).then(() => {
+      b.textContent = "Скопійовано ✓";
+      setTimeout(() => { b.textContent = "Скопіювати"; }, 1500);
+    });
+  }));
+}
+
+// ---------- Ігри для класу ----------
+let classGames = null;
+
+async function loadClasses() {
+  try {
+    const res = await fetch(`${CFG.url}/rest/v1/rpc/get_class_results`, {
+      method: "POST",
+      headers: { apikey: CFG.anonKey, Authorization: `Bearer ${CFG.anonKey}`, "Content-Type": "application/json" },
+      body: JSON.stringify({ p_password: password })
+    });
+    const text = await res.text();
+    if (!res.ok) throw new Error(res.status === 404 || text.includes("get_class_results") ? "nosql" : "network");
+    classGames = JSON.parse(text);
+    $("cl-count").textContent = classGames.length ? `(${classGames.length})` : "";
+    renderClasses();
+  } catch (err) {
+    $("cl-list").innerHTML = err.message === "nosql"
+      ? '<p class="note">У Supabase ще немає таблиці результатів: запусти class-results.sql (див. STATS.md).</p>'
+      : '<p class="note">Не вдалося завантажити результати. Перевір інтернет.</p>';
+  }
+}
+
+function classCsv(g) {
+  const when = new Date(g.started_at || g.ended_at).toLocaleString("uk-UA");
+  const rows = [["Гра", GAME_NAMES[g.game] || g.game], ["Кімната", g.room], ["Дата", when],
+    ["Питань", `${g.rounds} з ${g.rounds_planned}${g.early ? " (завершено достроково)" : ""}`], [],
+    ["Місце", "Ім'я", "Бали", "Правильних відповідей", "Відповідей"],
+    ...g.players.map(p => [p.place, p.name, p.score, p.correct, p.answered])];
+  return rows.map(r => r.join(";")).join("\n");
+}
+
+function renderClasses() {
+  if (!classGames) return;
+  if (!classGames.length) {
+    $("cl-list").innerHTML = '<p class="note">Ігор для класу ще не було. Підсумки з\'являться тут після першої завершеної гри.</p>';
+    return;
+  }
+  $("cl-list").innerHTML = classGames.map((g, i) => {
+    const start = new Date(g.started_at || g.ended_at);
+    const mins = g.started_at ? Math.max(1, Math.round((new Date(g.ended_at) - start) / 60000)) : null;
+    const best = g.players[0];
+    return `<details class="cl-game">
+      <summary>
+        <b>${start.toLocaleDateString("uk-UA", { day: "numeric", month: "long" })}, ${start.toLocaleTimeString("uk-UA", { hour: "2-digit", minute: "2-digit" })}</b>
+        <span>${esc(GAME_NAMES[g.game] || g.game)}</span>
+        <span class="muted small">кімната ${esc(g.room)} · учнів: ${g.players.length} · питань: ${g.rounds} з ${g.rounds_planned}${g.early ? " (достроково)" : ""}${mins ? ` · ${mins} хв` : ""}</span>
+        ${best ? `<span class="muted small">🏆 ${esc(best.name)} — ${num(best.score)}</span>` : ""}
+      </summary>
+      <div class="panel"><table>
+        <tr><th>Місце</th><th>Ім'я</th><th>Бали</th><th>Правильних</th><th>Відповідей</th></tr>
+        ${g.players.map(p => `<tr><td>${p.place}</td><td>${esc(p.name)}</td><td>${num(p.score)}</td><td>${num(p.correct)} з ${num(g.rounds)}</td><td>${num(p.answered)}</td></tr>`).join("")}
+      </table></div>
+      <div class="cl-actions"><button type="button" data-csv="${i}">⬇️ Завантажити таблицю</button></div>
+    </details>`;
+  }).join("");
+  $("cl-list").querySelectorAll("[data-csv]").forEach(b => b.addEventListener("click", () => {
+    const g = classGames[Number(b.dataset.csv)];
+    const blob = new Blob(["\ufeff" + classCsv(g)], { type: "text/csv;charset=utf-8" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = `klas-${g.room}-${(g.started_at || g.ended_at).slice(0, 10)}.csv`;
+    document.body.appendChild(a); a.click(); a.remove();
+  }));
+}
+
+// ---------- 🧮 Плани: що вписують учні (plan-answers.sql) ----------
+const PA_FIELDS = { sessions: "Скільки занять до дати", per_session: "Скільки груп на заняття" };
+const paField = f => PA_FIELDS[f] || (f.startsWith("cp") ? "Контрольні точки (скільки груп знатиму)" : f);
+const paNum = v => v == null ? "—" : String(Math.round(Number(v) * 100) / 100).replace(".", ",");
+// чому помилився — найчастіші причини
+function paWhy(r) {
+  const c = r.ctx || {}, e = Number(r.entered), k = Number(c.k), n = Number(c.n), done = Number(c.done) || 0;
+  if (r.ok) return "";
+  if (r.field === "sessions") {
+    if (e === c.days) return "вписав занять на тиждень";
+    if (Math.abs(e - Math.round(c.weeks)) <= 1) return "вписав кількість тижнів";
+    return e < r.correct ? "замало" : "забагато";
+  }
+  if (r.field === "per_session") {
+    if (e > 0 && e * 2 % 1) return "не ціле й не половинка";
+    if (e * c.D < c.left) return "не встигає (замало)";
+    return "";
+  }
+  if (r.field.startsWith("cp")) {
+    if (done && Math.abs(e - k * n) < 0.01) return "забув додати вже вивчені";
+    if (e > c.G) return "більше, ніж усього груп";
+    if (c.kPrev && Math.abs(e - (k - c.kPrev) * n - done) < 0.01) return "порахував лише заняття від попередньої точки";
+    return e < r.correct ? "замало" : "забагато";
+  }
+  return "";
+}
+async function loadPlanAnswers() {
+  const box = $("pa-box");
+  try {
+    const data = await proRpc("get_plan_answers", {});
+    const rows = data.rows || [], names = data.names || {};
+    if (!rows.length) { box.innerHTML = '<p class="note">Поки ніхто не рахував план.</p>'; return; }
+    const players = new Set(rows.map(r => r.player));
+    // перша спроба кожного учня в кожному полі
+    const first = {};
+    [...rows].reverse().forEach(r => { const g = paField(r.field), key = r.player + "|" + r.field; if (!first[key]) first[key] = { ...r, g }; });
+    const groups = {};
+    Object.values(first).forEach(r => { const g = groups[r.g] = groups[r.g] || { n: 0, ok: 0, why: {} }; g.n++; if (r.ok) g.ok++; else { const w = paWhy(r) || "інше"; g.why[w] = (g.why[w] || 0) + 1; } });
+    const summary = Object.entries(groups).map(([g, x]) => `<tr><td>${esc(g)}</td><td>${x.n}</td><td><b>${Math.round(x.ok / x.n * 100)}%</b></td><td>${Object.entries(x.why).sort((a, b) => b[1] - a[1]).map(([w, c]) => `${esc(w)} — ${c}`).join("<br>") || "—"}</td></tr>`).join("");
+    const byPlayer = {};
+    rows.forEach(r => { (byPlayer[r.player] = byPlayer[r.player] || []).push(r); });
+    const people = Object.entries(byPlayer).map(([p, list]) => {
+      const okFirst = Object.values(first).filter(r => r.player === p);
+      const pct = okFirst.length ? Math.round(okFirst.filter(r => r.ok).length / okFirst.length * 100) : 0;
+      return `<details class="fb"><summary><b>${esc(names[p] || "учень " + p.slice(0, 6))}</b> · спроб: ${list.length} · з першого разу правильно: <b>${pct}%</b></summary>
+        <div class="ts-scroll"><table class="ts-table"><tr><th>Коли</th><th>Що рахував</th><th>Дано</th><th>Вписав</th><th>Правильно</th><th></th></tr>
+        ${list.map(r => { const c = r.ctx || {}; const given = r.field === "sessions" ? `${paNum(c.weeks)} тиж. × ${c.days} дн.` : r.field === "per_session" ? `${paNum(c.left)} груп / ${c.D} занять` : `${c.k} занять × ${paNum(c.n)}${c.done ? ` + ${paNum(c.done)} вивчено` : ""} (усього ${c.G})`;
+          return `<tr><td>${tsDate(r.at)}</td><td>${esc(paField(r.field))}${r.field.startsWith("cp") ? " " + r.field.slice(2) : ""}</td><td>${given}</td><td>${paNum(r.entered)}</td><td>${paNum(r.correct)}</td><td>${r.ok ? "✅" : "❌ " + esc(paWhy(r))}</td></tr>`; }).join("")}
+        </table></div></details>`;
+    }).join("");
+    box.innerHTML = `<p class="fb-text">Рахували план: <b>${players.size}</b> ${players.size === 1 ? "учень" : "учнів"} · відповідей: ${rows.length}</p>
+      <p class="ts-sub">З першої спроби (кожен учень — один раз у кожному питанні)</p>
+      <div class="ts-scroll"><table class="ts-table"><tr><th>Питання</th><th>Учнів</th><th>Правильно</th><th>Найчастіші помилки</th></tr>${summary}</table></div>
+      <p class="ts-sub">По кожному учню</p>${people}`;
+  } catch (err) {
+    box.innerHTML = '<p class="note">Не вдалося завантажити.</p>';
+  }
+}
+
+// ---------- 🧪 Тестери (testers.sql) ----------
+const TS_GAMES = { naholosy: "🗣️ Наголоси", leksychna: "🔎 Лексична помилка: речення", klychnyi: "📣 Кличний відмінок", chyslivnyky: "🔢 Числівники",
+  slovospoluch: "🧩 Лексична помилка: словосполучення", frazeolohizmy: "💬 Фразеологізми", inshomovni: "🌍 Іншомовні слова", nmttest: "🎲 Тест НМТ",
+  inshe: "📂 Інше", istoriia: "🏛️ Історія України", frazeo: "💬 Фразеологізми", slovo: "🧩 Словосполучення", chys: "🔢 Числівники" };
+const tsName = g => TS_GAMES[g] || g;
+// час окремих тренажерів «Іншого» (q_<id>, game-time.js) — лише у «Тестерах», не в загальних підсумках
+const tsMain = t => Object.fromEntries(Object.entries(t || {}).filter(([g]) => !g.startsWith("q_")));
+const tsTime = sec => { sec = Math.round(sec || 0); const h = Math.floor(sec / 3600), m = Math.round((sec % 3600) / 60); return h ? `${h} год ${m} хв` : `${m} хв`; };
+const tsDate = d => d ? new Date(d).toLocaleString("uk-UA", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit", timeZone: "Europe/Kyiv" }) : "—";
+const TS_EVENTS = { visit: "відкрив гру", game_start: "почав гру", game_over: "кінець гри", training_start: "почав тренування", training_done: "завершив тренування",
+  soon_click: "натиснув закриту гру", online_join: "увійшов в онлайн-гру", online_share: "запросив друзів", duel_start: "дуель", leaderboard_submit: "записав рекорд", all_words_done: "пройшов усі слова" };
+function tsRecall(m, now) { const e = Math.max(0, (now - m.t) / 864e5); return Math.pow(1 + (19 / 81) * e / Math.max(0.05, m.s), -0.5); }
+// плитки тренування тестера з його знімка: ключ train_<гра>_<група>_mem → {s, t, a}
+function tsTiles(snap) {
+  if (!snap || !snap.data || !snap.data.keys) return `<p class="note">Знімка ще немає — з'явиться, щойно тестер відкриє гру після оновлення.</p>`;
+  const keys = snap.data.keys, now = Date.now(), by = {};
+  Object.keys(keys).forEach(k => {
+    const m = k.match(/^train_(inshe_[a-z0-9_]+?|[a-z]+)_(.+?)(_mem)?$/);
+    if (!m || k.endsWith("_tally") || k.endsWith("_acc") || /^train_(recent|play|view|ist_level|inshe_errors)/.test(k)) return;
+    const game = m[1], grp = m[2];
+    by[game] = by[game] || {};
+    const g = by[game][grp] = by[game][grp] || {};
+    if (m[3]) { try { g.mem = JSON.parse(keys[k]); } catch (e) { /* */ } } else g.best = Number(keys[k]) || 0;
+  });
+  const games = Object.keys(by);
+  if (!games.length) return '<p class="note">Тренувань групами ще не було.</p>';
+  return games.map(game => {
+    const tiles = Object.entries(by[game]).map(([grp, g]) => {
+      if (!g.mem) return `<span class="ts-tile" title="без даних про пам'ять">${esc(grp)}<small>${g.best ? g.best + " ✓" : ""}</small></span>`;
+      const r = tsRecall(g.mem, now), a = g.mem.a, glow = Math.max(0, (r - 0.45) / 0.55);
+      const hue = Math.round(15 + 110 * a);
+      const st = `background:hsla(${hue},${12 + 63 * glow}%,${26 + 16 * glow}%,${0.35 + 0.65 * glow});border-color:hsl(${hue},${15 + 60 * glow}%,${32 + 16 * glow}%)`;
+      const left = (g.mem.t + g.mem.s * 864e5 - now) / 864e5;
+      const when = r < 0.9 ? "🔁 повтори" : left < 1 ? `ще ${Math.max(1, Math.round(left * 24))} год` : `ще ${Math.round(left)} дн`;
+      return `<span class="ts-tile" style="${st}" title="точність ${Math.round(a * 100)}% · пам'ять ${Math.round(r * 100)}% · стабільність ${g.mem.s} дн">${esc(grp)}<small>${Math.round(a * 100)}% · пам'ять ${Math.round(r * 100)}%</small><small>${when}</small></span>`;
+    }).join("");
+    return `<p class="ts-sub">${esc(tsName(game.replace(/^inshe_/, "") === game ? game : "inshe"))}${game.startsWith("inshe_") ? " · " + esc(game.slice(6)) : ""}</p><div class="ts-tiles">${tiles}</div>`;
+  }).join("") + `<p class="note">Знімок: ${tsDate(snap.at)} · вигляд плиток: варіант ${esc(String(snap.data.view || 1))} · екран ${esc(snap.data.screen || "?")} · версія гри ${esc(snap.data.version || "?")}${snap.data.pro ? " · дані PRO отримано ✓" : ""}</p>`;
+}
+async function loadTesters() {
+  const box = $("ts-list");
+  try {
+    const list = await proRpc("get_testers", {});
+    $("ts-count").textContent = list.length ? `(${list.length})` : "";
+    if (!list.length) { box.innerHTML = '<p class="note">Тестерів поки немає.</p>'; return; }
+    box.innerHTML = list.map(t => {
+      const time = Object.entries(tsMain(t.time)).sort((a, b) => b[1] - a[1]);
+      const total = time.reduce((s, x) => s + x[1], 0);
+      // тренажери «Іншого» й «Історії»: події (details.sub) + час (q_<id>)
+      const subs = { ...(t.subs || {}) };
+      Object.entries(t.time || {}).forEach(([g, sec]) => { if (g.startsWith("q_")) { const id = g.slice(2); subs[id] = { ...(subs[id] || {}), sec }; } });
+      const subList = Object.entries(subs).sort((a, b) => (b[1].sec || 0) - (a[1].sec || 0) || (b[1].last || "").localeCompare(a[1].last || ""));
+      const subName = (id, x) => x.name || id;
+      const games = Object.entries(t.games || {}).sort((a, b) => (b[1].last || "").localeCompare(a[1].last || ""));
+      if (subList.length && !t.games?.inshe) games.push(["inshe", {}]);
+      const row = (name, x, cls = "") => `<tr${cls}><td>${name}</td><td>${x.starts || 0}</td><td>${x.trainings || 0}${x.train_n ? ` · ${Math.round(x.train_ok / x.train_n * 100)}%` : ""}</td><td>${x.best ?? "—"}</td><td>${x.soon || ""}</td><td>${x.sec ? tsTime(x.sec) : ""}</td><td>${tsDate(x.last)}</td></tr>`;
+      const gameRows = games.map(([g, x]) => {
+        const sec = (t.time || {})[g];
+        if (g !== "inshe" || !subList.length) return row(esc(tsName(g)), { ...x, sec });
+        return row(`${esc(tsName(g))} <small>(${subList.length})</small>`, { ...x, sec }, ` class="ts-fold" data-fold="${esc(t.player)}"`) +
+          subList.map(([id, s]) => row(`${id.startsWith("ist_") ? "🏛️ " : ""}${esc(subName(id, s))}`, s, ` class="ts-subrow" data-sub="${esc(t.player)}" hidden`)).join("");
+      }).join("");
+      const est = (t.est || []).filter(d => d.sec > 0);
+      const estTotal = est.reduce((s, d) => s + d.sec, 0);
+      const ev = (t.events || []).map(e => {
+        const d = e.details || {};
+        const extra = d.group ? ` «${esc(d.group)}»${d.total ? ` ${d.first_try}/${d.total}` : ""}` : d.final_score != null ? ` · ${d.final_score}` : d.mode ? ` · ${esc(d.mode)}` : "";
+        return `<li><span class="ts-at">${tsDate(e.at)}</span> ${esc(TS_EVENTS[e.event] || e.event)}${e.game && /^[a-z_]+$/.test(e.game) ? " · " + esc(tsName(e.game)) : ""}${extra}</li>`;
+      }).join("");
+      const mem = (t.memory || []).map(m => `<li><span class="ts-at">${tsDate(m.at)}</span> ${esc(tsName(m.game))} «${esc(m.grp.replace(/^train_[a-z]+_/, ""))}» · ${m.src === "train" ? "тренування" : m.src === "online" ? "онлайн" : "марафон"} · прогноз ${m.pred == null ? "—" : Math.round(m.pred * 100) + "%"} → реально ${Math.round(m.obs * 100)}% (${m.n})</li>`).join("");
+      return `<article class="fb">
+        <div class="fb-meta"><b>${esc(t.name || "тестер")}</b>${t.platform ? `<span class="tag">${esc(t.platform)}</span>` : ""}
+          <span class="tag">PRO з ${tsDate(t.pro_since)}</span><span>востаннє: ${tsDate(t.last_seen)}</span></div>
+        <p class="fb-text">Грає з ${tsDate(t.first_seen)} · активних днів: <b>${t.days || 0}</b> · запусків гри: <b>${t.visits || 0}</b> · усього в іграх: <b>${tsTime(total)}</b></p>
+        <p class="ts-sub">⏱ Час у грі</p>
+        <p class="fb-text">${time.map(([g, sec]) => `${esc(tsName(g))} — ${tsTime(sec)}`).join("<br>") || "—"}</p>
+        <p class="note">Точний облік часу в грі працює лише з 01.11.2026 (рахуються секунди, коли гра відкрита й гравець щось натискав). Раніше — лише за подіями: ↓</p>
+        <details><summary>🕰 Оцінка часу за подіями: ≈ ${tsTime(estTotal)} за ${est.length} дн.</summary>
+          <p class="note">Сума проміжків до 5 хв між діями гравця (почав/завершив тренування, гру тощо) — приблизно, бо дії всередині тренування не записуються.</p>
+          <ul class="ts-ev">${est.map(d => `<li><span class="ts-at">${new Date(d.d).toLocaleDateString("uk-UA", { day: "numeric", month: "short" })}</span> ≈ ${tsTime(d.sec)} · дій: ${d.n}</li>`).join("") || "<li>—</li>"}</ul></details>
+        <p class="ts-sub">🎮 Що відкривав</p>
+        <div class="ts-scroll"><table class="ts-table"><tr><th>Гра</th><th>Запусків</th><th>Тренувань · точність</th><th>Рекорд</th><th>Тиснув «скоро»</th><th>Час</th><th>Востаннє</th></tr>${gameRows}</table></div>
+        <p class="ts-sub">🧠 Як у тестера виглядають плитки тренування зараз</p>
+        ${tsTiles(t.snapshot)}
+        <details><summary>📊 Прогноз пам'яті vs реальність (${(t.memory || []).length})</summary><ul class="ts-ev">${mem || "<li>—</li>"}</ul></details>
+        <details><summary>🕓 Останні дії (${(t.events || []).length})</summary><ul class="ts-ev">${ev}</ul></details>
+      </article>`;
+    }).join("");
+    box.querySelectorAll("[data-fold]").forEach(tr => tr.addEventListener("click", () => {
+      const open = tr.classList.toggle("open");
+      box.querySelectorAll(`[data-sub="${tr.dataset.fold}"]`).forEach(r => { r.hidden = !open; });
+    }));
+  } catch (err) {
+    box.innerHTML = '<p class="note">Не вдалося завантажити тестерів.</p>';
+  }
+  loadTesterFeedback();
+}
+
+// ---------- 💬 Відгуки з панелі тестувальника (tester-feedback.sql, tester.js) ----------
+async function loadTesterFeedback() {
+  const box = $("ts-feedback");
+  try {
+    const list = await proRpc("get_tester_feedback", {});
+    $("tf-count").textContent = list.length ? `(${list.length})` : "";
+    if (!list.length) { box.innerHTML = '<p class="note">Відгуків ще немає. Тестер бачить панель унизу гри в Telegram-мініапці.</p>'; return; }
+    box.innerHTML = list.map(f => {
+      const p = f.place || {};
+      const where = [p.game, p.mode, p.quiz].filter(Boolean).join(" · ") || p.screen || "меню";
+      return `<article class="fb${f.kind === "bad" ? " pub" : ""}">
+        <div class="fb-meta"><b>${f.kind === "good" ? "🔥 Дуже круто" : "😬 Щось не так"}</b><span>${esc(f.name || "тестер")}</span><span>${tsDate(f.at)}</span>${f.sent ? '<span class="tag ok">✓ у Telegram</span>' : ""}</div>
+        <p class="fb-text">${esc(f.message)}</p>
+        <p class="tf-place">📍 ${esc(where)}${p.task ? `<br>📝 ${esc(p.task)}` : ""}${p.answers ? `<br>🔘 ${esc(p.answers)}` : ""}${p.feedback ? `<br>💬 ${esc(p.feedback)}` : ""}${p.device ? `<br>📱 ${esc(p.device)}` : ""}</p>
+        ${f.has_image ? `<button type="button" data-shot="${f.id}">📸 Показати скрин</button>` : ""}
+      </article>`;
+    }).join("");
+    box.querySelectorAll("[data-shot]").forEach(b => b.addEventListener("click", async () => {
+      b.disabled = true; b.textContent = "Завантажую…";
+      try {
+        const img = await proRpc("get_tester_feedback_image", { p_id: Number(b.dataset.shot) });
+        const el = document.createElement("img"); el.className = "tf-shot"; el.src = img; el.alt = "скрин";
+        b.replaceWith(el);
+      } catch (e) { b.disabled = false; b.textContent = "Помилка, ще раз"; }
+    }));
+  } catch (err) {
+    box.innerHTML = '<p class="note">Не вдалося завантажити відгуки тестерів.</p>';
+  }
+}
+
+// ---------- Пристрої PRO (pro-devices.sql) ----------
+async function loadUpsellStats() {
+  const box = document.getElementById("upsell-stats");
+  try {
+    const r = await proRpc("get_upsell_stats", {});
+    const days = r.days || [], places = r.places || [], events = r.events || [];
+    if (!days.length) { box.innerHTML = '<p class="muted small">Поки жодного показу.</p>'; return; }
+    const sum = k => days.reduce((a, d) => a + (d[k] || 0), 0);
+    const gn = g => esc(GAME_NAMES[g] || { inshe: "📂 Інше", istoriia: "🏛️ Історія України", plan: "📅 Мій план" }[g] || g);
+    // зрозумілі назви місць, де новачок бачив пропозицію (власниця, 07.11.2026)
+    const PL = { leks_locked: "🔎 Лексична помилка: речення — під закритими групами", slovo_locked: "🧩 Лексична помилка: словосполучення — під закритими групами", demo_nmttest: "🎲 Рандомний тест НМТ — після тесту (демо)" };
+    const KIND = {
+      demo_modes: "банер на екрані режимів (демо)", demo_train: "після тренування (демо)", demo_online: "після онлайн-гри (демо)",
+      demo_groups: "під закритими групами (демо)", demo_wordlist: "наприкінці повного переліку (демо)",
+      free_over: "після марафону (безкоштовна гра)", free_train: "після тренування (безкоштовна гра)",
+      free_record: "після нового рекорду (безкоштовна гра)", free_wordlist: "наприкінці повного переліку (безкоштовна гра)"
+    };
+    const pl = x => {
+      x = String(x);
+      if (PL[x]) return PL[x];
+      if (x.startsWith("leaders_")) return `${gn(x.slice(8))} — кнопка «Грати» в турнірній таблиці (марафон лише в Спільноті)`;
+      if (x.startsWith("pro_")) return `${gn(x.slice(4))} — вікно «Спільнота» (натиснув закриту гру)`;
+      const m = /^((?:demo|free)_[a-z]+)_(.+)$/.exec(x);
+      if (m && KIND[m[1]]) return `${gn(m[2])} — ${KIND[m[1]]}`;
+      return esc(x);
+    };
+    const evList = list => list.length
+      ? `<ul class="small" style="margin:4px 0 6px;padding-left:18px">${list.map(e => `<li>${esc(e.ts.slice(8, 10) + "." + e.ts.slice(5, 7) + " " + e.ts.slice(11, 16))} · ${e.event === "pro_buy_click" ? "<b>🦆 натиснув кнопку</b>" : "побачив"} · ${pl(e.place)} · гравець ${esc(e.who)}</li>`).join("")}</ul>`
+      : '<p class="muted small">Подробиць немає (старіші за останні 500 подій).</p>';
+    const fold = (cells, list, cols) => `<tr class="ts-fold" data-up="1">${cells}</tr><tr hidden><td colspan="${cols}">${evList(list)}</td></tr>`;
+    box.innerHTML = `<p><b>За 90 днів:</b> показів ${sum("views")}, натискань на monobase ${sum("clicks")}${sum("views") ? ` (${Math.round(100 * sum("clicks") / sum("views"))}%)` : ""}</p>
+      <p class="muted small">Натисни на рядок — побачиш дату й час кожного показу й натискання. «Гравець» — короткий знак, щоб розрізнити людей (той самий знак — та сама людина).</p>
+      <div class="ts-scroll"><table class="ts-table"><tr><th>День</th><th>Показів</th><th>Людей бачили</th><th>Натискань</th><th>Людей натиснули</th></tr>
+      ${days.map(d => fold(`<td>${d.day}</td><td>${d.views}</td><td>${d.viewers}</td><td>${d.clicks}</td><td>${d.clickers}</td>`, events.filter(e => e.day === d.day), 5)).join("")}</table></div>
+      <p class="muted small" style="margin-top:10px">Де показували (гра — і в якому місці гри):</p>
+      <div class="ts-scroll"><table class="ts-table"><tr><th>Гра й місце</th><th>Показів</th><th>Натискань</th></tr>
+      ${places.map(p => fold(`<td>${pl(p.place)}</td><td>${p.views}</td><td>${p.clicks}</td>`, events.filter(e => e.place === p.place), 3)).join("")}</table></div>
+      <details class="small" style="margin-top:8px"><summary>Що означають місця?</summary><ul style="padding-left:18px">
+        <li><b>безкоштовна гра</b> — «Наголоси» й обидві «Лексичні помилки»: після марафону (раз на 3 гри), після нового рекорду (завжди), після тренування групи (раз на 3 гри), наприкінці «📖 Повного переліку».</li>
+        <li><b>демо</b> — PRO-тренажер, де новачку відкрита перша група: банер угорі екрана режимів, після тренування чи онлайн-гри, під закритими групами, наприкінці повного переліку.</li>
+        <li><b>вікно «Спільнота»</b> — новачок натиснув закриту гру чи групу («🔒 PRO»).</li>
+        <li><b>під закритими групами</b> — розгорнув «🔒 Ще N груп» у «Лексичних помилках».</li></ul></details>`;
+    box.querySelectorAll('tr[data-up]').forEach(tr => tr.addEventListener("click", () => { tr.classList.toggle("open"); tr.nextElementSibling.hidden = !tr.classList.contains("open"); }));
+  } catch (e) { box.innerHTML = '<p class="muted small">Не вдалося завантажити.</p>'; }
+}
+
+async function loadBotGateStats() {
+  const box = document.getElementById("botgate-stats");
+  try {
+    const days = await proRpc("get_bot_gate_stats", {}) || [];
+    if (!days.length) { box.innerHTML = '<p class="muted small">Поки нікому не довелося підписуватися — усі вже були підписані.</p>'; return; }
+    const saw = days.reduce((a, d) => a + d.saw, 0), ok = days.reduce((a, d) => a + d.ok, 0);
+    box.innerHTML = `<p><b>За 90 днів:</b> побачили вимогу ${saw}, підписалися ${ok}${saw ? ` (${Math.round(100 * ok / saw)}%)` : ""}</p>
+      <div class="ts-scroll"><table class="ts-table"><tr><th>День</th><th>Побачили вимогу</th><th>Підписалися</th></tr>
+      ${days.map(d => `<tr><td>${d.day}</td><td>${d.saw}</td><td>${d.ok}</td></tr>`).join("")}</table></div>`;
+  } catch (e) { box.innerHTML = '<p class="muted small">Не вдалося завантажити.</p>'; }
+}
+
+async function loadDemoStats() {
+  const box = document.getElementById("demo-stats");
+  try {
+    const r = await proRpc("get_demo_stats", {});
+    const days = r.days || [], games = r.games || [];
+    if (!days.length) { box.innerHTML = '<p class="muted small">Поки ніхто не відкривав демо.</p>'; return; }
+    const sum = k => days.reduce((a, d) => a + (d[k] || 0), 0);
+    const gname = g => (g.sub ? `📂 ${esc(g.sub_name || g.sub)}` : esc(GAME_NAMES[g.game] || g.game || "?"));
+    box.innerHTML = `<p><b>За 90 днів:</b> відкривань демо ${sum("opens")}, тренувань у демо ${sum("trainings")}, переходів на monobase з демо ${sum("clicks")}</p>
+      <table class="ts-table"><tr><th>День</th><th>Відкривань</th><th>Людей</th><th>Тренувань</th><th>На monobase</th></tr>
+      ${days.map(d => `<tr><td>${d.day}</td><td>${d.opens}</td><td>${d.openers}</td><td>${d.trainings}</td><td>${d.clicks}</td></tr>`).join("")}</table>
+      <p class="muted small" style="margin-top:10px">Які тренажери відкривали:</p>
+      <table class="ts-table"><tr><th>Тренажер</th><th>Відкривань</th><th>Людей</th><th>Тренувань</th></tr>
+      ${games.map(g => `<tr><td>${gname(g)}</td><td>${g.opens}</td><td>${g.openers}</td><td>${g.trainings}</td></tr>`).join("")}</table>`;
+  } catch (e) { box.innerHTML = '<p class="muted small">Не вдалося завантажити.</p>'; }
+}
+
+async function loadProDevices() {
+  const box = $("pro-devices");
+  const when = d => new Date(d).toLocaleString("uk-UA", { day: "numeric", month: "long", hour: "2-digit", minute: "2-digit" });
+  const devName = d => esc(d.device || d.platform || "?");
+  try {
+    const list = await proRpc("get_pro_devices", {});
+    if (!list.length) { box.innerHTML = '<p class="note">Ще ніхто не відкривав PRO.</p>'; return; }
+    const swappers = list.filter(u => u.swaps_total > 0), sus = list.filter(u => u.sus);
+    const swaps30 = list.reduce((s, u) => s + (u.swaps_30 || 0), 0);
+    const summary = `<p class="fb-text">🔄 Відключали старий пристрій, щоб підключити новий: <b>${swappers.length}</b> з ${list.length} підписників · за 30 днів — <b>${swaps30}</b> раз(и)${sus.length ? ` · <span class="tag no">⚠️ підозріло часто: ${sus.length}</span>` : ""}</p>
+      <p class="note">Підозріло — 3+ відключення за 30 днів або 2+ за тиждень: схоже, що однією підпискою користуються кілька людей.</p>`;
+    box.innerHTML = summary + list.map(u => `<article class="fb${u.sus ? " ts-sus" : ""}">
+      <div class="fb-meta"><b>${esc(u.tg_name || "без імені")}</b><span class="tag">id ${u.tg_id}</span>
+        <span class="tag">${u.devices.length} ${u.devices.length === 1 ? "пристрій" : "пристрої"}</span>
+        ${u.swaps_total ? `<span class="tag${u.sus ? " no" : ""}">${u.sus ? "⚠️ " : "🔄 "}відключень: ${u.swaps_total} (30 дн: ${u.swaps_30}, 7 дн: ${u.swaps_7})</span>` : ""}
+        <button type="button" data-reset-dev="${u.tg_id}">Скинути пристрої</button></div>
+      <p class="fb-text">${u.devices.map(d => `${devName(d)} — з ${new Date(d.first).toLocaleDateString("uk-UA", { day: "numeric", month: "short" })}, востаннє ${when(d.last)}`).join("<br>") || "—"}</p>
+      ${u.swaps.length ? `<details${u.sus ? " open" : ""}><summary>🔄 Історія відключень (${u.swaps_total})</summary><ul class="ts-ev">${u.swaps.map(w => `<li><span class="ts-at">${when(w.at)}</span> відключив ${esc(w.removed || "?")}${w.removed_last ? ` (востаннє ${when(w.removed_last)})` : ""} → підключив ${esc(w.new || "?")}</li>`).join("")}</ul></details>` : ""}
+    </article>`).join("");
+    box.querySelectorAll("[data-reset-dev]").forEach(b => b.addEventListener("click", async () => {
+      b.disabled = true;
+      try { await proRpc("reset_pro_devices", { p_tg_id: Number(b.dataset.resetDev) }); loadProDevices(); }
+      catch (e) { b.disabled = false; b.textContent = "Помилка, ще раз"; }
+    }));
+  } catch (err) {
+    box.innerHTML = '<p class="note">Не вдалося завантажити пристрої.</p>';
+  }
+}
+
+// ---------- Звернення PRO ----------
+let proIssues = null;
+
+async function proRpc(name, args) {
+  const res = await fetch(`${CFG.url}/rest/v1/rpc/${name}`, {
+    method: "POST",
+    headers: { apikey: CFG.anonKey, Authorization: `Bearer ${CFG.anonKey}`, "Content-Type": "application/json" },
+    body: JSON.stringify({ p_password: password, ...args })
+  });
+  const text = await res.text();
+  if (!res.ok) throw new Error(res.status === 404 || text.includes(name) ? "nosql" : "network");
+  return text ? JSON.parse(text) : null;
+}
+
+async function loadProIssues() {
+  try {
+    proIssues = await proRpc("get_pro_issues", {});
+    const open = proIssues.filter(x => !x.resolved).length;
+    $("pro-count").textContent = open ? `(${open})` : "";
+    renderProIssues();
+  } catch (err) {
+    $("pro-list").innerHTML = err.message === "nosql"
+      ? '<p class="note">У Supabase ще немає таблиці звернень (pro-issues.sql).</p>'
+      : '<p class="note">Не вдалося завантажити звернення. Перевір інтернет.</p>';
+  }
+}
+
+function renderProIssues() {
+  if (!proIssues) return;
+  if (!proIssues.length) {
+    $("pro-list").innerHTML = '<p class="note">Звернень немає — усі підписники отримали доступ 🎉</p>';
+    return;
+  }
+  $("pro-list").innerHTML = proIssues.map(x => `<article class="fb${x.resolved ? "" : " pub"}">
+    ${x.message ? `<p class="fb-text">${esc(x.message)}</p>` : ""}
+    <div class="fb-meta">
+      <b>${esc(x.name || "без імені")}</b>
+      ${x.username ? `<a class="tag" href="https://t.me/${encodeURIComponent(x.username)}" target="_blank" rel="noopener">@${esc(x.username)}</a>` : ""}
+      <span class="tag">id ${x.tg_user_id}</span>
+      <span>${new Date(x.created_at).toLocaleString("uk-UA", { day: "numeric", month: "long", hour: "2-digit", minute: "2-digit" })}</span>
+      <span class="tag ${x.resolved ? "ok" : "no"}">${x.resolved ? "✓ вирішено" : "чекає"}</span>
+      <button type="button" data-resolve="${x.id}" data-to="${!x.resolved}">${x.resolved ? "Повернути" : "✓ Вирішено"}</button>
+    </div>
+  </article>`).join("");
+  $("pro-list").querySelectorAll("[data-resolve]").forEach(b => b.addEventListener("click", async () => {
+    b.disabled = true;
+    try {
+      await proRpc("set_pro_issue_resolved", { p_id: Number(b.dataset.resolve), p_resolved: b.dataset.to === "true" });
+      await loadProIssues();
+    } catch (err) {
+      b.disabled = false;
+      b.textContent = "Помилка, ще раз";
+    }
+  }));
+}
+
+// ---------- Доступи за посиланнями (спецтеми, вебінари) ----------
+const TOPICS = window.SPECIAL_TOPICS || {};
+const BOT_APP = (CFG.telegramAppLink || "https://t.me/ukrmovych_bot/battle");
+let accessLinks = null;
+const kyivTime = iso => new Date(iso).toLocaleString("uk-UA", { timeZone: "Europe/Kyiv", day: "numeric", month: "long", hour: "2-digit", minute: "2-digit" });
+// значення для <input type="datetime-local"> (час цього браузера)
+const localInput = d => new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
+
+async function loadAccess() {
+  try {
+    accessLinks = await proRpc("get_access_links", {});
+    renderAccess();
+  } catch (err) {
+    $("access-list").innerHTML = err.message === "nosql"
+      ? '<p class="note">У Supabase ще немає таблиць доступів (topic-access.sql).</p>'
+      : '<p class="note">Не вдалося завантажити посилання. Перевір інтернет.</p>';
+  }
+}
+
+function renderAccess() {
+  if (!accessLinks) return;
+  if (!accessLinks.length) {
+    $("access-list").innerHTML = '<p class="note">Посилань ще немає.</p>';
+    return;
+  }
+  const now = Date.now();
+  $("access-list").innerHTML = accessLinks.map((l, i) => {
+    const t = TOPICS[l.topic];
+    const open = !l.revoked && Date.parse(l.expires_at) > now;
+    const active = l.grants.filter(g => !g.revoked).length;
+    const url = `${BOT_APP}?startapp=w_${l.code}`;
+    const state = l.revoked ? '<span class="tag no">скасоване — доступу ні в кого немає</span>'
+      : open ? `<span class="tag ok">приймає до ${esc(kyivTime(l.expires_at))}</span>`
+        : `<span class="tag">закрите з ${esc(kyivTime(l.expires_at))} — доступ у тих, хто встиг</span>`;
+    return `<details class="cl-game" ${i === 0 ? "open" : ""}>
+      <summary>
+        <b>${esc(l.title || "Без назви")}</b>
+        <span>${t ? esc(t.icon + " " + t.name) : esc(l.topic)}</span>
+        <span class="muted small">з доступом: ${active}${l.grants.length > active ? ` (ще ${l.grants.length - active} забрано)` : ""}</span>
+        ${state}
+      </summary>
+      <div class="access-body">
+        <p class="access-url"><code>${esc(url)}</code> <button type="button" data-copy-url="${esc(url)}">Скопіювати</button></p>
+        <div class="access-actions">
+          <label>Приймати до <input type="datetime-local" data-exp="${l.code}" value="${localInput(new Date(l.expires_at))}"></label>
+          <button type="button" data-save-exp="${l.code}">Зберегти час</button>
+          ${open ? `<button type="button" data-close="${l.code}">Закрити зараз</button>` : ""}
+          <button type="button" data-revoke="${l.code}" data-to="${!l.revoked}">${l.revoked ? "Повернути доступ усім" : "Скасувати доступ усім"}</button>
+        </div>
+        ${l.grants.length ? `<div class="panel"><table>
+          <tr><th>#</th><th>Ім'я</th><th>Telegram</th><th>Коли</th><th></th></tr>
+          ${l.grants.map((g, k) => `<tr class="${g.revoked ? "muted" : ""}"><td>${k + 1}</td><td>${esc(g.name || "—")}</td>
+            <td>${g.username ? `<a href="https://t.me/${encodeURIComponent(g.username)}" target="_blank" rel="noopener">@${esc(g.username)}</a>` : `id ${g.tg_user_id}`}</td>
+            <td>${esc(kyivTime(g.created_at))}</td>
+            <td><button type="button" data-grant="${g.id}" data-to="${!g.revoked}">${g.revoked ? "Повернути" : "Забрати"}</button></td></tr>`).join("")}
+        </table></div>` : '<p class="note">Ще ніхто не перейшов за посиланням.</p>'}
+      </div>
+    </details>`;
+  }).join("");
+
+  const act = async (b, fn) => {
+    b.disabled = true;
+    try { await fn(); await loadAccess(); } catch (e) { b.disabled = false; b.textContent = "Помилка, ще раз"; }
+  };
+  const list = $("access-list");
+  list.querySelectorAll("[data-copy-url]").forEach(b => b.addEventListener("click", () => {
+    navigator.clipboard.writeText(b.dataset.copyUrl).then(() => { b.textContent = "Скопійовано ✓"; });
+  }));
+  list.querySelectorAll("[data-save-exp]").forEach(b => b.addEventListener("click", () => {
+    const v = list.querySelector(`[data-exp="${b.dataset.saveExp}"]`).value;
+    if (!v) return;
+    act(b, () => proRpc("update_access_link", { p_code: b.dataset.saveExp, p_expires: new Date(v).toISOString(), p_revoked: null }));
+  }));
+  list.querySelectorAll("[data-close]").forEach(b => b.addEventListener("click", () =>
+    act(b, () => proRpc("update_access_link", { p_code: b.dataset.close, p_expires: new Date().toISOString(), p_revoked: null }))));
+  list.querySelectorAll("[data-revoke]").forEach(b => b.addEventListener("click", () => {
+    if (b.dataset.to === "true" && !confirm("Забрати доступ до теми в усіх, хто прийшов за цим посиланням?")) return;
+    act(b, () => proRpc("update_access_link", { p_code: b.dataset.revoke, p_expires: null, p_revoked: b.dataset.to === "true" }));
+  }));
+  list.querySelectorAll("[data-grant]").forEach(b => b.addEventListener("click", () =>
+    act(b, () => proRpc("set_access_grant", { p_id: Number(b.dataset.grant), p_revoked: b.dataset.to === "true" }))));
+}
+
+$("access-topic").innerHTML = Object.entries(TOPICS).map(([id, t]) => `<option value="${id}">${t.name}</option>` /* без смайлика: у списку-виборі картинки не показуються (emoji.js) */).join("");
+$("access-expires").value = localInput(new Date(Date.now() + 3 * 3600 * 1000));
+$("access-new").addEventListener("submit", async e => {
+  e.preventDefault();
+  const status = $("access-new-status");
+  status.textContent = "Створюю…";
+  try {
+    await proRpc("create_access_link", {
+      p_topic: $("access-topic").value, p_title: $("access-title").value.trim(),
+      p_expires: new Date($("access-expires").value).toISOString()
+    });
+    status.textContent = "Готово ✓";
+    $("access-title").value = "";
+    await loadAccess();
+  } catch (err) {
+    status.textContent = "Не вдалося створити";
+  }
+});
+
+// Час у грі (game-time.sql): 75 → «1 хв», 4000 → «1 год 6 хв»; 0 → ""
+function fmtTime(sec) {
+  sec = Number(sec) || 0;
+  if (!sec) return "";
+  if (sec < 60) return `${sec} с`;
+  const h = Math.floor(sec / 3600), m = Math.floor((sec % 3600) / 60);
+  return h ? `${h} год${m ? ` ${m} хв` : ""}` : `${m} хв`;
+}
+
+// ---------- 🎓 Мої учні: учні курсу (course-access.sql, course.js у грі) ----------
+async function loadCourseStudents() {
+  try {
+    const list = await proRpc("get_course_students", {});
+    list.forEach(x => { if (x.time) x.time = tsMain(x.time); });
+    $("st-count").textContent = list.length ? `(${list.filter(s => s.active).length})` : "";
+    if (!list.length) {
+      $("st-list").innerHTML = '<p class="note">Ще ніхто з учнів курсу не ввів код у грі. Порада: надішли учням — «у грі внизу натисни 🎓 Я на курсі Укрмовича і введи свій код із платформи».</p>';
+      return;
+    }
+    const day = d => d ? new Date(d).toLocaleDateString("uk-UA", { day: "numeric", month: "short" }) : "—";
+    const total = s => Object.values(s.time || {}).reduce((a, b) => a + b, 0);
+    const rows = list.map(s => {
+      const games = [...new Set([...Object.keys(s.time || {}), ...Object.keys(s.best || {})])]
+        .sort((a, b) => ((s.time || {})[b] || 0) - ((s.time || {})[a] || 0));
+      return `<details class="cl-game${s.active ? "" : " muted"}">
+        <summary>
+          <b>${esc(s.name || "без імені")}</b>
+          <span>${esc(s.class || "без класу")}</span>
+          <span class="muted small">⏱ ${fmtTime(total(s)) || "0 хв"} · ігор: ${games.length} · востаннє: ${day(s.last_play)}${s.active ? "" : " · код більше не дійсний"}</span>
+        </summary>
+        <div class="panel">${games.length ? `<table>
+          <tr><th>Гра</th><th>⏱ Час</th><th>Рекорд</th><th>Ігор</th></tr>
+          ${games.map(g => `<tr><td>${esc(GAME_NAMES[g] || g)}</td><td>${fmtTime((s.time || {})[g]) || "—"}</td><td>${(s.best || {})[g] != null ? num(s.best[g]) : "—"}</td><td>${(s.plays || {})[g] || "—"}</td></tr>`).join("")}
+        </table>` : '<p class="note">Ще не грав після входу кодом.</p>'}
+        <p class="muted small">Увійшов: ${day(s.first_at)} · пристроїв: ${s.devices}${(s.tg || []).length ? ` · Telegram: ${s.tg.map(esc).join(", ")} <button type="button" data-unlink="${esc(s.id)}" data-name="${esc(s.name || "")}">Відв'язати Telegram</button>` : " · без Telegram"}</p></div>
+      </details>`;
+    });
+    $("st-list").innerHTML = rows.join("");
+    // учень змінив телефон/акаунт — відв'язати старий Telegram, щоб прив'язати новий
+    $("st-list").querySelectorAll("[data-unlink]").forEach(b => b.addEventListener("click", async () => {
+      if (!confirm(`Відв'язати Telegram від ${b.dataset.name}? Учень зможе прив'язати інший Telegram своїм кодом.`)) return;
+      b.disabled = true;
+      try { await proRpc("course_unlink_tg", { p_student: b.dataset.unlink }); loadCourseStudents(); }
+      catch (e) { b.disabled = false; b.textContent = e.message === "nosql" ? "Спершу запусти course-access.sql" : "Помилка, ще раз"; }
+    }));
+  } catch (err) {
+    $("st-list").innerHTML = err.message === "nosql"
+      ? '<p class="note">У Supabase ще немає таблиць: запусти course-access.sql.</p>'
+      : '<p class="note">Не вдалося завантажити. Перевір інтернет.</p>';
+  }
+}
+
+// ---------- 👥 Класи учнів («Мій клас», classrooms.sql) ----------
+async function loadRooms() {
+  try {
+    const rooms = await proRpc("get_classrooms_admin", {});
+    rooms.forEach(r => (r.members || []).forEach(m => { if (m.time) m.time = tsMain(m.time); }));
+    if (!rooms.length) { $("room-list").innerHTML = '<p class="note">Ще ніхто не створив клас.</p>'; return; }
+    $("room-list").innerHTML = rooms.map(r => {
+      const active = r.members.filter(m => m.active !== false);
+      const games = [...new Set(r.members.flatMap(m => [...Object.keys(m.scores || {}), ...Object.keys(m.time || {})]))];
+      const sorted = [...r.members].sort((a, b) => (b.active !== false) - (a.active !== false)
+        || Math.max(0, ...Object.values(b.scores || {})) - Math.max(0, ...Object.values(a.scores || {})));
+      return `<details class="cl-game">
+        <summary>
+          <b>${esc(r.name)}</b>
+          <span>код ${esc(r.code)}</span>
+          <span class="muted small">учнів: ${active.length} · створено ${new Date(r.created_at).toLocaleDateString("uk-UA", { day: "numeric", month: "long" })}</span>
+        </summary>
+        <div class="panel"><table>
+          <tr><th>Ім'я</th>${games.map(g => `<th>${esc(GAME_NAMES[g] || g)}</th>`).join("")}<th>⏱ Усього</th><th>Приєднався</th><th></th></tr>
+          ${sorted.map(m => `<tr class="${m.active === false ? "muted" : ""}"><td>${esc(m.name)}${m.owner ? " 👑" : ""}${m.active === false ? " (вийшов)" : ""}</td>
+            ${games.map(g => `<td>${m.scores && m.scores[g] != null ? num(m.scores[g]) : "—"}${m.time && m.time[g] ? `<br><span class="muted small">⏱ ${fmtTime(m.time[g])}</span>` : ""}</td>`).join("")}
+            <td>${fmtTime(Object.values(m.time || {}).reduce((a, b) => a + b, 0)) || "—"}</td>
+            <td>${new Date(m.joined_at).toLocaleDateString("uk-UA", { day: "numeric", month: "short" })}</td>
+            <td><button type="button" data-room-member="${m.id}" data-to="${m.active === false}" data-name="${esc(m.name)}">${m.active === false ? "Повернути" : "Прибрати"}</button></td></tr>`).join("")}
+        </table>${games.length ? '<p class="note">⏱ — скільки часу учень провів у грі (рахується з 01.11.2026, лише активна гра).</p>' : '<p class="note">Ще ніхто не зіграв після вступу до класу.</p>'}</div>
+      </details>`;
+    }).join("");
+    // Прибрати / повернути учасника (лише тут, у статистиці)
+    $("room-list").querySelectorAll("[data-room-member]").forEach(b => b.addEventListener("click", async () => {
+      const back = b.dataset.to === "true";
+      if (!back && !confirm(`Прибрати ${b.dataset.name} з класу?`)) return;
+      b.disabled = true;
+      try {
+        await proRpc("set_classroom_member_admin", { p_member: Number(b.dataset.roomMember), p_active: back });
+        const open = [...$("room-list").querySelectorAll("details")].map(d => d.open);
+        await loadRooms();
+        $("room-list").querySelectorAll("details").forEach((d, i) => { d.open = Boolean(open[i]); });
+      } catch (e) { b.disabled = false; b.textContent = "Помилка, ще раз"; }
+    }));
+  } catch (err) {
+    $("room-list").innerHTML = err.message === "nosql"
+      ? '<p class="note">У Supabase ще немає класів (classrooms.sql).</p>'
+      : '<p class="note">Не вдалося завантажити класи. Перевір інтернет.</p>';
+  }
+}
+
+function setView(v) {
+  view = v;
+  store.set("stats_view", v);
+  document.querySelectorAll("#views button").forEach(b => b.classList.toggle("on", b.dataset.view === v));
+  $("stats-view").hidden = v !== "stats";
+  $("feedback-view").hidden = v !== "feedback";
+  $("classes-view").hidden = v !== "classes";
+  $("pro-view").hidden = v !== "pro";
+  $("access-view").hidden = v !== "access";
+  $("students-view").hidden = v !== "students";
+  $("testers-view").hidden = v !== "testers";
+  $("plans-view").hidden = v !== "plans";
+  $("journeys-view").hidden = v !== "journeys";
+  $("streaks-view").hidden = v !== "streaks";
+  if (v === "streaks" && typeof loadStreaks === "function") loadStreaks();
+  if (v === "plans") loadPlanAnswers();
+  if (v === "journeys" && typeof loadJourneys === "function") loadJourneys();
+  if (v === "testers") loadTesters();
+}
+
+function showLogin(message = "") {
+  $("dash").hidden = true;
+  $("login").hidden = false;
+  $("login-error").textContent = message;
+  $("password").focus();
+}
+
+async function load() {
+  $("login").hidden = true;
+  $("dash").hidden = false;
+  setView(view);
+  loadFeedback();
+  loadClasses();
+  loadRooms();
+  loadProIssues();
+  loadProDevices();
+  loadUpsellStats();
+  loadDemoStats();
+  loadBotGateStats();
+  loadAccess();
+  loadCourseStudents();
+  document.querySelectorAll("#periods [data-preset]").forEach(b => b.classList.toggle("on", b.dataset.preset === preset));
+  $("from").value = range.from;
+  $("to").value = range.to;
+  days = daysBetween(range.from, range.to);
+  $("status").textContent = "Завантажую…";
+  try {
+    const r = await fetchRange();
+    if (r) renderRange(r);
+    else {
+      // старої функції досить, але лише «останні N днів»
+      render(await fetchStats());
+    }
+    $("status").textContent = `Оновлено о ${new Date().toLocaleTimeString("uk-UA", { hour: "2-digit", minute: "2-digit" })}`
+      + (rangeMissing ? " · Щоб бачити будь-який період і більше даних, запусти в Supabase stats-v2.sql (див. STATS.md)" : "");
+  } catch (err) {
+    if (err.message === "password") {
+      store.set("stats_password", null);
+      password = "";
+      showLogin("Неправильний пароль");
+    } else if (err.message === "nosql") {
+      $("content").innerHTML = "";
+      $("status").textContent = "У Supabase ще немає функції статистики: запусти stats.sql (див. STATS.md).";
+    } else {
+      $("status").textContent = "Не вдалося завантажити. Перевір інтернет і натисни ↻";
+    }
+  }
+}
+
+function chart(items, key, labelFn) {
+  const max = Math.max(1, ...items.map(i => i[key]));
+  const bars = items.map(i => `<div class="col" title="${esc(labelFn(i, true))}: ${i[key]}">
+      ${i[key] ? `<span class="val">${i[key]}</span>` : ""}
+      <div class="bar${i[key] ? "" : " zero"}" style="height:${i[key] / max * 100}%"></div></div>`).join("");
+  const step = Math.ceil(items.length / 12);
+  const labels = items.map((i, n) => `<span>${n % step === 0 ? esc(labelFn(i)) : ""}</span>`).join("");
+  return `<div class="chart">${bars}</div><div class="chart-labels">${labels}</div>`;
+}
+
+// 🔔 «Попросили сповістити» (launch-notify-stats.sql → get_launch_notify): натиснули «Повідомити, коли з'явиться» до відкриття 15.11
+async function fillLaunchNotify() {
+  const boxes = document.querySelectorAll(".ln-box");
+  if (!boxes.length) return;
+  let d;
+  try { d = await proRpc("get_launch_notify", {}); } catch (e) { return; }
+  if (!d || (!d.people && !d.presses)) { boxes.forEach(b => { b.innerHTML = ""; }); return; }
+  const days = (d.by_day || []).map(x => `${new Date(x.day).toLocaleDateString("uk-UA", { day: "numeric", month: "short" })}: <b>${num(x.n)}</b>`).join(" · ");
+  const h = `<h2>🔔 Попросили сповістити</h2><p class="muted small">Натиснули «Повідомити, коли з'явиться» — бот напише їм 15.11 о 20:30 (одне повідомлення на людину)</p>
+    <div class="cards">${card(num(d.people), "людей чекають")}${card(num(d.presses), "натискань")}${d.sent ? card(num(d.sent), "уже надіслано") : ""}</div>
+    ${(d.by_game || []).length ? `<div class="panel"><p class="legend">На якому тренажері натиснули</p>${rows(d.by_game.map(x => ({ name: GAME_NAMES[x.game] || x.game || "—", n: x.people })))}</div>` : ""}
+    ${days ? `<p class="note">По днях: ${days}</p>` : ""}`;
+  boxes.forEach(b => { b.innerHTML = h; });
+}
+
+function rows(list) {
+  const max = Math.max(1, ...list.map(r => r.n));
+  return `<div class="rows">${list.map(r => `<div class="row"><span class="name">${esc(r.name)}</span>
+    <span class="track"><span class="fill" style="display:block;width:${r.n / max * 100}%"></span></span>
+    <span class="n">${num(r.n)}</span></div>`).join("")}</div>`;
+}
+
+function card(value, label) {
+  return `<div class="card"><div class="big">${value}</div><div class="label">${label}</div></div>`;
+}
+
+const WEEKDAYS = ["", "Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Нд"];
+const LAYOUTS = { table: "📱 на столі", wall: "🖥 на стіні" };
+
+function periodTitle() {
+  const f = d => new Date(d + "T12:00:00").toLocaleDateString("uk-UA", { day: "numeric", month: "long", year: "numeric" });
+  return range.from === range.to ? f(range.from) : `${f(range.from)} — ${f(range.to)}`;
+}
+
+function funnelRows(list) {
+  const top = Math.max(1, list[0].n);
+  return `<div class="rows">${list.map(r => `<div class="row"><span class="name">${esc(r.name)}</span>
+    <span class="track"><span class="fill" style="display:block;width:${r.n / top * 100}%"></span></span>
+    <span class="n">${num(r.n)}</span><span class="pct">${pct(r.n, top)}</span></div>`).join("")}</div>`;
+}
+
+function renderRange(s) {
+  const p = s.players, v = s.visits, f = s.funnel, e = s.engagement;
+  const multi = s.days > 1;
+  const dayLabel = (d, full) => {
+    const dt = new Date(d.day + "T12:00:00");
+    return full ? dt.toLocaleDateString("uk-UA", { weekday: "short", day: "numeric", month: "long" })
+      : dt.toLocaleDateString("uk-UA", { day: "numeric", month: "numeric" });
+  };
+  let html = `<h2>Люди · ${esc(periodTitle())}</h2><p class="muted small">Лише основна версія гри — без бети.</p><div class="cards">
+    ${card(num(p.active), "гравців (пристроїв)")}
+    ${card(num(p.new), "нових")}
+    ${card(num(p.returning), "постійних (грали й раніше)")}
+    ${multi ? card(num(p.multi_day), "заходили у 2+ різні дні") : ""}
+    ${card(pct(p.new_came_back, p.new), "нових повернулися ще раз<br><span class='small'>" + num(p.new_came_back) + " з " + num(p.new) + "</span>")}
+    ${card(num(v.total), `відкриттів гри<br><span class="small">Telegram: ${pct(v.telegram, v.total)}</span>`)}
+    ${card(num(p.all_time), "гравців за весь час")}
+  </div>`;
+
+  html += `<h2>Воронка</h2><p class="muted small">Скільки гравців дійшли до кожного кроку</p><div class="panel">${funnelRows([
+    { name: "Відкрили гру", n: Math.max(f.visited, f.played) },
+    { name: "Почали гру", n: f.played },
+    { name: "Дограли марафон", n: f.finished },
+    { name: "Записалися в таблицю", n: f.leaderboard }
+  ])}</div>`;
+
+  html += `<h2>Наскільки активно грають</h2><div class="two">
+    <div class="cards">${card(num(e.games), "розпочатих ігор")}${card(num(e.avg_per_player), "ігор на гравця")}</div>
+    <div class="panel"><p class="legend">Скільки ігор зіграв кожен гравець</p>${rows([
+      { name: "1 гра", n: e.g1 }, { name: "2–5 ігор", n: e.g2_5 }, { name: "6–20 ігор", n: e.g6_20 }, { name: "21+ ігор", n: e.g21 }
+    ])}</div></div>`;
+
+  if (multi) {
+    html += `<h2>По днях</h2><div class="panel">
+      <p class="legend">Гравців за день</p>${chart(s.daily, "players", dayLabel)}
+      <p class="legend" style="margin-top:16px">Нових гравців за день</p>${chart(s.daily, "new", dayLabel)}
+      <p class="legend" style="margin-top:16px">Розпочатих ігор за день</p>${chart(s.daily, "games", dayLabel)}</div>`;
+  }
+
+  const games = Object.entries(s.games || {}).filter(([id]) => id !== "null");
+  const played = games.filter(([, g]) => g.players || g.marathons || g.trainings || g.duels);
+  if (played.length) {
+    html += `<h2>Ігри</h2><div class="panel"><table>
+      <tr><th>Гра</th><th>Гравців</th><th>Марафонів</th><th>Дограно</th><th>Сер. рахунок</th><th>Медіана</th><th>Рекорд</th><th>Тренувань</th><th>до кінця</th><th>Дуелей</th><th>Усі слова 🎉</th><th>У таблицю</th></tr>
+      ${played.sort((a, b) => b[1].players - a[1].players).map(([id, g]) => `<tr>
+        <td>${esc(GAME_NAMES[id] || id)}</td><td>${num(g.players)}</td><td>${num(g.marathons)}</td><td>${num(g.finished)}</td>
+        <td>${num(g.avg_score)}</td><td>${num(g.median_score)}</td><td>${num(g.max_score)}</td>
+        <td>${num(g.trainings)}</td><td>${num(g.trainings_done)}</td>
+        <td>${num(g.duels)}</td><td>${num(g.all_words)}</td><td>${num(g.leaderboard)}</td></tr>`).join("")}
+    </table></div>`;
+  }
+
+  const scores = Object.entries(s.scores || {});
+  if (scores.length) {
+    html += `<h2>Результати марафону</h2><p class="muted small">Скільки марафонів закінчилися з таким рахунком</p><div class="two">`
+      + scores.map(([id, b]) => {
+        const items = b.map(x => ({ label: x.from >= 300 ? "300+" : `${x.from}`, n: x.n }));
+        return `<div class="panel"><p class="legend">${esc(GAME_NAMES[id] || id)}</p>${chart(items, "n", (x, full) => full ? `${x.label}–${Number(x.label) + 9 || ""} балів` : x.label)}</div>`;
+      }).join("") + `</div>`;
+  }
+
+  if (s.groups && s.groups.length) {
+    html += `<h2>Групи тренувань</h2><p class="muted small">Скільки разів почали (у дужках — скільки дійшли до кінця)</p>
+      <div class="panel">${rows(s.groups.map(g => ({ name: `${g.group} (${g.done} до кінця)`, n: g.count })))}</div>`;
+  }
+
+  const ds = s.duel_setup || {};
+  const dPlayers = Object.entries(ds.players || {}), dLayout = Object.entries(ds.layout || {}), dTarget = Object.entries(ds.target || {});
+  if (dPlayers.length) {
+    html += `<h2>Дуелі на одному екрані</h2><div class="two">
+      <div class="panel"><p class="legend">Скільки гравців</p>${rows(dPlayers.sort((a, b) => a[0] - b[0]).map(([n, c]) => ({ name: `${n} гравці`, n: c })))}</div>
+      <div class="panel"><p class="legend">Як лежить екран</p>${rows(dLayout.map(([k, c]) => ({ name: LAYOUTS[k] || k, n: c })))}
+        <p class="legend" style="margin-top:12px">До скількох очок</p>${rows(dTarget.sort((a, b) => a[0] - b[0]).map(([k, c]) => ({ name: `до ${k}`, n: c })))}
+        <p class="note">Командами: <b>${num(ds.teams)}</b></p></div></div>`;
+  }
+
+  const ox = s.online_extra || {};
+  if ((s.online && s.online.length) || ox.joins || ox.shares) {
+    html += `<h2>Онлайн-режими</h2><div class="panel"><table>
+      <tr><th>Гра</th><th>Режим</th><th>Створено кімнат</th><th>Почато ігор</th><th>Дограно</th><th>Гравців у сер.</th><th>Найбільша</th></tr>
+      ${(s.online || []).map(o => `<tr><td>${esc(GAME_NAMES[o.game] || o.game)}</td><td>${esc(ONLINE_NAMES[o.mode] || o.mode)}</td>
+        <td>${num(o.created)}</td><td>${num(o.started)}</td><td>${num(o.finished)}</td><td>${num(o.avg_players)}</td><td>${num(o.max_players)}</td></tr>`).join("")}
+    </table>
+    <p class="note">Надіслали запрошення: <b>${num(ox.shares)}</b> · відкрили гру за запрошенням: <b>${num(ox.invites)}</b> · приєдналися до кімнати: <b>${num(ox.joins)}</b></p></div>`;
+  }
+
+  // Переходи за посиланнями @ukr_movych
+  const lk = s.links || {};
+  const LINK_PLACES = { handle: "Головна, під маскотом", "brand-tag": "Картка завдання", "brand-tag brand-tag-bottom": "Турнірна таблиця",
+    "brand-tag brand-tag-soon": "Вікно «скоро»", brand: "Низ сторінки", "duel-brand": "Дуель" };
+  html += `<h2>Переходи на @ukr_movych</h2><div class="cards">
+    ${card(num(lk.ukr_movych || 0), "переходів за посиланнями")}${card(num(lk.players || 0), "гравців перейшли")}</div>
+    ${Object.keys(lk.by_place || {}).length ? `<div class="panel">${rows(Object.entries(lk.by_place).sort((a, b) => b[1] - a[1])
+      .map(([k, n]) => ({ name: LINK_PLACES[k] || k || "інше", n })))}</div>` : ""}`;
+
+  const c = s.classes || {};
+  if (c.games) {
+    html += `<h2>Ігри для класу</h2><div class="cards">
+      ${card(num(c.games), "ігор для класу")}${card(num(c.students), "учнів загалом")}
+      ${card(num(c.avg_students), "учнів у середньому")}${card(num(c.avg_rounds), "питань у середньому")}
+      ${card(num(c.early), "завершено достроково")}</div>
+      <p class="muted small">Деталі кожної гри — у вкладці «🏫 Класи».</p>`;
+  }
+
+  const fbs = s.feedback || {};
+  if (fbs.count) {
+    html += `<h2>Відгуки</h2><div class="cards">${card(num(fbs.count), "відгуків")}${card(num(fbs.avg_rating), "середня оцінка з 5")}${card(num(fbs.publishable), "можна публікувати")}</div>`;
+  }
+
+  const soon = games.filter(([, g]) => g.soon_clicks).sort((a, b) => b[1].soon_clicks - a[1].soon_clicks);
+  if (soon.length) {
+    html += `<h2>Яких ігор чекають</h2><p class="muted small">Скільки разів натиснули на гру з позначкою «скоро»</p>
+      <div class="panel">${rows(soon.map(([id, g]) => ({ name: GAME_NAMES[id] || id, n: g.soon_clicks })))}</div>`;
+  }
+  html += `<div class="ln-box"></div>`; setTimeout(fillLaunchNotify, 0); // 🔔 «Попросили сповістити»
+
+  if (s.hours && s.hours.some(h => h.games)) {
+    html += `<h2>Коли грають</h2><div class="two">
+      <div class="panel"><p class="legend">За годиною (київський час)</p>${chart(s.hours, "games", (h, full) => full ? `${h.hour}:00–${h.hour}:59` : String(h.hour))}</div>
+      <div class="panel"><p class="legend">За днем тижня</p>${chart(s.weekdays, "games", w => WEEKDAYS[w.dow])}</div></div>`;
+  }
+
+  const lb = Object.entries(s.leaderboard || {});
+  if (lb.length) {
+    html += `<h2>Турнірна таблиця</h2><div class="panel"><table>
+      <tr><th>Гра</th><th>Гравців у таблиці</th><th>Нових за період</th><th>Найкращий результат</th></tr>
+      ${lb.map(([id, l]) => `<tr><td>${esc(GAME_NAMES[id] || id)}</td><td>${num(l.players)}</td><td>${num(l.new)}</td><td>${num(l.best)}</td></tr>`).join("")}
+    </table></div>`;
+  }
+
+  html += `<p class="note">«Гравець» — це один пристрій (телефон чи браузер). Імен і особистих даних гра не збирає.
+    Статистика рахується з моменту, коли в Supabase запустили <b>stats.sql</b>; давніші дані є лише в Google Analytics.</p>`;
+  $("content").innerHTML = html;
+}
+
+function render(s) {
+  const p = s.players, v = s.visits;
+  const period = days === 1 ? "сьогодні" : `за ${days} днів`;
+  let html = `<h2>Люди ${period}</h2><div class="cards">
+    ${card(num(p.period), "гравців (пристроїв)")}
+    ${card(num(p.new), "з них нових")}
+    ${days > 1 ? card(num(p.returning), "приходили у 2+ різні дні") : ""}
+    ${card(num(p.played), "почали хоч одну гру")}
+    ${card(num(v.total), `відкриттів гри<br><span class="small">з них у Telegram: ${pct(v.telegram, v.total)}</span>`)}
+    ${days > 1 ? card(num(p.today), "гравців сьогодні") : ""}
+    ${card(num(p.all_time), "гравців за весь час")}
+  </div>`;
+
+  if (days > 1) {
+    const dayLabel = (d, full) => {
+      const dt = new Date(d.day + "T12:00:00");
+      return full ? dt.toLocaleDateString("uk-UA", { weekday: "short", day: "numeric", month: "long" })
+        : dt.toLocaleDateString("uk-UA", { day: "numeric", month: "numeric" });
+    };
+    html += `<h2>По днях</h2><div class="panel"><p class="legend">Гравців за день</p>${chart(s.daily, "players", dayLabel)}
+      <p class="legend" style="margin-top:16px">Розпочатих ігор за день (марафони, тренування, дуелі)</p>${chart(s.daily, "games", dayLabel)}</div>`;
+  }
+
+  const games = Object.entries(s.games || {}).filter(([id]) => id !== "null");
+  const played = games.filter(([, g]) => g.players || g.marathons || g.trainings || g.duels);
+  if (played.length) {
+    html += `<h2>Ігри</h2><div class="panel"><table>
+      <tr><th>Гра</th><th>Гравців</th><th>Марафонів</th><th>Сер. рахунок</th><th>Рекорд</th><th>Тренувань</th><th>з них до кінця</th><th>Дуелей</th><th>Усі слова 🎉</th><th>У таблицю</th></tr>
+      ${played.sort((a, b) => b[1].players - a[1].players).map(([id, g]) => `<tr>
+        <td>${esc(GAME_NAMES[id] || id)}</td><td>${num(g.players)}</td><td>${num(g.marathons)}</td>
+        <td>${num(g.avg_score)}</td><td>${num(g.max_score)}</td><td>${num(g.trainings)}</td><td>${num(g.trainings_done)}</td>
+        <td>${num(g.duels)}</td><td>${num(g.all_words)}</td><td>${num(g.leaderboard)}</td></tr>`).join("")}
+    </table></div>`;
+  }
+
+  if (s.groups && s.groups.length) {
+    html += `<h2>Найпопулярніші групи тренувань</h2><div class="panel">${rows(s.groups.map(g => ({ name: g.group, n: g.count })))}</div>`;
+  }
+
+  const duelPlayers = Object.entries(s.duel_players || {});
+  if (duelPlayers.length) {
+    html += `<h2>Дуелі на одному телефоні</h2><div class="panel">${rows(duelPlayers.sort((a, b) => a[0] - b[0]).map(([n, c]) => ({ name: `${n} гравці`, n: c })))}</div>`;
+  }
+
+  const online = Object.entries(s.online || {});
+  const ox = s.online_extra || {};
+  if (online.length || ox.joins || ox.shares) {
+    html += `<h2>Онлайн-режими</h2><div class="panel"><table>
+      <tr><th>Режим</th><th>Створено кімнат</th><th>Почато ігор</th><th>Дограно</th><th>Гравців у середньому</th><th>Найбільша гра</th></tr>
+      ${online.map(([m, o]) => `<tr><td>${esc(ONLINE_NAMES[m] || m)}</td><td>${num(o.created)}</td><td>${num(o.started)}</td>
+        <td>${num(o.finished)}</td><td>${num(o.avg_players)}</td><td>${num(o.max_players)}</td></tr>`).join("")}
+    </table>
+    <p class="note">Надіслали запрошення: <b>${num(ox.shares)}</b> · відкрили гру за запрошенням: <b>${num(ox.invites)}</b> · приєдналися до кімнати: <b>${num(ox.joins)}</b></p></div>`;
+  }
+
+  const soon = games.filter(([, g]) => g.soon_clicks).sort((a, b) => b[1].soon_clicks - a[1].soon_clicks);
+  if (soon.length) {
+    html += `<h2>Яких ігор чекають</h2><p class="muted small">Скільки разів натиснули на гру з позначкою «скоро»</p>
+      <div class="panel">${rows(soon.map(([id, g]) => ({ name: GAME_NAMES[id] || id, n: g.soon_clicks })))}</div>`;
+  }
+  html += `<div class="ln-box"></div>`; setTimeout(fillLaunchNotify, 0); // 🔔 «Попросили сповістити»
+
+  if (s.hours && s.hours.some(h => h.games)) {
+    html += `<h2>О котрій грають</h2><div class="panel"><p class="legend">Розпочатих ігор за годиною (київський час)</p>
+      ${chart(s.hours, "games", (h, full) => full ? `${h.hour}:00–${h.hour}:59` : String(h.hour))}</div>`;
+  }
+
+  const lb = Object.entries(s.leaderboard || {});
+  if (lb.length) {
+    html += `<h2>Турнірна таблиця</h2><div class="panel"><table>
+      <tr><th>Гра</th><th>Гравців у таблиці</th><th>Нових ${period}</th><th>Найкращий результат</th></tr>
+      ${lb.map(([id, l]) => `<tr><td>${esc(GAME_NAMES[id] || id)}</td><td>${num(l.players)}</td><td>${num(l.new)}</td><td>${num(l.best)}</td></tr>`).join("")}
+    </table></div>`;
+  }
+
+  html += `<p class="note">«Гравець» — це один пристрій (телефон чи браузер). Імен і особистих даних гра не збирає.
+    Статистика тут рахується з моменту, коли в Supabase запустили <b>stats.sql</b>; давніші дані є лише в Google Analytics.</p>`;
+  $("content").innerHTML = html;
+}
+
+$("login").addEventListener("submit", e => {
+  e.preventDefault();
+  password = $("password").value.trim();
+  store.set("stats_password", password);
+  load();
+});
+$("logout").addEventListener("click", () => {
+  store.set("stats_password", null);
+  password = "";
+  $("password").value = "";
+  showLogin();
+});
+$("views").addEventListener("click", e => {
+  const b = e.target.closest("button");
+  if (b) setView(b.dataset.view);
+});
+$("fb-only-pub").addEventListener("change", renderFeedback);
+$("fb-only-good").addEventListener("change", renderFeedback);
+$("range").addEventListener("submit", e => {
+  e.preventDefault();
+  if (!$("from").value || !$("to").value) return;
+  const [a, b] = [$("from").value, $("to").value].sort();
+  range = { from: a, to: b };
+  preset = "custom";
+  store.set("stats_preset", preset);
+  store.set("stats_range", JSON.stringify(range));
+  load();
+});
+$("periods").addEventListener("click", e => {
+  const b = e.target.closest("button");
+  if (!b) return;
+  if (b.dataset.preset) {
+    preset = b.dataset.preset;
+    range = presetRange(preset);
+    store.set("stats_preset", preset);
+    store.set("stats_range", JSON.stringify(range));
+  }
+  load();
+});
+
+if (!CFG.url || !CFG.anonKey) {
+  document.body.innerHTML = '<p class="wrap">Supabase не налаштовано (leaderboard-config.js).</p>';
+} else if (password) {
+  load();
+} else {
+  showLogin();
+}
+</script>
+<script src="../emoji.js?v=20261108c"></script> <!-- 😀 смайлики як у Telegram -->
+<script src="journeys.js?v=20261108b"></script>
+<script src="streaks.js?v=20261108a"></script>
+</body>
+</html>

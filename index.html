@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<script src="migrate.js?v=2"></script>
+<script src="embed.js?v=20261108a"></script>
+
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-82WP0WEX34"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-82WP0WEX34');
+</script>
+
+<meta charset="UTF-8">
+<meta name="google-site-verification" content="UQGJR2olIyMSD8CNBQt844eH-qum6Sc7DRYcRBpVgiw">
+<meta name="google-site-verification" content="AZI6Sn9VLC-thI7vBT5KoqjL0RKLs9fznpUw0bc_Occ">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#211a14">
+<title>НМТ-качалка — тренажери до НМТ: наголоси, лексичні помилки, фразеологізми, дати</title>
+  <meta name="description" content="Безкоштовні тренажери до НМТ з української та історії: 233 наголоси, 1026 лексичних помилок, 602 іншомовні слова, 358 фразеологізмів, дати й персоналії. Гра сама нагадує, коли повторити.">
+  <link rel="canonical" href="https://ukrmovych.duckdns.org/gym/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="НМТ-качалка">
+  <meta property="og:title" content="НМТ-качалка — усе, що треба зазубрити до НМТ, в одному телефоні">
+  <meta property="og:description" content="Наголоси, лексичні помилки, іншомовні слова, фразеологізми, дати й персоналії з історії. Тренування, повторення вчасно, дуелі з друзями.">
+  <meta property="og:url" content="https://ukrmovych.duckdns.org/gym/">
+  <meta property="og:image" content="https://ukrmovych.duckdns.org/gym/og.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="675">
+  <meta property="og:locale" content="uk_UA">
+  <meta name="twitter:card" content="summary_large_image">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"НМТ-качалка","url":"https://ukrmovych.duckdns.org/gym/","applicationCategory":"EducationalApplication","operatingSystem":"Web, Telegram","inLanguage":"uk","isAccessibleForFree":true,"description":"Тренажери до НМТ з української мови та історії України: наголоси, лексичні помилки, іншомовні слова, фразеологізми, дати й персоналії.","author":{"@type":"Person","name":"ukr_movych"}}</script>
+<link rel="icon" type="image/png" href="favicon.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="preload" href="fonts/balsamiq-sans-cyrillic-700-normal.woff2" as="font" type="font/woff2" crossorigin>
+<script async src="https://telegram.org/js/telegram-web-app.js"></script>
+<link rel="stylesheet" href="style.css?v=20261108z">
+</head>
+<body>
+
+  <!-- Меню -->
+  <main id="menu" class="screen">
+    <div class="menu-logo">
+      <img src="logo.png" alt="Логотип ukr_movych" width="96" height="96">
+      <a class="handle" href="https://t.me/+GkBggS477tlmODQy" target="_blank" rel="noopener" data-tg-link>@ukr_movych</a>
+    </div>
+    <h1 class="title">Що качатимемо?</h1>
+
+    <!-- Кнопки ігор малює script.js зі списку GAMES -->
+    <button id="btn-rejoin" class="rejoin-btn" hidden>🔄 <span id="rejoin-label">Повернутися в гру · кімната</span> <b id="rejoin-code"></b></button>
+
+    <div id="game-list" class="game-grid"></div>
+
+    <script>
+      // ⚡ меню з минулого запуску — одразу, поки вантажиться код (script.js: saveMenuCacheSoon; справжнє меню замінить його)
+      try {
+        var mcH = /[?&]newbie(&|=|$)/.test(location.search) ? "" : localStorage.getItem("menu_cache");
+        if (mcH) {
+          var gl = document.getElementById("game-list"); gl.innerHTML = mcH; gl.classList.add("from-cache");
+          var slot = gl.querySelector(".myclass-slot"); if (slot) slot.remove(); // «Мій клас» тепер унизу, під «Мій план»
+        } else {
+          // перший запуск (меню ще не збережене) — напис і анімація збирання меню (script.js menuAssemble)
+          document.body.classList.add("first-load");
+          document.getElementById("game-list").insertAdjacentHTML("beforebegin", '<p class="gl-loading">Завантажуємо тобі тренажери<span>.</span><span>.</span><span>.</span></p>');
+        }
+      } catch (e) {}
+    </script>
+    <button id="btn-plan" class="leaders-btn myclass-btn plan-btn">
+      <span aria-hidden="true">📅</span>
+      <span class="myclass-label">Мій план<span class="myclass-sub">Сам розплануй, як устигнути до своєї дати</span></span>
+      <span class="mode-arrow" aria-hidden="true">›</span>
+    </button>
+
+    <button id="btn-myclass" class="leaders-btn myclass-btn">
+      <span aria-hidden="true">👥</span>
+      <span class="myclass-label">Мій клас<span class="myclass-sub">Змагайся з однокласниками</span></span>
+      <span class="mode-arrow" aria-hidden="true">›</span>
+    </button>
+
+    <button id="btn-leaders" class="leaders-btn">
+      <span aria-hidden="true">🏆</span>
+      <span>Турнірна таблиця</span>
+      <span class="mode-arrow" aria-hidden="true">›</span>
+    </button>
+
+    <button id="btn-feedback" class="feedback-btn">
+      <span class="feedback-btn-emoji" aria-hidden="true">💬</span>
+      <span class="feedback-btn-text">
+        <span id="feedback-btn-title" class="feedback-btn-title">Залиш відгук</span>
+        <span id="feedback-btn-sub" class="feedback-btn-sub">Чим тобі допоміг тренажер? Це 1 хвилина, а нам — дуже важливо 🧡</span>
+      </span>
+      <span class="mode-arrow" aria-hidden="true">›</span>
+    </button>
+  </main>
+
+  <!-- Відгук -->
+  <main id="feedback-screen" class="screen" hidden>
+    <header class="top-bar">
+      <button id="btn-feedback-back" class="icon-btn" aria-label="В меню">‹ Меню</button>
+      <h2 class="screen-title">Твій відгук</h2>
+    </header>
+
+    <form id="feedback-form" class="card feedback-card" novalidate>
+      <p class="feedback-lead">
+        Розкажи, як тобі цей тренажер? Що особливо хочеш виділити? 🧡
+      </p>
+
+      <div class="feedback-field">
+        <span class="setup-label">Як тобі тренажер?</span>
+        <div id="feedback-rating" class="feedback-rating" role="radiogroup" aria-label="Оцінка">
+          <button type="button" data-rating="1" role="radio" aria-label="1 з 5">😕</button>
+          <button type="button" data-rating="2" role="radio" aria-label="2 з 5">😐</button>
+          <button type="button" data-rating="3" role="radio" aria-label="3 з 5">🙂</button>
+          <button type="button" data-rating="4" role="radio" aria-label="4 з 5">😃</button>
+          <button type="button" data-rating="5" role="radio" aria-label="5 з 5">🤩</button>
+        </div>
+      </div>
+
+      <label class="feedback-field">
+        <span class="setup-label">Твій відгук</span>
+        <textarea id="feedback-text" rows="5" maxlength="2000"
+          placeholder="Наприклад: «За тиждень вивчила всі наголоси, а дуелі з подругою — це взагалі топ!»"></textarea>
+      </label>
+      <div class="feedback-chips" aria-label="Підказки, з чого почати">
+        <button type="button" class="chip">Найбільше сподобалось…</button>
+        <button type="button" class="chip">До НМТ мені допомогло…</button>
+        <button type="button" class="chip">Від інших тренажерів відрізняється тим, що…</button>
+        <button type="button" class="chip">Раджу друзям, бо…</button>
+      </div>
+
+      <div class="feedback-field">
+        <span class="setup-label">Хто ти?</span>
+        <div id="feedback-role" class="seg seg-wrap" role="radiogroup" aria-label="Хто ти">
+          <button type="button" data-role="student" role="radio">🎒 Учень / учениця</button>
+          <button type="button" data-role="teacher" role="radio">👩‍🏫 Вчитель / ка</button>
+          <button type="button" data-role="parent" role="radio">👨‍👩‍👧 Батьки</button>
+          <button type="button" data-role="other" role="radio">✨ Інше</button>
+        </div>
+      </div>
+
+      <label class="feedback-field">
+        <span class="setup-label">Як тебе підписати? <span class="optional">(необов'язково)</span></span>
+        <input id="feedback-name" type="text" maxlength="40" autocomplete="given-name" placeholder="Наприклад: Оля, 11 клас, Львів">
+      </label>
+
+      <label class="feedback-check">
+        <input id="feedback-publish" type="checkbox" checked>
+        <span>Можна показати мій відгук іншим (наприклад, на сторінці тренажера чи в соцмережах ukr_movych)</span>
+      </label>
+
+      <label id="feedback-contact-row" class="feedback-check" hidden>
+        <input id="feedback-contact" type="checkbox">
+        <span>Можна написати мені в Telegram (<span id="feedback-username"></span>), якщо будуть питання</span>
+      </label>
+
+      <p id="feedback-status" class="submit-status" role="status"></p>
+      <button id="btn-feedback-send" class="btn-primary" type="submit">Надіслати відгук</button>
+    </form>
+
+    <section id="feedback-thanks" class="card feedback-card feedback-thanks" hidden>
+      <div class="over-emoji" aria-hidden="true">🧡</div>
+      <h3>Дякуємо!</h3>
+      <p>Твій відгук уже в нас. Саме такі слова надихають робити тренажер ще кращим.</p>
+      <button id="btn-feedback-done" class="btn-primary" type="button">Повернутися в меню</button>
+    </section>
+  </main>
+
+  <!-- Гра -->
+  <main id="game" class="screen" hidden>
+    <header class="top-bar">
+      <button id="btn-menu" class="icon-btn" aria-label="В меню">‹ Меню</button>
+      <span id="lives" class="lives" aria-label="Життя"></span>
+      <span id="score" class="score">0</span>
+    </header>
+
+    <div id="progress" class="progress" hidden>
+      <div class="progress-track"><div id="progress-fill" class="progress-fill"></div></div>
+      <p id="level-line" class="level-line" hidden></p>
+    </div>
+
+    <section class="card">
+      <a class="brand-tag" href="https://t.me/+GkBggS477tlmODQy" target="_blank" rel="noopener" data-tg-link><img src="logo.png" alt="" width="28" height="28"><span>@ukr_movych</span></a>
+      <p id="question" class="question"></p>
+      <div id="sentence" class="sentence" hidden></div>
+      <div id="answers" class="answers"></div>
+      <p id="feedback" class="feedback" aria-live="polite"></p>
+    </section>
+
+    <div class="game-nav">
+      <button id="btn-game-prev" class="btn-back" type="button" hidden>‹ Попереднє</button>
+    </div>
+
+    <p id="test-note" class="test-note" hidden>
+      🧪 Розділ працює в тестовому режимі: деякі речення ще потребують доопрацювання.
+    </p>
+
+    <p id="hint" class="hint"></p>
+  </main>
+
+  <!-- Рандомний тест НМТ (PRO): логіка — nmt-test.js -->
+  <main id="nmttest" class="screen" hidden>
+    <header class="top-bar">
+      <button id="btn-nmt-menu" class="icon-btn" aria-label="В меню">‹ Меню</button>
+      <span id="nmt-score" class="score nmt-score">0 з 0</span>
+      <button id="btn-nmt-finish" class="icon-btn">Завершити</button>
+    </header>
+    <section id="nmt-play" class="card nmt-card">
+      <p id="nmt-review" class="nmt-review" hidden>👀 Попереднє завдання</p>
+      <span id="nmt-topic" class="nmt-topic"></span>
+      <div id="nmt-question" class="nmt-question"></div>
+      <div id="nmt-answers" class="answers"></div>
+      <p id="nmt-feedback" class="feedback" aria-live="polite"></p>
+      <button id="btn-nmt-next" class="btn-primary" hidden>Наступне завдання →</button>
+      <div class="nmt-nav">
+        <button id="btn-nmt-prev" class="btn-back" type="button" hidden>‹ Попереднє</button>
+        <button id="btn-nmt-return" class="btn-back" type="button" hidden>До поточного ›</button>
+      </div>
+      <p id="nmt-source" class="nmt-source"></p>
+    </section>
+    <section id="nmt-result" class="card nmt-card" hidden>
+      <h2 class="nmt-result-title">Результат</h2>
+      <p id="nmt-result-score" class="nmt-result-score"></p>
+      <p id="nmt-result-best" class="nmt-result-best"></p>
+      <h3 id="nmt-mistakes-title" class="nmt-mistakes-title">Помилки</h3>
+      <div id="nmt-mistakes" class="nmt-mistakes"></div>
+      <div class="over-actions">
+        <button id="btn-nmt-again" class="btn-primary">Ще раз</button>
+        <button id="btn-nmt-result-menu" class="btn-secondary">У меню</button>
+      </div>
+    </section>
+  </main>
+
+  <!-- Наголоси: вибір режиму -->
+  <main id="modes" class="screen" hidden>
+    <header class="top-bar">
+      <button id="btn-modes-back" class="icon-btn" aria-label="В меню">‹ Меню</button>
+      <h2 id="modes-title" class="screen-title">Наголоси</h2>
+    </header>
+
+    <p class="modes-lead">Обери режим</p>
+
+    <!-- Спецтеми (доступ за посиланням з вебінару): які слова в марафоні й онлайн-іграх -->
+    <div id="topic-picker" class="topic-picker" hidden></div>
+
+    <!-- Тренування — першим, марафон — другим (власниця, 08.11.2026) -->
+    <section id="groups-panel" class="mode-panel collapsible" data-panel="groups">
+      <button class="mode-head mode-toggle" type="button" aria-expanded="false" aria-controls="groups-body">
+        <span class="mode-num">1</span>
+        <span class="mode-head-text">
+          <span class="mode-title">🎯 Тренування</span>
+          <span class="mode-desc">Групи по ~15 слів, без життів, з роботою над помилками</span>
+          <span id="groups-progress" class="mode-progress"></span>
+        </span>
+        <span class="mode-chevron" aria-hidden="true">›</span>
+      </button>
+      <div id="groups-body" class="mode-body">
+      <div id="group-list" class="group-grid"></div>
+      <p class="group-legend">
+        <span class="legend-item"><span class="legend-dot legend-new"></span> не розпочато</span>
+        <span class="legend-item"><span class="legend-dot legend-mid"></span> є над чим попрацювати</span>
+        <span class="legend-item"><span class="legend-dot legend-done"></span> вивчено</span>
+        <span class="legend-item">блякне — знання згасають · 🔁 — час повторити</span>
+      </p>
+      </div>
+    </section>
+
+    <section class="mode-panel">
+      <div class="mode-head">
+        <span class="mode-num">2</span>
+        <span class="mode-head-text">
+          <span class="mode-title">🏁 Марафон</span>
+          <span id="marathon-desc" class="mode-desc">Усі 233 слова · 3 життя · турнірна таблиця</span>
+        </span>
+      </div>
+      <button id="btn-marathon" class="btn-primary mode-start">
+        Почати марафон
+        <span id="marathon-best" class="mode-best" data-best="naholosy"></span>
+      </button>
+      <button id="btn-marathon-endless" class="btn-secondary mode-start endless-start" hidden>
+        ♾ Без обмеження життів
+        <span class="mode-best">PRO · бали не йдуть у турнірну таблицю</span>
+      </button>
+    </section>
+
+    <section class="mode-panel collapsible" data-panel="duel">
+      <button class="mode-head mode-toggle" type="button" aria-expanded="false" aria-controls="duel-body">
+        <span id="duel-num" class="mode-num">3</span>
+        <span class="mode-head-text">
+          <span class="mode-title">⚔️ Дуель</span>
+          <span id="duel-desc" class="mode-desc">2–4 гравці: хто перший натисне правильний наголос</span>
+        </span>
+        <span class="mode-chevron" aria-hidden="true">›</span>
+      </button>
+      <div id="duel-body" class="mode-body">
+
+      <div class="duel-setup">
+        <div class="setup-controls">
+          <div class="setup-row">
+            <span class="setup-label">Гравців</span>
+            <div id="duel-players" class="seg" role="radiogroup" aria-label="Кількість гравців">
+              <button data-n="2" role="radio">2</button>
+              <button data-n="3" role="radio">3</button>
+              <button data-n="4" role="radio">4</button>
+            </div>
+          </div>
+          <div class="setup-row">
+            <span class="setup-label">Екран</span>
+            <div id="duel-layout" class="seg" role="radiogroup" aria-label="Як лежить екран">
+              <button data-layout="table" role="radio">📱 На столі</button>
+              <button data-layout="wall" role="radio">🖥 На стіні</button>
+            </div>
+          </div>
+          <div id="duel-teams-row" class="setup-row" hidden>
+            <span class="setup-label">Гра</span>
+            <div id="duel-teams" class="seg" role="radiogroup" aria-label="Кожен сам за себе чи командами">
+              <button data-teams="0" role="radio">👤 Кожен сам</button>
+              <button data-teams="1" role="radio">👥 Команди</button>
+            </div>
+          </div>
+          <div class="setup-row">
+            <span class="setup-label">Очок для перемоги</span>
+            <div id="duel-target" class="seg" role="radiogroup" aria-label="До скількох очок">
+              <button data-target="10" role="radio">10</button>
+              <button data-target="20" role="radio">20</button>
+              <button data-target="50" role="radio">50</button>
+            </div>
+          </div>
+          <p id="duel-hint" class="setup-hint"></p>
+        </div>
+        <div id="duel-preview" class="duel-preview" aria-hidden="true"></div>
+      </div>
+
+      <button id="btn-duel" class="btn-primary">Почати дуель</button>
+      </div>
+    </section>
+
+    <section id="online-panel" class="mode-panel collapsible" data-panel="online">
+      <button class="mode-head mode-toggle" type="button" aria-expanded="false" aria-controls="online-body-panel">
+        <span id="online-num" class="mode-num">4</span>
+        <span class="mode-head-text">
+          <span class="mode-title">🌐 Онлайн з друзями</span>
+          <span id="online-desc" class="mode-desc">Кожен на своєму телефоні: дуель, спринт, гра для класу</span>
+        </span>
+        <span class="mode-chevron" aria-hidden="true">›</span>
+      </button>
+      <div id="online-body-panel" class="mode-body">
+      <p class="mode-note">Створи кімнату й надішли друзям код, посилання або QR-код.</p>
+      <div class="online-modes">
+        <button class="online-mode-btn" data-mode="duel">
+          <span class="om-title">⚔️ Онлайн-дуель</span>
+          <span id="online-duel-desc" class="om-desc">Удвох. Однакове слово — хто правильно й швидше, тому бал</span>
+        </button>
+        <button class="online-mode-btn" data-mode="sprint">
+          <span id="online-sprint-title" class="om-title">⏱ Спринт 60 секунд</span>
+          <span id="online-sprint-desc" class="om-desc">2–10 гравців. Хто дасть більше правильних відповідей за хвилину</span>
+        </button>
+        <button class="online-mode-btn" data-mode="class">
+          <span class="om-title">🏫 Гра для класу</span>
+          <span class="om-desc">Учитель веде гру на проєкторі, учні відповідають з телефонів</span>
+        </button>
+      </div>
+      <button id="btn-online-join" class="btn-secondary">🔑 Маю код — приєднатися</button>
+      </div>
+    </section>
+  </main>
+
+  <!-- Онлайн: вміст малює online.js -->
+  <main id="online" class="screen" hidden>
+    <header class="top-bar">
+      <button id="btn-online-back" class="icon-btn" aria-label="Вийти">‹ Вийти</button>
+      <h2 id="online-title" class="screen-title">Онлайн</h2>
+    </header>
+    <div id="online-body" class="online-body"></div>
+  </main>
+
+  <!-- Дуель: поле малює script.js (2–4 гравці, на столі або на стіні) -->
+  <main id="duel" class="duel" hidden>
+    <div id="duel-board" class="duel-board"></div>
+  </main>
+
+  <!-- Результат тренування -->
+  <main id="train-over" class="screen" hidden>
+    <section class="card over-card">
+      <img class="over-logo" src="logo.png" alt="Логотип ukr_movych" width="80" height="80">
+      <h2 id="train-title"></h2>
+      <p class="over-score"><span id="train-score"></span></p>
+      <p id="train-sub" class="over-best"></p>
+
+      <div class="over-actions">
+        <button id="btn-fix-mistakes" class="btn-primary"></button>
+        <button id="btn-train-next" class="btn-primary"></button>
+        <button id="btn-train-again" class="btn-secondary">Ще раз цю групу</button>
+        <button id="btn-train-groups" class="btn-secondary over-small">До груп</button>
+      </div>
+    </section>
+
+    <section id="train-mistakes" class="card mistakes" hidden>
+      <h3>Слова для повторення</h3>
+      <ul id="train-mistakes-list" class="mistakes-list"></ul>
+    </section>
+  </main>
+
+  <!-- Кінець гри -->
+  <main id="over" class="screen" hidden>
+    <section class="card over-card">
+      <img class="over-logo" src="logo.png" alt="Логотип ukr_movych" width="80" height="80">
+      <h2>Гру закінчено!</h2>
+      <p class="over-score"><span id="over-score">0</span></p>
+      <p id="over-best" class="over-best"></p>
+      <p id="over-class" class="over-class" hidden></p>
+
+      <form id="submit-form" class="submit-form" hidden>
+        <label for="player-name">Твоє ім'я для турнірної таблиці</label>
+        <div class="submit-row">
+          <input id="player-name" type="text" maxlength="20" autocomplete="nickname" placeholder="Наприклад, Оксана">
+          <button type="submit" class="btn-primary btn-small">Зберегти</button>
+        </div>
+        <p id="submit-status" class="submit-status" aria-live="polite"></p>
+      </form>
+
+      <div class="over-actions">
+        <button id="btn-again" class="btn-primary">Ще раз</button>
+        <button id="btn-over-menu" class="btn-secondary">В меню</button>
+      </div>
+    </section>
+
+    <section id="mistakes" class="card mistakes" hidden>
+      <h3>Твої помилки</h3>
+      <ul id="mistakes-list" class="mistakes-list"></ul>
+    </section>
+  </main>
+
+  <!-- Турнірна таблиця -->
+  <main id="leaders" class="screen" hidden>
+    <header class="top-bar">
+      <button id="btn-leaders-back" class="icon-btn" aria-label="В меню">‹ Меню</button>
+      <h2 class="screen-title">Турнірна таблиця</h2>
+    </header>
+
+    <div class="tabs" role="tablist">
+      <button class="tab active" data-game="naholosy" role="tab">Наголоси</button>
+      <button class="tab" data-game="leksychna" role="tab">Лексична</button>
+      <button class="tab" data-game="klychnyi" role="tab">Кличний</button>
+    </div>
+
+    <section class="card">
+      <ol id="leaders-list" class="leaders-list"></ol>
+      <p id="leaders-status" class="leaders-status"></p>
+    </section>
+
+    <button id="btn-leaders-play" class="btn-primary leaders-play">🏁 Грати</button>
+
+    <button id="btn-leaders-class" class="leaders-btn myclass-btn">
+      <span aria-hidden="true">👥</span>
+      <span>Таблиця мого класу</span>
+      <span class="mode-arrow" aria-hidden="true">›</span>
+    </button>
+  </main>
+
+  <!-- 👥 Мій клас: логіка — myclass.js -->
+  <main id="myclass" class="screen" hidden>
+    <header class="top-bar">
+      <button id="btn-myclass-back" class="icon-btn" aria-label="В меню">‹ Меню</button>
+      <h2 class="screen-title">👥 Мій клас</h2>
+    </header>
+    <div id="myclass-body"></div>
+  </main>
+
+  <!-- Святкування -->
+  <div id="celebrate" class="modal" hidden>
+    <div class="modal-card">
+      <div class="over-emoji" aria-hidden="true">🏆</div>
+      <h2>Неймовірно!</h2>
+      <p id="celebrate-text"></p>
+      <button id="btn-continue" class="btn-primary">Грати далі</button>
+      <a class="brand-tag brand-tag-bottom" href="https://t.me/+GkBggS477tlmODQy" target="_blank" rel="noopener" data-tg-link><img src="logo.png" alt="" width="28" height="28"><span>@ukr_movych</span></a>
+    </div>
+  </div>
+  <div id="confetti" class="confetti" aria-hidden="true"></div>
+
+  <!-- «Скоро» -->
+  <div id="soon" class="modal" hidden>
+    <div class="modal-card">
+      <div class="over-emoji" aria-hidden="true">🚧</div>
+      <h2 id="soon-title"></h2>
+      <p>Скоро тут з'явиться топовий тренажер — слідкуй!</p>
+      <a class="brand-tag brand-tag-soon" href="https://t.me/+GkBggS477tlmODQy" target="_blank" rel="noopener" data-tg-link><img src="logo.png" alt="" width="28" height="28"><span>@ukr_movych</span></a>
+      <button id="btn-soon-ok" class="btn-primary">Чекаю!</button>
+    </div>
+  </div>
+
+  <!-- Доступ до спецтеми за посиланням з вебінару -->
+  <div id="topic-modal" class="modal" hidden>
+    <div class="modal-card">
+      <div id="topic-modal-emoji" class="over-emoji" aria-hidden="true">🎉</div>
+      <h2 id="topic-modal-title"></h2>
+      <p id="topic-modal-text"></p>
+      <a id="btn-topic-open" class="btn-primary pro-buy" href="#" hidden>Відкрити в Telegram</a>
+      <button id="btn-topic-go" class="btn-primary" hidden>До тренування →</button>
+      <button id="btn-topic-close" class="btn-secondary">Закрити</button>
+    </div>
+  </div>
+
+  <!-- «‹ Попереднє»: копія картки попереднього завдання (лише для перегляду) -->
+  <div id="prev-modal" class="modal" hidden>
+    <div class="modal-card prev-modal-card">
+      <p class="nmt-review">👀 Попереднє завдання</p>
+      <div id="prev-content" class="prev-content"></div>
+      <button id="btn-prev-close" class="btn-secondary">До поточного ›</button>
+    </div>
+  </div>
+
+  <div id="pro" class="modal" hidden>
+    <div class="modal-card">
+      <div class="pro-intro">
+      <div class="over-emoji" aria-hidden="true">🦆</div>
+      <h2 id="pro-title"></h2>
+      <p id="pro-text"></p>
+      </div>
+      <a id="btn-pro-buy" class="btn-primary pro-buy" href="#" target="_blank" rel="noopener"></a>
+      <button id="btn-pro-check" class="btn-secondary">Я вже в Спільноті ✓</button>
+      <p id="pro-status" class="pro-status" aria-live="polite"></p>
+      <button id="btn-pro-help" class="pro-help-link" type="button" hidden>Підписка є, а доступу немає?</button>
+      <div id="pro-help" class="pro-help" hidden>
+        <h2>Підписка є, а доступу немає?</h2>
+        <p>Буває, що Telegram не дає автоматично додати тебе в канал. Напиши Укрмовичу — і тобі відкриють доступ вручну.</p>
+        <textarea id="pro-help-text" maxlength="1000" rows="3" placeholder="Що сталося? (необов'язково)"></textarea>
+        <button id="btn-pro-report" class="btn-primary">Повідомити Укрмовича</button>
+      </div>
+      <div id="pro-done" class="pro-help" hidden>
+        <p>Дякуємо! Укрмович отримав твоє повідомлення 💛 З тобою зв'яжуться в Telegram якнайшвидше — протягом 24 годин.</p>
+      </div>
+      <button id="btn-pro-close" class="btn-secondary">Закрити</button>
+    </div>
+  </div>
+
+  <!-- 🔎 Про качалку — текст для пошуку Google (власниця, 08.11.2026): згорнутий рядок унизу меню, розгортається натисканням -->
+  <details class="seo-about">
+    <summary>ℹ️ Про НМТ-качалку</summary>
+    <p>Безкоштовні тренажери до НМТ з української мови та історії України: наголоси (усі 233 слова програми), лексичні помилки (1026 — у словосполученнях і реченнях, як на НМТ), іншомовні слова, фразеологізми, кличний відмінок, числівники, дати й персоналії з історії. Слова поділено на групи, а гра сама підказує, коли повторити вивчене, щоб до іспиту нічого не забулося. Можна змагатися з друзями й класом.</p>
+    <p><a href="naholosy-nmt.html">Наголоси НМТ — повний перелік</a> · <a href="leksychni-pomylky-nmt.html">Лексичні помилки НМТ</a> · <a href="pamyat.html">Як працює забування</a></p>
+  </details>
+
+  <footer>
+    <a class="brand" href="https://t.me/+GkBggS477tlmODQy" target="_blank" rel="noopener" data-tg-link>
+      <img src="logo.png" alt="" width="36" height="36">
+      <span>by <b>@ukr_movych</b></span>
+    </a>
+  </footer>
+
+  <script src="mirror-config.js"></script>
+  <script src="leaderboard-config.js?v=20261020a"></script>
+  <script src="inshe-counts.js?v=20261108j"></script> <!-- числа «Іншого»: перераховує deploy.yml (tools/inshe-counts.js) -->
+  <script type="text/plain" data-pro src="klychnyi-data.js?v=20261107v"></script>
+  <script type="text/plain" data-pro src="chyslivnyky-data.js?v=20261107a"></script>
+  <script type="text/plain" data-pro src="frazeo-data.js?v=20261107o"></script>
+  <script type="text/plain" data-pro src="frazeo-nmt-data.js?v=20261108c"></script>
+  <script type="text/plain" data-pro src="frazeo-options.js?v=20261108a"></script>
+  <script type="text/plain" data-pro src="frazeo-s30.js?v=20261108c"></script> <!-- 💬 четвірки й по ~30 речень на фразеологізм -->
+  <script src="topics.js?v=20261020a"></script>
+  <script type="text/plain" data-pro src="slovospoluch-data.js?v=20261108i"></script>
+  <script type="text/plain" data-code src="slovo-free-data.js?v=20261108f"></script>
+  <script type="text/plain" data-pro src="leks-data.js?v=202611081900"></script>
+  <script type="text/plain" data-pro src="inshomovni-data.js?v=20261107q"></script>
+  <script type="text/plain" data-pro src="inshomovni-notes.js?v=20261105b"></script>
+  <script type="text/plain" data-code src="klych-rules.js?v=20261107v"></script>
+  <script type="text/plain" data-code src="script.js?v=20261108v"></script>
+  <script type="text/plain" data-code src="bot-gate.js?v=20261108b"></script> <!-- 🤖 мініапка — лише підписаним на @ukrmovych_bot -->
+  <script type="text/plain" data-code src="slovospoluch.js?v=20261107a"></script>
+  <script type="text/plain" data-code src="inshomovni.js?v=20261108b"></script>
+  <script type="text/plain" data-code src="groups.js?v=20261108d"></script>
+  <script type="text/plain" data-code src="memory.js?v=20261108d"></script>
+  <script type="text/plain" data-code src="group-tree.js?v=20261108b"></script>
+  <script type="text/plain" data-code src="leks-free-data.js?v=20261108f"></script>
+  <script type="text/plain" data-code src="leks.js?v=20261108c"></script>
+  <script type="text/plain" data-code src="leks-menu.js?v=20261108a"></script> <!-- 🔎 одна плитка «Лексична помилка» → вибір -->
+  <script type="text/plain" data-code src="streak.js?v=20261108d"></script> <!-- 🔥 вогник — дні поспіль -->
+  <script type="text/plain" data-code src="countdown.js?v=20261108f"></script> <!-- 🚀 відлік до відкриття 15.11 20:30 -->
+  <script type="text/plain" data-code src="inshe.js?v=20261108h"></script>
+  <script type="text/plain" data-code src="feedback-reply.js?v=20261101a"></script>
+  <script type="text/plain" data-code src="game-time.js?v=20261104a"></script>
+  <script type="text/plain" data-code src="course.js?v=20261104b"></script>
+  <script type="text/plain" data-code src="course-sync.js?v=20261107b"></script>
+  <script type="text/plain" data-code src="online.js?v=20261108b"></script>
+  <script type="text/plain" data-code src="nmt-test.js?v=20261107i"></script>
+  <script type="text/plain" data-code src="myclass.js?v=20261108g"></script>
+  <script type="text/plain" data-code src="upsell.js?v=20261108c"></script>
+  <script type="text/plain" data-code src="snapshot.js?v=20261108a"></script>
+  <script type="text/plain" data-code src="tester.js?v=20261104b"></script>
+  <script type="text/plain" data-code src="pro-devices.js?v=20261104a"></script>
+  <script type="text/plain" data-code src="plan.js?v=20261105f"></script>
+  <script type="text/plain" data-code src="wordlist.js?v=20261108c"></script>
+  <script type="text/plain" data-code src="hw-mode.js?v=20261108e"></script>
+  <script type="text/plain" data-code src="hw-debt.js?v=20261108c"></script>
+  <script type="text/plain" data-code src="go.js?v=20261108d"></script>
+  <script type="text/plain" data-code src="demo/groups.js?v=20261107a"></script>
+  <script type="text/plain" data-code src="demo.js?v=20261107q"></script>
+  <script type="text/plain" data-code src="free-nudge.js?v=20261107a"></script>
+  <script type="text/plain" data-code src="leaders-play.js?v=20261107a"></script> <!-- 🏁 «Грати» в турнірній таблиці --> <!-- 🦆 заклики до Спільноти в безкоштовних іграх -->
+  <!-- 🔒 loader.js вантажить скрипти вище по черзі; дані PRO-ігор — лише тим, кому можна (функція pro-data) -->
+  <script src="emoji.js?v=20261108c"></script> <!-- 😀 смайлики як у Telegram (на iPhone/Mac — рідні) -->
+  <script src="loader.js?v=20261108l"></script>
+
+</body>
+</html>

@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex, nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Демо: вибір груп</title>
+<!-- 🧪 Демо для власниці (08.11.2026): як показати 60 груп тренування без 60 кнопок. Варіант А — «гра веде» + розділи + кружечки,
+     варіант Б — лише теми з кружечками-частинами. Дані — назви груп «Іншомовних слів», стан пам'яті вигаданий. У гру не підключено. -->
+<style>
+@font-face { font-family: 'Balsamiq Sans'; src: url(fonts/balsamiq-sans-cyrillic-400-normal.woff2) format('woff2'); font-weight: 400; unicode-range: U+0400-04FF; }
+@font-face { font-family: 'Balsamiq Sans'; src: url(fonts/balsamiq-sans-cyrillic-700-normal.woff2) format('woff2'); font-weight: 700; unicode-range: U+0400-04FF; }
+@font-face { font-family: 'Balsamiq Sans'; src: url(fonts/balsamiq-sans-latin-400-normal.woff2) format('woff2'); font-weight: 400; }
+@font-face { font-family: 'Balsamiq Sans'; src: url(fonts/balsamiq-sans-latin-700-normal.woff2) format('woff2'); font-weight: 700; }
+:root { --bg:#211a14; --surface:#2b2219; --line:#45372b; --orange:#FF7900; --green:#4CAF50; --yellow:#f2c230; --text:#fff; --muted:#b9a797; }
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--text); font-family: 'Balsamiq Sans', system-ui, sans-serif; }
+.wrap { max-width: 480px; margin: 0 auto; padding: 12px 16px 120px; }
+.tabs { display: flex; gap: 8px; position: sticky; top: 0; background: var(--bg); padding: 10px 0; z-index: 5; }
+.tabs button { flex: 1; padding: 10px 6px; border-radius: 12px; border: 2px solid var(--line); background: var(--surface); color: var(--muted); font: inherit; font-size: 15px; cursor: pointer; }
+.tabs button.on { border-color: var(--orange); color: var(--text); }
+h1 { font-size: 20px; margin: 6px 0 2px; }
+.sub { color: var(--muted); font-size: 14px; margin: 0 0 14px; }
+.big { display: block; width: 100%; text-align: left; border: 0; border-radius: 16px; padding: 14px 16px; font: inherit; color: #fff; cursor: pointer; margin-bottom: 10px; }
+.big b { display: block; font-size: 19px; }
+.big span { font-size: 14px; opacity: .85; }
+.next { background: var(--orange); box-shadow: 0 4px 0 #b35400; }
+.rep { background: var(--surface); border: 2px solid var(--yellow); }
+.rep b { color: var(--yellow); }
+.replist { display: none; margin: -4px 0 12px; }
+.replist.open { display: block; }
+.repit { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-bottom: 1px solid var(--line); cursor: pointer; }
+.repit:last-child { border: 0; }
+.all-h { color: var(--muted); font-size: 14px; margin: 18px 0 8px; }
+.sec { background: var(--surface); border: 2px solid var(--line); border-radius: 16px; margin-bottom: 8px; overflow: hidden; }
+.sec-h { display: flex; align-items: center; gap: 10px; padding: 12px 14px; cursor: pointer; }
+.sec-h .ic { font-size: 24px; }
+.sec-h .nm { flex: 1; }
+.sec-h .nm b { display: block; font-size: 16px; }
+.sec-h .nm small { color: var(--muted); font-size: 13px; }
+.badge { background: var(--yellow); color: #3a2a00; border-radius: 10px; padding: 2px 7px; font-size: 12px; font-weight: 700; }
+.arr { color: var(--muted); transition: transform .2s; }
+.sec.open .arr { transform: rotate(90deg); }
+.sec-b { display: none; padding: 0 10px 10px; }
+.sec.open .sec-b { display: block; }
+.bar { height: 5px; background: var(--line); border-radius: 3px; margin-top: 5px; overflow: hidden; }
+.bar i { display: block; height: 100%; background: var(--green); }
+.topic { display: flex; align-items: center; gap: 8px; padding: 9px 8px; border-top: 1px solid var(--line); }
+.topic:first-child { border-top: 0; }
+.topic .tn { flex: 1; font-size: 15px; line-height: 1.2; }
+.topic .tn small { display: block; color: var(--muted); font-size: 12px; }
+.dots { display: flex; gap: 6px; }
+.dot { width: 34px; height: 34px; border-radius: 50%; border: 2px solid var(--line); background: transparent; color: var(--muted); font: inherit; font-size: 14px; font-weight: 700; display: grid; place-items: center; cursor: pointer; position: relative; padding: 0; }
+.dot.new { border-color: #6b5543; }
+.dot.ok { background: var(--green); border-color: var(--green); color: #fff; }
+.dot.ok.fade { background: #2f6b31; border-color: #2f6b31; color: #cfe8cf; }
+.dot.due { background: var(--yellow); border-color: var(--yellow); color: #3a2a00; }
+.dot.due::after { content: "🔁"; position: absolute; right: -6px; top: -8px; font-size: 13px; }
+.dot.half { background: linear-gradient(90deg, #8a6a2a 50%, transparent 50%); border-color: #8a6a2a; color: #fff; }
+.dot.next { border-color: var(--orange); color: var(--orange); box-shadow: 0 0 0 3px rgba(255,121,0,.25); }
+.flat .topic { background: var(--surface); border: 2px solid var(--line); border-radius: 14px; margin-bottom: 6px; padding: 10px 12px; }
+.legend { display: flex; flex-wrap: wrap; gap: 10px 14px; font-size: 13px; color: var(--muted); margin: 6px 0 14px; }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.legend .dot { width: 20px; height: 20px; font-size: 0; cursor: default; }
+.legend .dot.due::after { font-size: 10px; right: -5px; top: -6px; }
+.sheet { position: fixed; left: 0; right: 0; bottom: -260px; background: var(--surface); border-top: 2px solid var(--orange); border-radius: 18px 18px 0 0; padding: 16px 16px 22px; transition: bottom .25s; z-index: 10; max-width: 480px; margin: 0 auto; }
+.sheet.open { bottom: 0; }
+.sheet b { font-size: 18px; }
+.sheet p { color: var(--muted); margin: 6px 0 12px; font-size: 14px; }
+.sheet .go { width: 100%; padding: 13px; border: 0; border-radius: 14px; background: var(--orange); color: #fff; font: inherit; font-size: 17px; font-weight: 700; }
+.note { background: #3a2c1f; border-radius: 12px; padding: 10px 12px; font-size: 13px; color: var(--muted); margin-bottom: 12px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="tabs"><button data-v="a" class="on">А · Моя комбінація</button><button data-v="b">Б · Лише кружечки</button></div>
+  <div class="note" id="note"></div>
+  <h1>🌍 Іншомовні слова</h1>
+  <p class="sub">🎯 Тренування · <span id="cnt"></span> груп · вивчено <b id="learned"></b></p>
+  <div id="view"></div>
+</div>
+<div class="sheet" id="sheet"><b id="sh-t"></b><p id="sh-p"></p><button class="go" id="sh-go">▶ Тренувати</button></div>
+<script>
+// назви й розміри — як у грі (inshomovniGroups), ділення — як у грі (≤ 15, порівну)
+const SECTIONS = [
+  ["💥", "Було на іспиті", [["Було на іспиті", 43]]],
+  ["👤", "Люди", [["Професії й заняття", 20], ["Хто є хто", 21], ["Характер", 42], ["Зовнішність і враження", 17], ["Почуття й стосунки", 20]]],
+  ["🗣️", "Мова, ідеї, документи", [["Мова й мовлення", 26], ["Суперечки й ідеї", 20], ["Документи й правила", 21]]],
+  ["🏛️", "Суспільство й наука", [["Влада й суспільство", 24], ["Гроші й бізнес", 23], ["Наука й пізнання", 21], ["Здоров'я й тіло", 20]]],
+  ["🌍", "Світ, речі, час", [["Місця й простір", 22], ["Речі й мистецтво", 21], ["Час і події", 22], ["Зміни й розвиток", 18], ["Процеси й дії", 21]]],
+  ["🎨", "Ознаки, дії, поняття", [["Справжнє чи ні", 24], ["Міра й важливість", 23], ["Властивості", 43], ["Дієслова", 37], ["Поняття", 34]]],
+  ["✨", "Особливі", [["Сучасні слова", 11], ["Релігія й давнина", 9], ["Питомо українські", 42]]]
+];
+const split = (n, max = 15) => { const k = Math.ceil(n / max), b = Math.floor(n / k), e = n % k; return Array.from({ length: k }, (_, i) => b + (i < e ? 1 : 0)); };
+// вигаданий стан пам'яті: учень пройшов кілька перших тем
+const STATE = { "Було на іспиті": ["ok", "due", "half"], "Професії й заняття": ["ok", "ok"], "Хто є хто": ["fade", "next"], "Характер": ["due"],
+  "Мова й мовлення": ["ok"], "Гроші й бізнес": ["due"], "Сучасні слова": ["ok"] };
+const topics = [];
+SECTIONS.forEach(s => s[2].forEach(([name, n]) => topics.push({ sec: s[1], name, parts: split(n).map((size, i) => ({ size, i, st: (STATE[name] || [])[i] || "new" })) })));
+const all = topics.flatMap(t => t.parts.map(p => ({ t, p })));
+const learnedN = all.filter(x => ["ok", "fade", "due"].includes(x.p.st)).length;
+document.getElementById("learned").textContent = `${learnedN} з ${all.length}`; document.getElementById("cnt").textContent = all.length;
+const pl = (n, a, b, c) => { const x = n % 10, y = n % 100; return x === 1 && y !== 11 ? a : x >= 2 && x <= 4 && (y < 12 || y > 14) ? b : c; };
+const label = (t, p) => t.parts.length > 1 ? `${t.name} · ${p.i + 1}` : t.name;
+const stText = { new: "нова група", ok: "✅ вивчено, пам'ятаєш добре", fade: "✅ вивчено, трохи згасає", due: "🔁 час повторити", half: "почато, ще не вивчено", next: "▶ наступна за порядком" };
+const dotsHtml = t => `<div class="dots">${t.parts.map(p => `<button class="dot ${p.st === "fade" ? "ok fade" : p.st}" data-t="${topics.indexOf(t)}" data-p="${p.i}" title="${label(t, p)}">${t.parts.length > 1 ? p.i + 1 : "▶"}</button>`).join("")}</div>`;
+const topicHtml = t => `<div class="topic"><div class="tn">${t.name}<small>${t.parts.reduce((a, p) => a + p.size, 0)} слів${t.parts.length > 1 ? ` · ${t.parts.length} частини` : ""}</small></div>${dotsHtml(t)}</div>`;
+const legend = `<div class="legend"><span><i class="dot new"></i>нова</span><span><i class="dot half"></i>почато</span><span><i class="dot ok"></i>вивчено</span><span><i class="dot due"></i>повторити</span><span><i class="dot next"></i>наступна</span></div>`;
+
+function viewA() {
+  const nx = all.find(x => x.p.st === "next"), due = all.filter(x => x.p.st === "due");
+  let h = `<button class="big next" data-t="${topics.indexOf(nx.t)}" data-p="${nx.p.i}"><b>▶ Далі: ${label(nx.t, nx.p)}</b><span>${nx.p.size} слів · нова група за порядком</span></button>`;
+  h += `<button class="big rep" id="rep-btn"><b>🔁 Повторити: ${due.length} ${pl(due.length, "групу", "групи", "груп")}</b><span>пам'ять на них згасає — натисни, щоб обрати</span></button>`;
+  h += `<div class="sec replist" id="rep-list">${due.map(x => `<div class="repit" data-t="${topics.indexOf(x.t)}" data-p="${x.p.i}"><i class="dot due" style="width:22px;height:22px;font-size:0"></i>${label(x.t, x.p)}<span style="margin-left:auto;color:var(--muted)">${x.p.size} слів ›</span></div>`).join("")}</div>`;
+  h += `<div class="all-h">📂 Усі групи — за розділами</div>`;
+  h += SECTIONS.map(s => {
+    const ts = topics.filter(t => t.sec === s[1]), ps = ts.flatMap(t => t.parts);
+    const ok = ps.filter(p => ["ok", "fade", "due"].includes(p.st)).length, d = ps.filter(p => p.st === "due").length;
+    return `<div class="sec"><div class="sec-h"><span class="ic">${s[0]}</span><span class="nm"><b>${s[1]}</b><small>${ts.length > 1 ? `${ts.length} ${pl(ts.length, "тема", "теми", "тем")} · ` : ""}${ps.length} ${pl(ps.length, "група", "групи", "груп")} · вивчено ${ok}</small><div class="bar"><i style="width:${ok / ps.length * 100}%"></i></div></span>${d ? `<span class="badge">🔁 ${d}</span>` : ""}<span class="arr">▸</span></div><div class="sec-b">${ts.map(topicHtml).join("")}</div></div>`;
+  }).join("");
+  return h + `<div style="margin-top:14px">${legend}</div>`;
+}
+function viewB() { return legend + `<div class="flat">${topics.map(topicHtml).join("")}</div>`; }
+const NOTES = {
+  a: "Угорі дві великі кнопки — більшості учнів цього досить. Нижче 7 розділів: натисни, щоб розгорнути теми. Кружечок — частина теми, колір — пам'ять.",
+  b: "Без розділів: одразу всі 26 тем, кожна в один рядок. Кружечки — частини теми (по ≤ 15 слів). Натисни кружечок — відкриється тренування."
+};
+let V = "a";
+function render() {
+  document.getElementById("view").innerHTML = V === "a" ? viewA() : viewB();
+  document.getElementById("note").textContent = "🧪 Демо. " + NOTES[V];
+  document.querySelectorAll(".tabs button").forEach(b => b.classList.toggle("on", b.dataset.v === V));
+}
+document.addEventListener("click", e => {
+  const tab = e.target.closest(".tabs button"); if (tab) { V = tab.dataset.v; render(); scrollTo(0, 0); return; }
+  const sh = document.getElementById("sheet");
+  if (e.target.closest("#sh-go")) { sh.classList.remove("open"); alert("Тут почалося б тренування (це лише демо)"); return; }
+  const h = e.target.closest(".sec-h"); if (h) { h.parentElement.classList.toggle("open"); return; }
+  if (e.target.closest("#rep-btn")) { document.getElementById("rep-list").classList.toggle("open"); return; }
+  const d = e.target.closest("[data-t]");
+  if (d) {
+    const t = topics[+d.dataset.t], p = t.parts[+d.dataset.p];
+    document.getElementById("sh-t").textContent = label(t, p);
+    document.getElementById("sh-p").textContent = `${p.size} слів · ${stText[p.st]}`;
+    sh.classList.add("open"); return;
+  }
+  if (!e.target.closest("#sheet")) sh.classList.remove("open");
+});
+render();
+</script>
+<script src="emoji.js?v=20261108c"></script>
+</body>
+</html>
